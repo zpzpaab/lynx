@@ -74,7 +74,8 @@ class WithGraphModelProcedureRegistry(types: TypeSystem,
     })
   }
 
-  override def getProcedure(prefix: List[String], name: String, argsLength: Int): Option[CallableProcedure] = {
+  override def getProcedure(prefix: List[String], _name: String, argsLength: Int): Option[CallableProcedure] = {
+    val name = _name.toLowerCase()
     name match {
       case "coalesce" => procedures.get(((prefix :+ name).mkString("."), 1))
       case _ => procedures.get(((prefix :+ name).mkString("."), argsLength))

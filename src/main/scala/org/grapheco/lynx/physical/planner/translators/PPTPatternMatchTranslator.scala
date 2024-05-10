@@ -18,7 +18,8 @@ case class PPTPatternMatchTranslator(patternMatch: LogicalPatternMatch)(implicit
         //match (m)
         case Nil => FromArgument(headNode.variable.get.name)(ppc)
         //match (m)-[r]-(n)
-        case List(Tuple2(rel, rightNode)) => RelationshipScan(rel, headNode, rightNode)(ppc)
+//        case List(Tuple2(rel, rightNode)) => RelationshipScan(rel, headNode, rightNode)(ppc)
+        case List(Tuple2(rel, rightNode)) => Expand(rel, rightNode)(FromArgument(headNode.variable.get.name)(ppc), plannerContext)
         //match (m)-[r]-(n)-...-[p]-(z)
         case _ =>
           val (lastRelationship, lastNode) = chain.last

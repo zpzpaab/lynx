@@ -17,7 +17,7 @@ import scala.collection.mutable
 class WithGraphModelProcedureRegistry(types: TypeSystem,
                                       scalarFunctions: ScalarFunctions,
                                       classes: Class[_]*) extends ProcedureRegistry with LazyLogging {
-  val procedures = mutable.Map[(String, Int), CallableProcedure]()
+  val procedures: mutable.Map[(String, Int), CallableProcedure] = mutable.Map[(String, Int), CallableProcedure]()
 
   classes.foreach(registerAnnotatedClass)
   registerScalarFunctions
@@ -56,7 +56,7 @@ class WithGraphModelProcedureRegistry(types: TypeSystem,
   }
 
   def register(name: String, argsLength: Int, procedure: CallableProcedure): Unit = {
-    procedures((name, argsLength)) = procedure
+    procedures((name.toLowerCase, argsLength)) = procedure
     logger.debug(s"registered procedure: ${procedure.signature(name)}")
   }
 

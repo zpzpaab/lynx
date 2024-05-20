@@ -5,7 +5,7 @@ import org.grapheco.lynx.physical.{NodeInput, RelationshipInput, StoredNodeInput
 import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.property.LynxString
 import org.grapheco.lynx.types.structural.{LynxNode, LynxPropertyKey, LynxRelationship, LynxRelationshipType}
-import org.junit.{Assert, Before, Test}
+import org.junit.jupiter.api.{Assertions, BeforeEach, Test}
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -31,7 +31,7 @@ class H_Skip extends TestBase{
   val r4 = TestRelationship(TestId(4), TestId(1), TestId(5), Option(LynxRelationshipType("KNOWS")), Map.empty)
 
 
-  @Before
+  @BeforeEach
   def init(): Unit ={
     nodesInput.append(("n1", NodeInput(n1.labels, n1.props.toSeq)))
     nodesInput.append(("n2", NodeInput(n2.labels, n2.props.toSeq)))
@@ -60,8 +60,8 @@ class H_Skip extends TestBase{
         |SKIP 3
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(LynxString("D"), res(0)("n.name"))
-    Assert.assertEquals(LynxString("E"), res(1)("n.name"))
+    Assertions.assertEquals(LynxString("D"), res(0)("n.name"))
+    Assertions.assertEquals(LynxString("E"), res(1)("n.name"))
   }
 
   @Test
@@ -75,8 +75,8 @@ class H_Skip extends TestBase{
         |LIMIT 2
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(LynxString("B"), res(0)("n.name"))
-    Assert.assertEquals(LynxString("C"), res(1)("n.name"))
+    Assertions.assertEquals(LynxString("B"), res(0)("n.name"))
+    Assertions.assertEquals(LynxString("C"), res(1)("n.name"))
   }
 
   @Test

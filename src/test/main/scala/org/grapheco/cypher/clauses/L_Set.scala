@@ -4,8 +4,7 @@ import org.grapheco.lynx.TestBase
 import org.grapheco.lynx.physical.{NodeInput, RelationshipInput, StoredNodeInputRef}
 import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.structural._
-import org.junit.{Assert, Before, Test}
-
+import org.junit.jupiter.api.{Assertions, BeforeEach, Test}
 import scala.collection.mutable.ArrayBuffer
 
 /**
@@ -27,7 +26,7 @@ class L_Set extends TestBase{
   val r2 = TestRelationship(TestId(2), TestId(2), TestId(4), Option(LynxRelationshipType("KNOWS")), Map.empty)
   val r3 = TestRelationship(TestId(3), TestId(3), TestId(4), Option(LynxRelationshipType("KNOWS")), Map.empty)
 
-  @Before
+  @BeforeEach
   def init(): Unit ={
     nodesInput.append(("n1", NodeInput(n1.labels, n1.props.toSeq)))
     nodesInput.append(("n2", NodeInput(n2.labels, n2.props.toSeq)))
@@ -55,9 +54,9 @@ class L_Set extends TestBase{
         |RETURN n.name, n.surname
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals("Andy", records.head("n.name").asInstanceOf[LynxValue].value)
-    Assert.assertEquals("Taylor", records.head("n.surname").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals("Andy", records.head("n.name").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals("Taylor", records.head("n.surname").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -68,9 +67,9 @@ class L_Set extends TestBase{
         |SET (CASE WHEN n.age = 36 THEN n END).worksIn = 'Malmo'
         |RETURN n.name, n.worksIn
         |""".stripMargin).records().toArray
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals("Andy", records.head("n.name").asInstanceOf[LynxValue].value)
-    Assert.assertEquals("Malmo", records.head("n.worksIn").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals("Andy", records.head("n.name").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals("Malmo", records.head("n.worksIn").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -81,9 +80,9 @@ class L_Set extends TestBase{
         |SET (CASE WHEN n.age = 55 THEN n END).worksIn = 'Malmo'
         |RETURN n.name, n.worksIn
         |""".stripMargin).records().toArray
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals("Andy", records.head("n.name").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(null, records.head("n.worksIn").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals("Andy", records.head("n.name").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(null, records.head("n.worksIn").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -95,9 +94,9 @@ class L_Set extends TestBase{
         |RETURN n.name, n.age
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals("Andy", records.head("n.name").asInstanceOf[LynxValue].value)
-    Assert.assertEquals("36", records.head("n.age").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals("Andy", records.head("n.name").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals("36", records.head("n.age").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -109,9 +108,9 @@ class L_Set extends TestBase{
         |RETURN n.name, n.age
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(null, records.head("n.name").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(36L, records.head("n.age").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(null, records.head("n.name").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(36L, records.head("n.age").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -125,12 +124,12 @@ class L_Set extends TestBase{
         |RETURN at.name, at.age, at.hungry, pn.name, pn.age
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals("Peter", records.head("at.name").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(34L, records.head("at.age").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(null, records.head("at.hungry").asInstanceOf[LynxValue].value)
-    Assert.assertEquals("Peter", records.head("pn.name").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(34L, records.head("pn.age").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals("Peter", records.head("at.name").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(34L, records.head("at.age").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(null, records.head("at.hungry").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals("Peter", records.head("pn.name").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(34L, records.head("pn.age").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -142,10 +141,10 @@ class L_Set extends TestBase{
         |RETURN p.name, p.age, p.position
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals("Peter Smith", records.head("p.name").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(null, records.head("p.age").asInstanceOf[LynxValue].value)
-    Assert.assertEquals("Entrepreneur", records.head("p.position").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals("Peter Smith", records.head("p.name").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(null, records.head("p.age").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals("Entrepreneur", records.head("p.position").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -157,9 +156,9 @@ class L_Set extends TestBase{
         |RETURN p.name, p.age
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(null, records.head("p.name").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(null, records.head("p.age").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(null, records.head("p.name").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(null, records.head("p.age").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -171,11 +170,11 @@ class L_Set extends TestBase{
         |RETURN p.name, p.age, p.hungry, p.position
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals("Peter", records.head("p.name").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(38L, records.head("p.age").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(true, records.head("p.hungry").asInstanceOf[LynxValue].value)
-    Assert.assertEquals("Entrepreneur", records.head("p.position").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals("Peter", records.head("p.name").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(38L, records.head("p.age").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(true, records.head("p.hungry").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals("Entrepreneur", records.head("p.position").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -187,9 +186,9 @@ class L_Set extends TestBase{
         |RETURN p.name, p.age
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals("Peter", records.head("p.name").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(34L, records.head("p.age").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals("Peter", records.head("p.name").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(34L, records.head("p.age").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -200,8 +199,8 @@ class L_Set extends TestBase{
         |SET n.position = 'Developer', n.surname = 'Taylor'
         |""".stripMargin).records().toArray
 
-//    Assert.assertEquals("Developer", all_nodes(2).property(LynxPropertyKey("position")).get.value)
-//    Assert.assertEquals("Taylor", all_nodes(2).property(LynxPropertyKey("surname")).get.value)
+//    Assertions.assertEquals("Developer", all_nodes(2).property(LynxPropertyKey("position")).get.value)
+//    Assertions.assertEquals("Taylor", all_nodes(2).property(LynxPropertyKey("surname")).get.value)
   }
 
   @Test
@@ -213,9 +212,9 @@ class L_Set extends TestBase{
          |RETURN n.name, n.surname
          |""".stripMargin, Map("surName" -> "Taylor")).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals("Andy", records.head("n.name").asInstanceOf[LynxValue].value)
-    Assert.assertEquals("Taylor", records.head("n.surname").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals("Andy", records.head("n.name").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals("Taylor", records.head("n.surname").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -227,11 +226,11 @@ class L_Set extends TestBase{
         |RETURN n.name, n.position, n.age, n.hungry
         |""".stripMargin, Map("props"->Map("name"->"Andy", "position"->"Developer"))).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals("Andy", records.head("n.name").asInstanceOf[LynxValue].value)
-    Assert.assertEquals("Developer", records.head("n.position").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(null, records.head("n.age").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(null, records.head("n.hungry").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals("Andy", records.head("n.name").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals("Developer", records.head("n.position").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(null, records.head("n.age").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(null, records.head("n.hungry").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -242,9 +241,9 @@ class L_Set extends TestBase{
         |SET n:German
         |RETURN n.name, labels(n) AS labels
         |""".stripMargin).records().toArray
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals("Stefan", records.head("n.name").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(List("German"), records.head("labels").asInstanceOf[LynxValue].value.asInstanceOf[List[LynxValue]].map(f => f.value))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals("Stefan", records.head("n.name").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(List("German"), records.head("labels").asInstanceOf[LynxValue].value.asInstanceOf[List[LynxValue]].map(f => f.value))
   }
 
   @Test
@@ -256,8 +255,8 @@ class L_Set extends TestBase{
         |RETURN n.name, labels(n) AS labels
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals("George", records.head("n.name").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(List("Swedish", "Bossman"), records.head("labels").asInstanceOf[LynxValue].value.asInstanceOf[List[LynxValue]].map(f => f.value))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals("George", records.head("n.name").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(List("Swedish", "Bossman"), records.head("labels").asInstanceOf[LynxValue].value.asInstanceOf[List[LynxValue]].map(f => f.value))
   }
 }

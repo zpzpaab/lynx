@@ -6,7 +6,7 @@ import org.grapheco.lynx.runner.GraphModel
 import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.composite.{LynxList, LynxMap}
 import org.grapheco.lynx.types.structural._
-import org.junit.{Assert, Before, BeforeClass, Test}
+import org.junit.jupiter.api.{Assertions, BeforeEach, Test}
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -61,7 +61,7 @@ class TestMap extends TestBase {
     TestRelationship(TestId(5), TestId(2), TestId(5), Option(LynxRelationshipType("ACTED_IN")), Map.empty)
   )
 
-  @Before
+  @BeforeEach
   def init(): Unit = {
     all_nodes.clear()
     all_rels.clear()
@@ -92,7 +92,7 @@ class TestMap extends TestBase {
       .records().map(f => f("{ key: 'Value', listKey: [{ inner: 'Map1' }, { inner: 'Map2' }]}").asInstanceOf[LynxMap].value).toArray
 
     val expectResult = Map("key" -> LynxValue("Value"), "listKey" -> LynxList(List(LynxMap(Map("inner" -> LynxValue("Map1"))), LynxMap(Map("inner" -> LynxValue("Map2"))))))
-    Assert.assertEquals(expectResult, records(0))
+    Assertions.assertEquals(expectResult, records(0))
   }
 
   @Test
@@ -103,7 +103,7 @@ class TestMap extends TestBase {
         |RETURN actor { .name, .realName, movies: collect(movie { .title, .year })}
         |""".stripMargin)
       .records().map(f => f("actor").asInstanceOf[LynxMap].value).toArray
-    Assert.assertEquals(1, records.length)
+    Assertions.assertEquals(1, records.length)
   }
 
   @Test
@@ -115,7 +115,7 @@ class TestMap extends TestBase {
         |RETURN actor { .name, nrOfMovies }
         |""".stripMargin)
       .records().map(f => f("actor").asInstanceOf[LynxMap].value).toArray
-    Assert.assertEquals(2, records.length)
+    Assertions.assertEquals(2, records.length)
   }
 
   @Test
@@ -126,6 +126,6 @@ class TestMap extends TestBase {
         |RETURN actor { .*, .age }
         |""".stripMargin)
       .records().map(f => f("actor").asInstanceOf[LynxMap].value).toArray
-    Assert.assertEquals(1, records.length)
+    Assertions.assertEquals(1, records.length)
   }
 }

@@ -5,7 +5,7 @@ import org.grapheco.lynx.physical.{NodeInput, RelationshipInput, StoredNodeInput
 import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.property.LynxNull
 import org.grapheco.lynx.types.structural._
-import org.junit.{Assert, Before, Test}
+import org.junit.jupiter.api.{Assertions, BeforeEach, Test}
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -36,7 +36,7 @@ class B_OptionMatch extends TestBase{
   val r7 = TestRelationship(TestId(7), TestId(4), TestId(7), Option(LynxRelationshipType("ACTED_IN")), Map.empty)
   val r8 = TestRelationship(TestId(8), TestId(5), TestId(7), Option(LynxRelationshipType("DIRECTED")), Map.empty)
 
-  @Before
+  @BeforeEach
   def init(): Unit ={
     nodesInput.append(("n1", NodeInput(n1.labels, n1.props.toSeq)))
     nodesInput.append(("n2", NodeInput(n2.labels, n2.props.toSeq)))
@@ -70,7 +70,7 @@ class B_OptionMatch extends TestBase{
         |OPTIONAL MATCH (a)-->(x)
         |RETURN x
         |""".stripMargin).records().toArray
-    Assert.assertEquals(LynxNull, res(0)("x"))
+    Assertions.assertEquals(LynxNull, res(0)("x"))
   }
 
   @Test
@@ -81,8 +81,8 @@ class B_OptionMatch extends TestBase{
         |OPTIONAL MATCH (a)-->(x)
         |RETURN x, x.name
         |""".stripMargin).records().toArray
-    Assert.assertEquals(LynxNull, res(0)("x"))
-    Assert.assertEquals(LynxNull, res(0)("x.name"))
+    Assertions.assertEquals(LynxNull, res(0)("x"))
+    Assertions.assertEquals(LynxNull, res(0)("x.name"))
   }
 
   @Test
@@ -93,7 +93,7 @@ class B_OptionMatch extends TestBase{
         |OPTIONAL MATCH (a)-[r:ACTS_IN]->()
         |RETURN a.title, r
         |""".stripMargin).records().toArray
-    Assert.assertEquals(LynxValue("Wall Street"), res(0)("a.title"))
-    Assert.assertEquals(LynxNull, res(0)("r"))
+    Assertions.assertEquals(LynxValue("Wall Street"), res(0)("a.title"))
+    Assertions.assertEquals(LynxNull, res(0)("r"))
   }
 }

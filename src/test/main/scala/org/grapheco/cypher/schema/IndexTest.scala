@@ -4,8 +4,7 @@ import org.grapheco.lynx.TestBase
 import org.grapheco.lynx.physical.{NodeInput, RelationshipInput, StoredNodeInputRef}
 import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.structural.{LynxNode, LynxNodeLabel, LynxPropertyKey, LynxRelationship, LynxRelationshipType}
-import org.junit.{Before, Test}
-
+import org.junit.jupiter.api.{Assertions, BeforeEach, Test}
 import scala.collection.mutable.ArrayBuffer
 
 class IndexTest extends TestBase {
@@ -40,7 +39,7 @@ class IndexTest extends TestBase {
   val r4 = TestRelationship(TestId(4), TestId(3), TestId(4), Option(LynxRelationshipType("KNOWS")), Map.empty)
   val r5 = TestRelationship(TestId(5), TestId(3), TestId(5), Option(LynxRelationshipType("MARRIED")), Map.empty)
 
-  @Before
+  @BeforeEach
   def init(): Unit = {
     nodesInput.append(("n1", NodeInput(n1.labels, n1.props.toSeq)))
     nodesInput.append(("n2", NodeInput(n2.labels, n2.props.toSeq)))

@@ -4,7 +4,7 @@ import org.grapheco.lynx.TestBase
 import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.composite.LynxList
 import org.grapheco.lynx.types.time.{LynxDate, LynxLocalDateTime}
-import org.junit.{Assert, Test}
+import org.junit.jupiter.api.{Assertions, BeforeEach, Test}
 
 import java.time.{LocalDate, LocalDateTime}
 
@@ -78,7 +78,7 @@ class Operators extends TestBase {
         |RETURN p.name, p.age, p.livesIn
         |""".stripMargin)
       .records().map(f => Map("p.name" -> f("p.name").value, "p.age" -> f("p.age").value, "p.livesIn" -> f("p.livesIn").value)).toArray
-    Assert.assertEquals(Map("p.name" -> "Ellen", "p.age" -> null, "p.livesIn" -> "London"), records(0))
+    Assertions.assertEquals(Map("p.name" -> "Ellen", "p.age" -> null, "p.livesIn" -> "London"), records(0))
   }
 
   /**
@@ -95,7 +95,7 @@ class Operators extends TestBase {
         |RETURN p.name, p.age, p.livesIn
         |""".stripMargin)
       .records().map(f => Map("p.name" -> f("p.name").value, "p.age" -> f("p.age").value, "p.livesIn" -> f("p.livesIn").value)).toArray
-    Assert.assertEquals(Map("p.name" -> "Ellen", "p.age" -> 20, "p.livesIn" -> "London"), records(0))
+    Assertions.assertEquals(Map("p.name" -> "Ellen", "p.age" -> 20, "p.livesIn" -> "London"), records(0))
   }
 
 
@@ -106,7 +106,7 @@ class Operators extends TestBase {
   def powOp(): Unit = {
     val records = runOnDemoGraph("WITH 2 AS number, 3 AS exponent\nRETURN number ^ exponent AS result")
       .records().toArray
-    Assert.assertEquals(LynxValue(8), records.head.get("result").get)
+    Assertions.assertEquals(LynxValue(8), records.head.get("result").get)
   }
 
   /**
@@ -115,7 +115,7 @@ class Operators extends TestBase {
   @Test
   def minusOp(): Unit = {
     val records = runOnDemoGraph("WITH -3 AS a, 4 AS b\nRETURN b - a AS result").records().map(f => f("result").value).toArray
-    Assert.assertEquals(7l, records(0))
+    Assertions.assertEquals(7l, records(0))
   }
 
 
@@ -125,7 +125,7 @@ class Operators extends TestBase {
   @Test
   def compareNumberOp(): Unit = {
     val records = runOnDemoGraph("WITH 4 AS one, 3 AS two\nRETURN one > two AS result").records().map(f => f("result").value).toArray
-    Assert.assertEquals(true, records(0))
+    Assertions.assertEquals(true, records(0))
   }
 
   /**
@@ -184,7 +184,7 @@ class Operators extends TestBase {
       .map(f => Map("aDateTime + aDuration" -> f("aDateTime + aDuration").asInstanceOf[LynxLocalDateTime], "aDateTime - aDuration" -> f("aDateTime - aDuration").asInstanceOf[LynxLocalDateTime]))
       .toArray
     val expectResult = Map("aDateTime + aDuration" -> LynxLocalDateTime(LocalDateTime.parse("1996-10-11T12:31:14.000000002")), "aDateTime - aDuration" -> LynxLocalDateTime(LocalDateTime.parse("1972-10-11T12:31:13.999999998")))
-    Assert.assertEquals(expectResult, records(0))
+    Assertions.assertEquals(expectResult, records(0))
   }
 
 
@@ -199,7 +199,7 @@ class Operators extends TestBase {
       .map(f => Map("aDate + aDuration" -> f("aDate + aDuration").asInstanceOf[LynxDate], "aDate - aDuration" -> f("aDate - aDuration").asInstanceOf[LynxDate]))
       .toArray
     val expectResult = Map("aDate + aDuration" -> LynxDate(LocalDate.parse("1996-10-11")), "aDate - aDuration" -> LynxDate(LocalDate.parse("1972-10-11")))
-    Assert.assertEquals(expectResult, records(0))
+    Assertions.assertEquals(expectResult, records(0))
   }
 
   @Test
@@ -213,7 +213,7 @@ class Operators extends TestBase {
       .map(f => Map("date1" -> f("date1").asInstanceOf[LynxDate], "date2" -> f("date2").asInstanceOf[LynxDate]))
       .toArray
     val expectResult = Map("date1" -> LynxDate(LocalDate.parse("2012-02-28")), "date2" -> LynxDate(LocalDate.parse("2012-02-29")))
-    Assert.assertEquals(expectResult, records(0))
+    Assertions.assertEquals(expectResult, records(0))
   }
 
 
@@ -228,11 +228,11 @@ class Operators extends TestBase {
         |RETURN duration1, duration2, duration1 + duration2, duration1 - duration2
         |""".stripMargin)
       .records().toArray
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals("P12Y5M14DT16H13M10.000000001S", records(0)("duration1").toString)
-    Assert.assertEquals("P1M-14DT15H49M10S", records(0)("duration2").toString)
-    Assert.assertEquals("P12Y6M1DT8H2M20.000000001S", records(0)("duration1 + duration2").toString) //32H == 1DT8H
-    Assert.assertEquals("P12Y4M28DT24M0.000000001S", records(0)("duration1 - duration2").toString)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals("P12Y5M14DT16H13M10.000000001S", records(0)("duration1").toString)
+    Assertions.assertEquals("P1M-14DT15H49M10S", records(0)("duration2").toString)
+    Assertions.assertEquals("P12Y6M1DT8H2M20.000000001S", records(0)("duration1 + duration2").toString) //32H == 1DT8H
+    Assertions.assertEquals("P12Y4M28DT24M0.000000001S", records(0)("duration1 - duration2").toString)
   }
 
 
@@ -244,10 +244,10 @@ class Operators extends TestBase {
     val records = runOnDemoGraph("WITH duration({ days: 14, minutes: 12, seconds: 70, nanoseconds: 1 }) AS aDuration\nRETURN aDuration, aDuration * 2, aDuration / 3")
       .records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals("P14DT13M10.000000001S", records(0)("aDuration").toString)
-    Assert.assertEquals("P28DT26M20.000000002S", records(0)("aDuration * 2").toString)
-    Assert.assertEquals("P4DT16H4M23.333333333S", records(0)("aDuration / 3").toString)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals("P14DT13M10.000000001S", records(0)("aDuration").toString)
+    Assertions.assertEquals("P28DT26M20.000000002S", records(0)("aDuration * 2").toString)
+    Assertions.assertEquals("P4DT16H4M23.333333333S", records(0)("aDuration / 3").toString)
   }
 
 
@@ -258,7 +258,7 @@ class Operators extends TestBase {
   def mapStaticOp(): Unit = {
     val records = runOnDemoGraph("WITH { person: { name: 'Anne', age: 25 }} AS p\nRETURN p.person.name")
       .records().map(f => f("p.person.name").value).toArray
-    Assert.assertEquals("Anne", records(0))
+    Assertions.assertEquals("Anne", records(0))
   }
 
   /**
@@ -268,7 +268,7 @@ class Operators extends TestBase {
   def mapDynamicOp(): Unit = {
     val myKey = "\"name\""
     val records = runOnDemoGraph(s"WITH { name: 'Anne', age: 25 } AS a\nRETURN a[${myKey}] AS result").records().map(f => f("result")).toArray
-    Assert.assertEquals(LynxValue("Anne"), records(0))
+    Assertions.assertEquals(LynxValue("Anne"), records(0))
   }
 
 
@@ -301,11 +301,11 @@ class Operators extends TestBase {
   def checkListInList(): Unit = {
     var records = runOnDemoGraph("RETURN [2, 1] IN [1,[2, 1], 3] AS inList")
       .records().map(f => f("inList").value).toArray
-    Assert.assertEquals(true, records(0))
+    Assertions.assertEquals(true, records(0))
 
     records = runOnDemoGraph("RETURN [1, 2] IN [1, 2] AS inList")
       .records().map(f => f("inList").value).toArray
-    Assert.assertEquals(false, records(0))
+    Assertions.assertEquals(false, records(0))
   }
 
   /**
@@ -328,7 +328,7 @@ class Operators extends TestBase {
     val myIndex = 1
     val records = runOnDemoGraph(s"WITH ['Anne', 'John', 'Bill', 'Diane', 'Eve'] AS names\nRETURN names[${myIndex}] AS result")
       .records().map(f => f("result")).toArray
-    Assert.assertEquals("John", records(0).value)
+    Assertions.assertEquals("John", records(0).value)
   }
 
 
@@ -339,7 +339,7 @@ class Operators extends TestBase {
   def checkInNestList(): Unit = {
     val records = runOnDemoGraph("WITH [[1, 2, 3]] AS l\nRETURN 3 IN l[0] AS result")
       .records().map(f => f("result")).toArray
-    Assert.assertEquals(true, records(0).value)
+    Assertions.assertEquals(true, records(0).value)
   }
 
   /**
@@ -350,9 +350,9 @@ class Operators extends TestBase {
    * @tparam A
    */
   def compareArray[A](expectResult: Array[A], records: Array[Any]): Unit = {
-    Assert.assertEquals(expectResult.length, records.length)
+    Assertions.assertEquals(expectResult.length, records.length)
     for (i <- 0 to records.length - 1) {
-      Assert.assertEquals(expectResult(i), records(i))
+      Assertions.assertEquals(expectResult(i), records(i))
     }
   }
 }

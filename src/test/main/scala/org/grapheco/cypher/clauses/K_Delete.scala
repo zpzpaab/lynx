@@ -4,8 +4,7 @@ import org.grapheco.lynx.TestBase
 import org.grapheco.lynx.physical.{NodeInput, RelationshipInput, StoredNodeInputRef}
 import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.structural._
-import org.junit.{Assert, Before, Test}
-
+import org.junit.jupiter.api.{Assertions, BeforeEach, Test}
 import scala.collection.mutable.ArrayBuffer
 
 /**
@@ -26,7 +25,7 @@ class K_Delete extends TestBase{
   val r1 = TestRelationship(TestId(1), TestId(1), TestId(3), Option(LynxRelationshipType("KNOWS")), Map.empty)
   val r2 = TestRelationship(TestId(2), TestId(1), TestId(4), Option(LynxRelationshipType("KNOWS")), Map.empty)
 
-  @Before
+  @BeforeEach
   def init(): Unit ={
     nodesInput.append(("n1", NodeInput(n1.labels, n1.props.toSeq)))
     nodesInput.append(("n2", NodeInput(n2.labels, n2.props.toSeq)))
@@ -53,7 +52,7 @@ class K_Delete extends TestBase{
         |DELETE n
         |""".stripMargin)
 
-    Assert.assertEquals(num - 1, all_nodes.size)
+    Assertions.assertEquals(num - 1, all_nodes.size)
   }
 
   @Test
@@ -64,8 +63,8 @@ class K_Delete extends TestBase{
         |DETACH DELETE n
         |""".stripMargin)
 
-    Assert.assertEquals(0, all_nodes.size)
-    Assert.assertEquals(0, all_rels.size)
+    Assertions.assertEquals(0, all_nodes.size)
+    Assertions.assertEquals(0, all_rels.size)
   }
 
   @Test
@@ -78,8 +77,8 @@ class K_Delete extends TestBase{
         |DETACH DELETE n
         |""".stripMargin)
 
-    Assert.assertEquals(num - 1, all_nodes.size)
-    Assert.assertEquals(0, all_rels.size)
+    Assertions.assertEquals(num - 1, all_nodes.size)
+    Assertions.assertEquals(0, all_rels.size)
   }
 
   @Test
@@ -92,7 +91,7 @@ class K_Delete extends TestBase{
         |DELETE r
         |""".stripMargin)
 
-    Assert.assertEquals(num, all_nodes.size)
-    Assert.assertEquals(0, all_rels.size)
+    Assertions.assertEquals(num, all_nodes.size)
+    Assertions.assertEquals(0, all_rels.size)
   }
 }

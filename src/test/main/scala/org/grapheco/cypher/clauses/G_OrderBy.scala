@@ -4,7 +4,7 @@ import org.grapheco.lynx.TestBase
 import org.grapheco.lynx.physical.{NodeInput, RelationshipInput, StoredNodeInputRef}
 import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.structural.{LynxNode, LynxPropertyKey, LynxRelationship, LynxRelationshipType}
-import org.junit.{Assert, Before, Test}
+import org.junit.jupiter.api.{Assertions, BeforeEach, Test}
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -26,7 +26,7 @@ class G_OrderBy extends TestBase{
   val r2 = TestRelationship(TestId(2), TestId(1), TestId(3), Option(LynxRelationshipType("KNOWS")), Map.empty)
 
 
-  @Before
+  @BeforeEach
   def init(): Unit ={
     nodesInput.append(("n1", NodeInput(n1.labels, n1.props.toSeq)))
     nodesInput.append(("n2", NodeInput(n2.labels, n2.props.toSeq)))
@@ -51,9 +51,9 @@ class G_OrderBy extends TestBase{
         |ORDER BY n.name
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(List("A", 34), List(res(0)("n.name"), res(0)("n.age")).map(f => f.asInstanceOf[LynxValue].value))
-    Assert.assertEquals(List("B", 36), List(res(1)("n.name"), res(1)("n.age")).map(f => f.asInstanceOf[LynxValue].value))
-    Assert.assertEquals(List("C", 32), List(res(2)("n.name"), res(2)("n.age")).map(f => f.asInstanceOf[LynxValue].value))
+    Assertions.assertEquals(List("A", 34), List(res(0)("n.name"), res(0)("n.age")).map(f => f.asInstanceOf[LynxValue].value))
+    Assertions.assertEquals(List("B", 36), List(res(1)("n.name"), res(1)("n.age")).map(f => f.asInstanceOf[LynxValue].value))
+    Assertions.assertEquals(List("C", 32), List(res(2)("n.name"), res(2)("n.age")).map(f => f.asInstanceOf[LynxValue].value))
   }
 
   @Test
@@ -65,9 +65,9 @@ class G_OrderBy extends TestBase{
         |ORDER BY n.age, n.name
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(List("C", 32), List(res(0)("n.name"), res(0)("n.age")).map(f => f.asInstanceOf[LynxValue].value))
-    Assert.assertEquals(List("A", 34), List(res(1)("n.name"), res(1)("n.age")).map(f => f.asInstanceOf[LynxValue].value))
-    Assert.assertEquals(List("B", 36), List(res(2)("n.name"), res(2)("n.age")).map(f => f.asInstanceOf[LynxValue].value))
+    Assertions.assertEquals(List("C", 32), List(res(0)("n.name"), res(0)("n.age")).map(f => f.asInstanceOf[LynxValue].value))
+    Assertions.assertEquals(List("A", 34), List(res(1)("n.name"), res(1)("n.age")).map(f => f.asInstanceOf[LynxValue].value))
+    Assertions.assertEquals(List("B", 36), List(res(2)("n.name"), res(2)("n.age")).map(f => f.asInstanceOf[LynxValue].value))
   }
 
   @Test
@@ -79,9 +79,9 @@ class G_OrderBy extends TestBase{
         |ORDER BY n.name DESC
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(List("C", 32), List(res(0)("n.name"), res(0)("n.age")).map(f => f.asInstanceOf[LynxValue].value))
-    Assert.assertEquals(List("B", 36), List(res(1)("n.name"), res(1)("n.age")).map(f => f.asInstanceOf[LynxValue].value))
-    Assert.assertEquals(List("A", 34), List(res(2)("n.name"), res(2)("n.age")).map(f => f.asInstanceOf[LynxValue].value))
+    Assertions.assertEquals(List("C", 32), List(res(0)("n.name"), res(0)("n.age")).map(f => f.asInstanceOf[LynxValue].value))
+    Assertions.assertEquals(List("B", 36), List(res(1)("n.name"), res(1)("n.age")).map(f => f.asInstanceOf[LynxValue].value))
+    Assertions.assertEquals(List("A", 34), List(res(2)("n.name"), res(2)("n.age")).map(f => f.asInstanceOf[LynxValue].value))
   }
 
   @Test
@@ -93,9 +93,9 @@ class G_OrderBy extends TestBase{
         |ORDER BY n.length
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(List(170, "A", 34), List(res(0)("n.length"), res(0)("n.name"), res(0)("n.age")).map(f => f.asInstanceOf[LynxValue].value))
-    Assert.assertEquals(List(180, "C", 32), List(res(1)("n.length"), res(1)("n.name"), res(1)("n.age")).map(f => f.asInstanceOf[LynxValue].value))
-    Assert.assertEquals(List(null, "B", 36), List(res(2)("n.length"), res(2)("n.name"), res(2)("n.age")).map(f => f.asInstanceOf[LynxValue].value))
+    Assertions.assertEquals(List(170, "A", 34), List(res(0)("n.length"), res(0)("n.name"), res(0)("n.age")).map(f => f.asInstanceOf[LynxValue].value))
+    Assertions.assertEquals(List(180, "C", 32), List(res(1)("n.length"), res(1)("n.name"), res(1)("n.age")).map(f => f.asInstanceOf[LynxValue].value))
+    Assertions.assertEquals(List(null, "B", 36), List(res(2)("n.length"), res(2)("n.name"), res(2)("n.age")).map(f => f.asInstanceOf[LynxValue].value))
   }
 
   @Test
@@ -107,6 +107,6 @@ class G_OrderBy extends TestBase{
         |RETURN collect(n.name) AS names
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(List("C", "A", "B").map(LynxValue(_)), res(0)("names").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(List("C", "A", "B").map(LynxValue(_)), res(0)("names").asInstanceOf[LynxValue].value)
   }
 }

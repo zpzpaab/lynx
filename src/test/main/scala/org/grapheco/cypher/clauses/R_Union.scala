@@ -4,8 +4,7 @@ import org.grapheco.lynx.TestBase
 import org.grapheco.lynx.physical.{NodeInput, RelationshipInput, StoredNodeInputRef}
 import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.structural._
-import org.junit.{Assert, Before, Test}
-
+import org.junit.jupiter.api.{Assertions, BeforeEach, Test}
 import scala.collection.mutable.ArrayBuffer
 
 /**
@@ -27,7 +26,7 @@ class R_Union extends TestBase{
   val r2 = TestRelationship(TestId(2), TestId(1), TestId(4), Option(LynxRelationshipType("ACTS_IN")), Map.empty)
   val r3 = TestRelationship(TestId(3), TestId(3), TestId(4), Option(LynxRelationshipType("ACTS_IN")), Map.empty)
 
-  @Before
+  @BeforeEach
   def init(): Unit ={
     nodesInput.append(("n1", NodeInput(n1.labels, n1.props.toSeq)))
     nodesInput.append(("n2", NodeInput(n2.labels, n2.props.toSeq)))
@@ -61,10 +60,10 @@ class R_Union extends TestBase{
         |RETURN n.name AS name
         |""".stripMargin).records().toArray.map(_.getAsString("name").get.v).sorted
 
-    Assert.assertEquals("Anthony Hopkins", res(0))
-    Assert.assertEquals("Helen Mirren", res(1))
-    Assert.assertEquals("Hitchcock", res(2))
-    Assert.assertEquals("Hitchcock", res(3))
+    Assertions.assertEquals("Anthony Hopkins", res(0))
+    Assertions.assertEquals("Helen Mirren", res(1))
+    Assertions.assertEquals("Hitchcock", res(2))
+    Assertions.assertEquals("Hitchcock", res(3))
 
   }
 
@@ -79,8 +78,8 @@ class R_Union extends TestBase{
         |RETURN n.name AS name
         |""".stripMargin).records().toArray.map(_.getAsString("name").get.v).sorted
 
-    Assert.assertEquals("Anthony Hopkins", res(0))
-    Assert.assertEquals("Helen Mirren", res(1))
-    Assert.assertEquals("Hitchcock", res(2))
+    Assertions.assertEquals("Anthony Hopkins", res(0))
+    Assertions.assertEquals("Helen Mirren", res(1))
+    Assertions.assertEquals("Hitchcock", res(2))
   }
 }

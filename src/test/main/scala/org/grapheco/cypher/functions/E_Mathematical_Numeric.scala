@@ -4,8 +4,7 @@ import org.grapheco.lynx.TestBase
 import org.grapheco.lynx.physical.{NodeInput, RelationshipInput, StoredNodeInputRef}
 import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.structural._
-import org.junit.{Assert, Before, BeforeClass, Test}
-
+import org.junit.jupiter.api.{Assertions, BeforeEach, Test}
 import scala.collection.mutable.ArrayBuffer
 
 
@@ -79,7 +78,7 @@ class E_Mathematical_Numeric extends TestBase {
   val r4 = TestRelationship(TestId(4), TestId(3), TestId(4), Option(LynxRelationshipType("KNOWS")), Map.empty)
   val r5 = TestRelationship(TestId(5), TestId(3), TestId(5), Option(LynxRelationshipType("MARRIED")), Map.empty)
 
-  @Before
+  @BeforeEach
   def init(): Unit = {
     all_nodes.clear()
     all_rels.clear()
@@ -116,10 +115,10 @@ class E_Mathematical_Numeric extends TestBase {
         |RETURN a.age, e.age, abs(a.age - e.age)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(LynxValue(38), records(0).get("a.age").get)
-    Assert.assertEquals(LynxValue(41), records(0).get("e.age").get)
-    Assert.assertEquals(LynxValue(3), records(0).get("abs(a.age - e.age)").get)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(LynxValue(38), records(0).get("a.age").get)
+    Assertions.assertEquals(LynxValue(41), records(0).get("e.age").get)
+    Assertions.assertEquals(LynxValue(3), records(0).get("abs(a.age - e.age)").get)
   }
 
   @Test
@@ -129,8 +128,8 @@ class E_Mathematical_Numeric extends TestBase {
         |RETURN ceil(0.1)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(1.0, records(0)("ceil(0.1)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(1.0, records(0)("ceil(0.1)").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -140,8 +139,8 @@ class E_Mathematical_Numeric extends TestBase {
         |RETURN floor(0.9)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(0.0, records(0)("floor(0.9)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(0.0, records(0)("floor(0.9)").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -154,8 +153,8 @@ class E_Mathematical_Numeric extends TestBase {
     val rand = records(0)("rand()").asInstanceOf[LynxValue].value.asInstanceOf[Double]
     val flag = (0 <= rand) && (1 > rand)
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(true, flag)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(true, flag)
   }
 
   /*
@@ -168,8 +167,8 @@ class E_Mathematical_Numeric extends TestBase {
         |RETURN round(3.141592)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(LynxValue(3.0), records(0)("round(3.141592)"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(LynxValue(3.0), records(0)("round(3.141592)"))
   }
 
   /*
@@ -182,9 +181,9 @@ class E_Mathematical_Numeric extends TestBase {
         |RETURN sign(-17), sign(0.1)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(-1.0, records(0)("sign(-17)").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(1.0, records(0)("sign(0.1)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(-1.0, records(0)("sign(-17)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1.0, records(0)("sign(0.1)").asInstanceOf[LynxValue].value)
   }
 }
 

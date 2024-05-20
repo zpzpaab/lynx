@@ -7,7 +7,7 @@ import org.grapheco.lynx.types.composite.LynxList
 import org.grapheco.lynx.types.property.{LynxInteger, LynxNull, LynxString}
 import org.grapheco.lynx.types.structural.{LynxNodeLabel, LynxPropertyKey, LynxRelationshipType}
 import org.grapheco.lynx.types.time.LynxDate
-import org.junit.Test
+import org.junit.jupiter.api.Test
 
 import java.io.File
 import java.time.LocalDate

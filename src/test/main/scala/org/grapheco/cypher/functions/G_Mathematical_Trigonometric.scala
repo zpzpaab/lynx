@@ -3,7 +3,7 @@ package org.grapheco.cypher.functions
 import org.grapheco.lynx.TestBase
 import org.grapheco.lynx.physical.NodeInput
 import org.grapheco.lynx.types.LynxValue
-import org.junit.{Assert, Test}
+import org.junit.jupiter.api.{Assertions, BeforeEach, Test}
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -22,8 +22,8 @@ class G_Mathematical_Trigonometric extends TestBase {
         |RETURN acos(0.5)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(1.0471975511965979, records(0)("acos(0.5)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(1.0471975511965979, records(0)("acos(0.5)").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -33,8 +33,8 @@ class G_Mathematical_Trigonometric extends TestBase {
         |RETURN asin(0.5)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(0.5235987755982989, records(0)("asin(0.5)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(0.5235987755982989, records(0)("asin(0.5)").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -44,8 +44,8 @@ class G_Mathematical_Trigonometric extends TestBase {
         |RETURN atan(0.5)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(0.4636476090008061, records(0)("atan(0.5)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(0.4636476090008061, records(0)("atan(0.5)").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -55,8 +55,8 @@ class G_Mathematical_Trigonometric extends TestBase {
         |RETURN atan2(0.5, 0.6)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(0.6947382761967033, records(0)("atan2(0.5, 0.6)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(0.6947382761967033, records(0)("atan2(0.5, 0.6)").asInstanceOf[LynxValue].value)
   }
 
 
@@ -67,8 +67,8 @@ class G_Mathematical_Trigonometric extends TestBase {
         |RETURN cos(0.5)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(0.8775825618903728, records(0)("cos(0.5)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(0.8775825618903728, records(0)("cos(0.5)").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -78,8 +78,8 @@ class G_Mathematical_Trigonometric extends TestBase {
         |RETURN cot(0.5)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(1.830487721712452, records(0)("cot(0.5)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(1.830487721712452, records(0)("cot(0.5)").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -89,8 +89,8 @@ class G_Mathematical_Trigonometric extends TestBase {
         |RETURN degrees(3.14159)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(179.9998479605043, records(0).getAsDouble("degrees(3.14159)").get.v, 0.000001)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(179.9998479605043, records(0).getAsDouble("degrees(3.14159)").get.v, 0.000001)
   }
 
   @Test
@@ -100,8 +100,8 @@ class G_Mathematical_Trigonometric extends TestBase {
         |RETURN haversin(0.5)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(0.06120871905481362, records(0)("haversin(0.5)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(0.06120871905481362, records(0)("haversin(0.5)").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -114,9 +114,9 @@ class G_Mathematical_Trigonometric extends TestBase {
         |RETURN 2 * 6371 * asin(sqrt(haversin(radians(sm.lat - ber.lat))+ cos(radians(sm.lat))* cos(radians(ber.lat))* haversin(radians(sm.lon - ber.lon)))) AS dist
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(9129.969740051658, records(0)("dist").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(node_num + 2, all_nodes.size)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(9129.969740051658, records(0)("dist").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(node_num + 2, all_nodes.size)
     //TODO properties and labels
   }
 
@@ -127,8 +127,8 @@ class G_Mathematical_Trigonometric extends TestBase {
         |RETURN pi()
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(3.141592653589793, records(0)("pi()").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(3.141592653589793, records(0)("pi()").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -138,8 +138,8 @@ class G_Mathematical_Trigonometric extends TestBase {
         |RETURN radians(180)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(3.141592653589793, records(0)("radians(180)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(3.141592653589793, records(0)("radians(180)").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -149,8 +149,8 @@ class G_Mathematical_Trigonometric extends TestBase {
         |RETURN sin(0.5)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(0.479425538604203, records(0)("sin(0.5)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(0.479425538604203, records(0)("sin(0.5)").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -160,8 +160,8 @@ class G_Mathematical_Trigonometric extends TestBase {
         |RETURN tan(0.5)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(0.5463024898437905, records(0)("tan(0.5)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(0.5463024898437905, records(0)("tan(0.5)").asInstanceOf[LynxValue].value)
   }
 }
 

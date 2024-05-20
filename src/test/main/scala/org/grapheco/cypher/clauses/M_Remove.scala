@@ -5,8 +5,7 @@ import org.grapheco.lynx.physical.{NodeInput, RelationshipInput, StoredNodeInput
 import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.property.LynxNull
 import org.grapheco.lynx.types.structural._
-import org.junit.{Assert, Before, Test}
-
+import org.junit.jupiter.api.{Assertions, BeforeEach, Test}
 import scala.collection.mutable.ArrayBuffer
 
 /**
@@ -26,7 +25,7 @@ class M_Remove extends TestBase{
   val r1 = TestRelationship(TestId(1), TestId(1), TestId(2), Option(LynxRelationshipType("KNOWS")), Map.empty)
   val r2 = TestRelationship(TestId(2), TestId(1), TestId(3), Option(LynxRelationshipType("KNOWS")), Map.empty)
 
-  @Before
+  @BeforeEach
   def init(): Unit ={
     nodesInput.append(("n1", NodeInput(n1.labels, n1.props.toSeq)))
     nodesInput.append(("n2", NodeInput(n2.labels, n2.props.toSeq)))
@@ -50,9 +49,9 @@ class M_Remove extends TestBase{
         |REMOVE a.age
         |RETURN a.name, a.age
         |""".stripMargin).records().toArray
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals("Andy", records.head("a.name").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(LynxNull, records.head("a.age").asInstanceOf[LynxValue])
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals("Andy", records.head("a.name").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(LynxNull, records.head("a.age").asInstanceOf[LynxValue])
   }
 
   @Test
@@ -64,9 +63,9 @@ class M_Remove extends TestBase{
         |RETURN n.name, labels(n)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals("Peter", records.head("n.name").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(List("Swedish"), records.head("labels(n)").asInstanceOf[LynxValue].value.asInstanceOf[List[LynxValue]].map(f => f.value))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals("Peter", records.head("n.name").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(List("Swedish"), records.head("labels(n)").asInstanceOf[LynxValue].value.asInstanceOf[List[LynxValue]].map(f => f.value))
   }
 
   @Test
@@ -77,9 +76,9 @@ class M_Remove extends TestBase{
         |REMOVE n:German:Swedish
         |RETURN n.name, labels(n)
         |""".stripMargin).records().toArray
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals("Peter", records.head("n.name").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(List.empty, records.head("labels(n)").asInstanceOf[LynxValue].value.asInstanceOf[List[LynxValue]].map(f => f.value))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals("Peter", records.head("n.name").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(List.empty, records.head("labels(n)").asInstanceOf[LynxValue].value.asInstanceOf[List[LynxValue]].map(f => f.value))
   }
 
 }

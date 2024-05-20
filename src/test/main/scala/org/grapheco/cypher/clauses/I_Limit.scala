@@ -5,7 +5,7 @@ import org.grapheco.lynx.physical.{NodeInput, RelationshipInput, StoredNodeInput
 import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.property.LynxString
 import org.grapheco.lynx.types.structural.{LynxNode, LynxPropertyKey, LynxRelationship, LynxRelationshipType}
-import org.junit.{Assert, Before, Test}
+import org.junit.jupiter.api.{Assertions, BeforeEach, Test}
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -31,7 +31,7 @@ class I_Limit extends TestBase{
   val r4 = TestRelationship(TestId(4), TestId(1), TestId(5), Option(LynxRelationshipType("KNOWS")), Map.empty)
 
 
-  @Before
+  @BeforeEach
   def init(): Unit ={
     nodesInput.append(("n1", NodeInput(n1.labels, n1.props.toSeq)))
     nodesInput.append(("n2", NodeInput(n2.labels, n2.props.toSeq)))
@@ -61,9 +61,9 @@ class I_Limit extends TestBase{
         |LIMIT 3
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(LynxString("A"), res(0)("n.name"))
-    Assert.assertEquals(LynxString("B"), res(1)("n.name"))
-    Assert.assertEquals(LynxString("C"), res(2)("n.name"))
+    Assertions.assertEquals(LynxString("A"), res(0)("n.name"))
+    Assertions.assertEquals(LynxString("B"), res(1)("n.name"))
+    Assertions.assertEquals(LynxString("C"), res(2)("n.name"))
   }
 
   @Test
@@ -85,13 +85,13 @@ class I_Limit extends TestBase{
         |RETURN n
         |LIMIT 0
         |""".stripMargin).records().toArray
-    Assert.assertEquals(0, res1.length)
+    Assertions.assertEquals(0, res1.length)
 
     val res2 = runOnDemoGraph(
       """
         |match (n) return n
         |""".stripMargin).records().toArray
-    Assert.assertEquals(num + 1, res2.length)
+    Assertions.assertEquals(num + 1, res2.length)
 
     val res3 = runOnDemoGraph(
       """
@@ -105,6 +105,6 @@ class I_Limit extends TestBase{
       """
         |match (n) return n
         |""".stripMargin).records().toArray.count(f => f("n").asInstanceOf[LynxNode].property(LynxPropertyKey("locked")).isDefined)
-    Assert.assertEquals(1, res4)
+    Assertions.assertEquals(1, res4)
   }
 }

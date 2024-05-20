@@ -3,8 +3,7 @@ package org.grapheco.lynx
 import org.grapheco.lynx.physical.{NodeInput, RelationshipInput, StoredNodeInputRef}
 import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.structural.{LynxNode, LynxNodeLabel, LynxPropertyKey, LynxRelationship, LynxRelationshipType}
-import org.junit.{Assert, Before, Test}
-
+import org.junit.jupiter.api.{Assertions, BeforeEach, Test}
 import scala.collection.mutable.ArrayBuffer
 
 class StatisticsTest extends TestBase{
@@ -30,7 +29,7 @@ class StatisticsTest extends TestBase{
 
 
 
-  @Before
+  @BeforeEach
   def init(): Unit = {
     all_nodes.clear()
     all_rels.clear()
@@ -64,35 +63,35 @@ class StatisticsTest extends TestBase{
   @Test
   def apiTest(): Unit ={
     val stat = this.model.statistics
-    Assert.assertEquals(7, stat.numNode)
-    Assert.assertEquals(8, stat.numRelationship)
-    Assert.assertEquals(5, stat.numNodeByLabel(LynxNodeLabel("Person")))
-    Assert.assertEquals(2, stat.numNodeByLabel(LynxNodeLabel("Movie")))
+    Assertions.assertEquals(7, stat.numNode)
+    Assertions.assertEquals(8, stat.numRelationship)
+    Assertions.assertEquals(5, stat.numNodeByLabel(LynxNodeLabel("Person")))
+    Assertions.assertEquals(2, stat.numNodeByLabel(LynxNodeLabel("Movie")))
   }
 
   @Test
   def nodeNum(): Unit ={
-    Assert.assertEquals(LynxValue(all_nodes.size),
+    Assertions.assertEquals(LynxValue(all_nodes.size),
       runOnDemoGraph("match (n) return count(n)").records().map(_.getAsInt("count(n)")).toList.head.get)
   }
 
   @Test
   def nodeNumByLabel(): Unit ={
-    Assert.assertEquals(LynxValue(5),
+    Assertions.assertEquals(LynxValue(5),
       runOnDemoGraph("match (n:Person) return count(n)").records().map(_.getAsInt("count(n)")).toList.head.get)
   }
 
   @Test
   def relNum(): Unit ={
-    Assert.assertEquals(LynxValue(all_rels.size),
+    Assertions.assertEquals(LynxValue(all_rels.size),
       runOnDemoGraph("match ()-[r]->() return count(r)").records().map(_.getAsInt("count(r)")).toList.head.get)
   }
 
   @Test
   def relNumByType(): Unit = {
-    Assert.assertEquals(LynxValue(7),
+    Assertions.assertEquals(LynxValue(7),
       runOnDemoGraph("match ()-[r:ACTED_IN]->() return count(r)").records().map(_.getAsInt("count(r)")).toList.head.get)
-    Assert.assertEquals(LynxValue(1),
+    Assertions.assertEquals(LynxValue(1),
       runOnDemoGraph("match ()-[r:FATHER]->() return count(r)").records().map(_.getAsInt("count(r)")).toList.head.get)
 
   }

@@ -5,7 +5,7 @@ import org.grapheco.lynx.physical.{NodeInput, RelationshipInput, StoredNodeInput
 import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.composite.LynxList
 import org.grapheco.lynx.types.structural._
-import org.junit.{Assert, Before, Test}
+import org.junit.jupiter.api.{Assertions, BeforeEach, Test}
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -74,7 +74,7 @@ class TestList extends TestBase {
   val r7 = TestRelationship(TestId(7), TestId(5), TestId(7), Option(LynxRelationshipType("DIRECTED")), Map.empty)
 
 
-  @Before
+  @BeforeEach
   def init(): Unit = {
     all_nodes.clear()
     all_rels.clear()
@@ -113,19 +113,19 @@ class TestList extends TestBase {
   @Test
   def listsInGeneral_2(): Unit = {
     val records = runOnDemoGraph("RETURN range(0, 10)[3]").records().map(f => f("range(0, 10)[3]").asInstanceOf[LynxValue]).toArray
-    Assert.assertEquals(LynxValue(3), records(0))
+    Assertions.assertEquals(LynxValue(3), records(0))
   }
 
   @Test
   def listsInGeneral_3(): Unit = {
     val records = runOnDemoGraph("RETURN range(0, 10)[-3]").records().map(f => f("range(0, 10)[-3]").asInstanceOf[LynxValue]).toArray
-    Assert.assertEquals(LynxValue(8), records(0))
+    Assertions.assertEquals(LynxValue(8), records(0))
   }
 
   @Test
   def listsInGeneral_4(): Unit = {
     val records = runOnDemoGraph("RETURN range(0, 10)[0..3]").records().map(f => f("range(0, 10)[0..3]").asInstanceOf[LynxList].value).toArray
-    Assert.assertEquals(3, records(0).length)
+    Assertions.assertEquals(3, records(0).length)
   }
 
   @Test
@@ -149,7 +149,7 @@ class TestList extends TestBase {
   @Test
   def listsInGeneral_8(): Unit = {
     val records = runOnDemoGraph("RETURN range(0, 10)[15]").records().map(f => f("range(0, 10)[15]").asInstanceOf[LynxValue].value).toArray
-    Assert.assertEquals(null, records(0))
+    Assertions.assertEquals(null, records(0))
   }
 
   @Test
@@ -161,7 +161,7 @@ class TestList extends TestBase {
   @Test
   def listsInGeneral_10(): Unit = {
     val records = runOnDemoGraph("RETURN size(range(0, 10)[0..3])").records().map(f => f("size(range(0, 10)[0..3])").asInstanceOf[LynxValue]).toArray
-    Assert.assertEquals(LynxValue(3), records(0))
+    Assertions.assertEquals(LynxValue(3), records(0))
   }
 
   @Test
@@ -183,19 +183,19 @@ class TestList extends TestBase {
      * //    WITH actor
      * //    MATCH (actor)-[r:ACTED_IN]->(b) WHERE b:Movie
      * //    RETURN b.released AS years * */
-    Assert.assertEquals(2, records.length)
-    Assert.assertEquals("1991", records(0)("years").value)
-    Assert.assertEquals("1990", records(1)("years").value)
+    Assertions.assertEquals(2, records.length)
+    Assertions.assertEquals("1991", records(0)("years").value)
+    Assertions.assertEquals("1990", records(1)("years").value)
 
     //    val expectResult = List(1997, 1999, 2000, 2003, 2003, 2003, 1995)
-//    Assert.assertEquals(expectResult.length, records(0).length)
+//    Assertions.assertEquals(expectResult.length, records(0).length)
 //    for (i <- expectResult.indices) {
-//      Assert.assertEquals(LynxValue(expectResult(i)), records(0)(i))
+//      Assertions.assertEquals(LynxValue(expectResult(i)), records(0)(i))
 //    }
     // List Map funcs
 //    expectResult.map(LynxValue.apply)
 //      .zip(records(0))
-//      .foreach{ case(e, a) => Assert.assertEquals(e,a)}
+//      .foreach{ case(e, a) => Assertions.assertEquals(e,a)}
   }
 
 
@@ -207,9 +207,9 @@ class TestList extends TestBase {
    * @tparam A
    */
   def compareArray[A](expectResult: Array[A], records: Array[Any]): Unit = {
-    Assert.assertEquals(expectResult.length, records.length)
+    Assertions.assertEquals(expectResult.length, records.length)
     for (i <- 0 to records.length - 1) {
-      Assert.assertEquals(expectResult(i), records(i))
+      Assertions.assertEquals(expectResult(i), records(i))
     }
   }
 }

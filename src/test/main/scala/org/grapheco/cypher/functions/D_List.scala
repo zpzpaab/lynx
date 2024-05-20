@@ -6,8 +6,7 @@ import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.composite.LynxList
 import org.grapheco.lynx.types.property.{LynxInteger, LynxString}
 import org.grapheco.lynx.types.structural._
-import org.junit.{Assert, Before, Test}
-
+import org.junit.jupiter.api.{Assertions, BeforeEach, Test}
 import scala.collection.mutable.ArrayBuffer
 
 /**
@@ -78,7 +77,7 @@ class D_List extends TestBase {
   val r4 = TestRelationship(TestId(4), TestId(3), TestId(4), Option(LynxRelationshipType("KNOWS")), Map.empty)
   val r5 = TestRelationship(TestId(5), TestId(3), TestId(5), Option(LynxRelationshipType("MARRIED")), Map.empty)
 
-  @Before
+  @BeforeEach
   def init(): Unit = {
     all_nodes.clear()
     all_rels.clear()
@@ -119,8 +118,8 @@ class D_List extends TestBase {
         |RETURN extract(n IN nodes(p)| n.age) AS extracted
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(LynxList(List(LynxValue(38), LynxValue(25), LynxValue(54))), records(0)("extracted"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(LynxList(List(LynxValue(38), LynxValue(25), LynxValue(54))), records(0)("extracted"))
   }
 
   /*
@@ -136,9 +135,9 @@ class D_List extends TestBase {
         |RETURN a.array, filter(x IN a.array WHERE size(x)= 3)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(List(LynxString("one"), LynxString("two"), LynxString("three")), records(0)("a.array").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(List(LynxString("one"), LynxString("two")), records(0)("filter(x IN a.array WHERE size(x)= 3)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(List(LynxString("one"), LynxString("two"), LynxString("three")), records(0)("a.array").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(List(LynxString("one"), LynxString("two")), records(0)("filter(x IN a.array WHERE size(x)= 3)").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -153,8 +152,8 @@ class D_List extends TestBase {
 
     val array_Expect = List(LynxString("name"), LynxString("eyes"), LynxString("age"))
     val array_Actual = records(0)("keys(a)").asInstanceOf[LynxList].value
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(array_Expect.diff(array_Actual), array_Actual.diff(array_Expect))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(array_Expect.diff(array_Actual), array_Actual.diff(array_Expect))
   }
 
   @Test
@@ -167,8 +166,8 @@ class D_List extends TestBase {
         |RETURN labels(a)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(List(LynxString("Person"), LynxString("Developer")), records(0)("labels(a)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(List(LynxString("Person"), LynxString("Developer")), records(0)("labels(a)").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -181,8 +180,8 @@ class D_List extends TestBase {
         |RETURN nodes(p)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(List(n1, n3, n5), records(0)("nodes(p)").asInstanceOf[LynxList].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(List(n1, n3, n5), records(0)("nodes(p)").asInstanceOf[LynxList].value)
   }
 
   @Test
@@ -193,11 +192,11 @@ class D_List extends TestBase {
         |RETURN range(0, 10), range(2, 18, 3)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(List(LynxInteger(0), LynxInteger(1), LynxInteger(2), LynxInteger(3), LynxInteger(4), LynxInteger(5),
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(List(LynxInteger(0), LynxInteger(1), LynxInteger(2), LynxInteger(3), LynxInteger(4), LynxInteger(5),
       LynxInteger(6), LynxInteger(7), LynxInteger(8), LynxInteger(9), LynxInteger(10)), records(0)("range(0, 10)").asInstanceOf[LynxValue].value)
 
-    Assert.assertEquals(List(LynxInteger(2), LynxInteger(5), LynxInteger(8), LynxInteger(11), LynxInteger(14), LynxInteger(17)),
+    Assertions.assertEquals(List(LynxInteger(2), LynxInteger(5), LynxInteger(8), LynxInteger(11), LynxInteger(14), LynxInteger(17)),
       records(0)("range(2, 18, 3)").asInstanceOf[LynxValue].value)
   }
 
@@ -211,8 +210,8 @@ class D_List extends TestBase {
         |RETURN reduce(totalAge = 0, n IN nodes(p)| totalAge + n.age) AS reduction
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(LynxValue(117), records(0)("reduction"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(LynxValue(117), records(0)("reduction"))
   }
 
   @Test
@@ -225,8 +224,8 @@ class D_List extends TestBase {
         |RETURN relationships(p)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(List(r2,r5), records(0)("relationships(p)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(List(r2,r5), records(0)("relationships(p)").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -238,8 +237,8 @@ class D_List extends TestBase {
         |RETURN reverse(ids)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(LynxList(List(LynxValue(487),LynxValue(null),LynxValue(521),LynxValue("abc"),LynxValue(4923))), records(0)("reverse(ids)"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(LynxList(List(LynxValue(487),LynxValue(null),LynxValue(521),LynxValue("abc"),LynxValue(4923))), records(0)("reverse(ids)"))
   }
 
   @Test
@@ -252,9 +251,9 @@ class D_List extends TestBase {
         |RETURN a.array, tail(a.array)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(List(LynxString("one"), LynxString("two"), LynxString("three")), records(0)("a.array").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(List(LynxString("two"), LynxString("three")), records(0)("tail(a.array)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(List(LynxString("one"), LynxString("two"), LynxString("three")), records(0)("a.array").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(List(LynxString("two"), LynxString("three")), records(0)("tail(a.array)").asInstanceOf[LynxValue].value)
   }
 }
 

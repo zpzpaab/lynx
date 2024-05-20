@@ -2,8 +2,7 @@ package org.grapheco.lynx
 
 import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.property.{LynxNull, LynxString}
-import org.junit.{Assert, Test}
-
+import org.junit.jupiter.api.{Assertions, BeforeEach, Test}
 /**
  * @Author: Airzihao
  * @Description:
@@ -18,15 +17,15 @@ class ScalarFunctionsTest extends TestBase {
     runOnDemoGraph("MATCH (a) WHERE a.name = 'Alice' RETURN a").show()
     val brown1 = runOnDemoGraph("MATCH (a) WHERE a.name = 'Alice' RETURN coalesce(a.hair, a.eyes) as result;")
       .records().next()("result").asInstanceOf[LynxString].value
-    Assert.assertEquals("brown", brown1)
+    Assertions.assertEquals("brown", brown1)
 
     val brown2 = runOnDemoGraph("MATCH (a) WHERE a.name = 'Alice' RETURN coalesce(a.eyes, a.hair) as result;")
       .records().next()("result").asInstanceOf[LynxString].value
-    Assert.assertEquals("brown", brown2)
+    Assertions.assertEquals("brown", brown2)
 
     val nullResult: LynxValue = runOnDemoGraph("MATCH (a) WHERE a.name = 'Alice' RETURN coalesce(a.hair) as result;")
       .records().next()("result")
-    Assert.assertTrue(nullResult.isInstanceOf[LynxNull.type])
+    Assertions.assertTrue(nullResult.isInstanceOf[LynxNull.type])
   }
 
 }

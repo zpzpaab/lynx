@@ -7,8 +7,7 @@ import org.grapheco.lynx.types.composite.LynxList
 import org.grapheco.lynx.types.property.{LynxInteger, LynxString}
 import org.grapheco.lynx.types.structural._
 import org.grapheco.lynx.types.time.LynxDuration
-import org.junit.{Assert, Before, Test}
-
+import org.junit.jupiter.api.{Assertions, BeforeEach, Test}
 import scala.collection.mutable.ArrayBuffer
 
 /**
@@ -74,7 +73,7 @@ class C_Aggregating extends TestBase {
   val r4 = TestRelationship(TestId(4), TestId(2), TestId(5), Option(LynxRelationshipType("KNOWS")), Map.empty)
   val r5 = TestRelationship(TestId(5), TestId(3), TestId(5), Option(LynxRelationshipType("KNOWS")), Map.empty)
 
-  @Before
+  @BeforeEach
   def init(): Unit = {
     all_nodes.clear()
     all_rels.clear()
@@ -106,8 +105,8 @@ class C_Aggregating extends TestBase {
         |RETURN avg(n.age)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(30.0, records(0)("avg(n.age)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(30.0, records(0)("avg(n.age)").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -118,8 +117,8 @@ class C_Aggregating extends TestBase {
         |RETURN avg(dur)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(LynxDuration("P1DT2H22.5S").toString , records(0)("avg(dur)").toString)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(LynxDuration("P1DT2H22.5S").toString , records(0)("avg(dur)").toString)
   }
 
   /*
@@ -133,18 +132,18 @@ class C_Aggregating extends TestBase {
         |RETURN collect(n.age)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
+    Assertions.assertEquals(1, records.length)
     val array_Expect = List(LynxValue(13), LynxValue(44), LynxValue(33)).sorted
     val array_Actual = records.head("collect(n.age)").asInstanceOf[LynxList].value.sorted
-    Assert.assertEquals(array_Expect.diff(array_Actual), array_Actual.diff(array_Expect))
+    Assertions.assertEquals(array_Expect.diff(array_Actual), array_Actual.diff(array_Expect))
 
     //    for (record <- records.head("collect(n.age)").asInstanceOf[LynxList].value.toList) {
     //      val index = record.value
     //      index match {
-    //        case 13 => Assert.assertEquals("13", index)
-    //        case 44 => Assert.assertEquals("44", index)
-    //        case 33 => Assert.assertEquals("33", index)
-    //        case _ => Assert.assertEquals(true, false)
+    //        case 13 => Assertions.assertEquals("13", index)
+    //        case 44 => Assertions.assertEquals("44", index)
+    //        case 33 => Assertions.assertEquals("33", index)
+    //        case _ => Assertions.assertEquals(true, false)
     //      }
     //    }
   }
@@ -157,10 +156,10 @@ class C_Aggregating extends TestBase {
         |RETURN labels(n), n.age, count(*)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(List(LynxString("Person")), records(0)("labels(n)").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(13l, records(0)("n.age").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(3l, records(0)("count(*)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(List(LynxString("Person")), records(0)("labels(n)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(13l, records(0)("n.age").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(3l, records(0)("count(*)").asInstanceOf[LynxValue].value)
   }
 
   /*
@@ -174,9 +173,9 @@ class C_Aggregating extends TestBase {
         |RETURN type(r), count(*)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals("KNOWS", records(0)("type(r)").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(3l, records(0)("count(*)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals("KNOWS", records(0)("type(r)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(3l, records(0)("count(*)").asInstanceOf[LynxValue].value)
   }
 
 
@@ -191,8 +190,8 @@ class C_Aggregating extends TestBase {
         |RETURN count(x)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(3l, records(0)("count(x)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(3l, records(0)("count(x)").asInstanceOf[LynxValue].value)
   }
 
   /*
@@ -206,8 +205,8 @@ class C_Aggregating extends TestBase {
         |RETURN count(n.age)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(3l, records(0)("count(n.age)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(3l, records(0)("count(n.age)").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -219,9 +218,9 @@ class C_Aggregating extends TestBase {
         |RETURN count(DISTINCT friend_of_friend), count(friend_of_friend)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(LynxValue(1), records(0)("count(DISTINCT friend_of_friend)"))
-    Assert.assertEquals(LynxValue(2), records(0)("count(friend_of_friend)"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(LynxValue(1), records(0)("count(DISTINCT friend_of_friend)"))
+    Assertions.assertEquals(LynxValue(2), records(0)("count(friend_of_friend)"))
   }
 
   @Test
@@ -232,8 +231,8 @@ class C_Aggregating extends TestBase {
         |RETURN max(val)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(1.toLong, records(0)("max(val)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(1.toLong, records(0)("max(val)").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -244,8 +243,8 @@ class C_Aggregating extends TestBase {
         |RETURN max(val)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(List(LynxInteger(1), LynxInteger(2)), records(0)("max(val)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(List(LynxInteger(1), LynxInteger(2)), records(0)("max(val)").asInstanceOf[LynxValue].value)
   }
 
 
@@ -260,8 +259,8 @@ class C_Aggregating extends TestBase {
         |RETURN max(n.age)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(44l, records(0)("max(n.age)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(44l, records(0)("max(n.age)").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -272,8 +271,8 @@ class C_Aggregating extends TestBase {
         |RETURN min(val)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals("1", records(0)("min(val)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals("1", records(0)("min(val)").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -284,8 +283,8 @@ class C_Aggregating extends TestBase {
         |RETURN min(val)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(List(LynxString("a"), LynxString("c"), LynxInteger(23)), records(0)("min(val)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(List(LynxString("a"), LynxString("c"), LynxInteger(23)), records(0)("min(val)").asInstanceOf[LynxValue].value)
   }
 
   /*
@@ -299,8 +298,8 @@ class C_Aggregating extends TestBase {
         |RETURN min(n.age)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(13l, records(0)("min(n.age)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(13l, records(0)("min(n.age)").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -311,8 +310,8 @@ class C_Aggregating extends TestBase {
         |RETURN percentileCont(n.age, 0.4)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(29.0, records(0)("percentileCont(n.age, 0.4)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(29.0, records(0)("percentileCont(n.age, 0.4)").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -323,8 +322,8 @@ class C_Aggregating extends TestBase {
         |RETURN percentileDisc(n.age, 0.5)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(33l, records(0)("percentileDisc(n.age, 0.5)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(33l, records(0)("percentileDisc(n.age, 0.5)").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -336,8 +335,8 @@ class C_Aggregating extends TestBase {
         |RETURN stDev(n.age)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(15.716233645501712, records(0)("stDev(n.age)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(15.716233645501712, records(0)("stDev(n.age)").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -349,8 +348,8 @@ class C_Aggregating extends TestBase {
         |RETURN stDevP(n.age)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(12.832251036613439, records(0)("stDevP(n.age)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(12.832251036613439, records(0)("stDevP(n.age)").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -361,8 +360,8 @@ class C_Aggregating extends TestBase {
         |RETURN sum(n.age)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(90.0, records(0)("sum(n.age)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(90.0, records(0)("sum(n.age)").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -373,7 +372,7 @@ class C_Aggregating extends TestBase {
         |RETURN sum(dur)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(LynxDuration("P2DT4H45S").toString, records(0)("sum(dur)").toString)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(LynxDuration("P2DT4H45S").toString, records(0)("sum(dur)").toString)
   }
 }

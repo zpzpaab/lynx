@@ -4,7 +4,7 @@ import org.grapheco.lynx.TestBase
 import org.grapheco.lynx.physical.{NodeInput, RelationshipInput}
 import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.structural.{LynxNode, LynxNodeLabel, LynxPropertyKey, LynxRelationship}
-import org.junit.{Assert, Before, Test}
+import org.junit.jupiter.api.{Assertions, BeforeEach, Test}
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -18,7 +18,7 @@ class Parameters extends TestBase {
   val n3 = TestNode(TestId(3), Seq(LynxNodeLabel("Person")), Map(LynxPropertyKey("name") -> LynxValue("michael")))
   val n4 = TestNode(TestId(4), Seq(LynxNodeLabel("Person")), Map(LynxPropertyKey("name") -> LynxValue("Bob")))
 
-  @Before
+  @BeforeEach
   def init(): Unit = {
     all_nodes.clear()
     all_rels.clear()
@@ -44,7 +44,7 @@ class Parameters extends TestBase {
         |WHERE n.name = $name
         |RETURN n
         |""".stripMargin, Map(("name" -> "Johan"))).records().map(f => f("n").asInstanceOf[TestNode]).toArray
-    Assert.assertEquals(n1, records(0))
+    Assertions.assertEquals(n1, records(0))
   }
 
   @Test
@@ -54,7 +54,7 @@ class Parameters extends TestBase {
         |MATCH (n:Person { name: $name })
         |RETURN n
         |""".stripMargin, Map(("name" -> "Johan"))).records().map(f => f("n").asInstanceOf[TestNode]).toArray
-    Assert.assertEquals(n1, records(0))
+    Assertions.assertEquals(n1, records(0))
   }
 
   @Test
@@ -65,8 +65,8 @@ class Parameters extends TestBase {
         |WHERE n.name =~ $regex
         |RETURN n.name
         |""".stripMargin, Map(("regex" -> ".*h.*"))).records().map(f => f("n.name").asInstanceOf[LynxValue].value).toArray
-    Assert.assertEquals(3, records.length)
-    Assert.assertEquals(Set("Johan", "Michael", "michael"), records.toSet)
+    Assertions.assertEquals(3, records.length)
+    Assertions.assertEquals(Set("Johan", "Michael", "michael"), records.toSet)
   }
 
   @Test
@@ -77,8 +77,8 @@ class Parameters extends TestBase {
         |WHERE n.name STARTS WITH $name
         |RETURN n.name
         |""".stripMargin, Map(("name" -> "Michael"))).records().map(f => f("n.name").asInstanceOf[LynxValue].value).toArray
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(Set("Michael"), records.toSet)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(Set("Michael"), records.toSet)
   }
 
   @Test
@@ -95,8 +95,8 @@ class Parameters extends TestBase {
         |WHERE n.name='Andy'
         |RETURN n
         |""".stripMargin).records().map(f => f("n").asInstanceOf[TestNode]).toArray
-    Assert.assertEquals(num + 1, all_nodes.size)
-    Assert.assertEquals("Andy", records(0).props(LynxPropertyKey("name")).toString)
+    Assertions.assertEquals(num + 1, all_nodes.size)
+    Assertions.assertEquals("Andy", records(0).props(LynxPropertyKey("name")).toString)
   }
 
   @Test
@@ -112,10 +112,10 @@ class Parameters extends TestBase {
         Map("children" -> "3", "name" -> "Michael", "position" -> "Developer"))))
       .records().map(f => f("n").asInstanceOf[TestNode]).toArray
 
-    Assert.assertEquals(num + 2, all_nodes.size)
-    Assert.assertEquals(2, records.length)
-    Assert.assertEquals("Andy", records(0).props(LynxPropertyKey("name")).toString)
-    Assert.assertEquals("Michael", records(1).props(LynxPropertyKey("name")).toString)
+    Assertions.assertEquals(num + 2, all_nodes.size)
+    Assertions.assertEquals(2, records.length)
+    Assertions.assertEquals("Andy", records(0).props(LynxPropertyKey("name")).toString)
+    Assertions.assertEquals("Michael", records(1).props(LynxPropertyKey("name")).toString)
   }
 
   @Test
@@ -129,8 +129,8 @@ class Parameters extends TestBase {
       Map("props" -> Map("name" -> "Andy","position" -> "Developer")))
       .records().map(f => f("n").asInstanceOf[TestNode]).toArray
 
-    Assert.assertEquals("Andy", records(0).props(LynxPropertyKey("name")).toString)
-    Assert.assertEquals("Developer", records(0).props(LynxPropertyKey("position")).toString)
+    Assertions.assertEquals("Andy", records(0).props(LynxPropertyKey("name")).toString)
+    Assertions.assertEquals("Developer", records(0).props(LynxPropertyKey("position")).toString)
   }
 
   @Test
@@ -142,8 +142,8 @@ class Parameters extends TestBase {
         |SKIP $s
         |LIMIT $l
         |""".stripMargin, Map("s" -> 1, "l" -> 1)).records().map(f => f("n.name").asInstanceOf[LynxValue].value).toArray
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(Set("michael"), records.toSet)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(Set("michael"), records.toSet)
   }
 
   @Test
@@ -154,8 +154,8 @@ class Parameters extends TestBase {
         |WHERE id(n)= $id
         |RETURN n.name
         |""".stripMargin, Map("id" -> 1)).records().map(f => f("n.name").asInstanceOf[LynxValue].value).toArray
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(Set("Johan"), records.toSet)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(Set("Johan"), records.toSet)
   }
 
   @Test
@@ -166,8 +166,8 @@ class Parameters extends TestBase {
         |WHERE id(n) IN $ids
         |RETURN n.name
         |""".stripMargin, Map("ids" -> List(1, 2, 3))).records().map(f => f("n.name").asInstanceOf[LynxValue].value).toArray
-    Assert.assertEquals(3, records.length)
-    Assert.assertEquals(Set("Johan", "Michael", "michael"), records.toSet)
+    Assertions.assertEquals(3, records.length)
+    Assertions.assertEquals(Set("Johan", "Michael", "michael"), records.toSet)
   }
 
 }

@@ -4,7 +4,7 @@ import org.grapheco.lynx.TestBase
 import org.grapheco.lynx.physical.{NodeInput, RelationshipInput, StoredNodeInputRef}
 import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.structural.{LynxNode, LynxNodeLabel, LynxPropertyKey, LynxRelationship, LynxRelationshipType}
-import org.junit.{Assert, Before, Test}
+import org.junit.jupiter.api.{Assertions, BeforeEach, Test}
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -30,7 +30,7 @@ class Patterns extends TestBase {
     TestRelationship(TestId(6), TestId(3), TestId(6), Option(LynxRelationshipType("KNOWS")), Map.empty),
   )
 
-  @Before
+  @BeforeEach
   def init(): Unit = {
     all_nodes.clear()
     all_rels.clear()
@@ -69,9 +69,9 @@ class Patterns extends TestBase {
    * @tparam A
    */
   def compareArray[A](expectResult: Array[A], records: Array[Any]): Unit = {
-    Assert.assertEquals(expectResult.length, records.length)
+    Assertions.assertEquals(expectResult.length, records.length)
     for (i <- 0 to records.length - 1) {
-      Assert.assertEquals(expectResult(i), records(i))
+      Assertions.assertEquals(expectResult(i), records(i))
     }
   }
 }

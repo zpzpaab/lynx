@@ -6,7 +6,7 @@ import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.composite.LynxList
 import org.grapheco.lynx.types.property.{LynxFloat, LynxNull, LynxString}
 import org.grapheco.lynx.types.structural._
-import org.junit.{Assert, Before, Test}
+import org.junit.jupiter.api.{Assertions, BeforeEach, Test}
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -34,7 +34,7 @@ class K_Spatial extends TestBase {
   val r1 = TestRelationship(TestId(1), TestId(1), TestId(2), Option(LynxRelationshipType("TRAVEL_ROUTE")), Map.empty)
 
 
-  @Before
+  @BeforeEach
   def init(): Unit = {
     nodesInput.append(("n1", NodeInput(n1.labels, n1.props.toSeq)))
     nodesInput.append(("n2", NodeInput(n2.labels, n2.props.toSeq)))
@@ -56,8 +56,8 @@ class K_Spatial extends TestBase {
         |RETURN distance(p1,p2) AS dist
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(LynxFloat(1.5), records(0)("dist"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(LynxFloat(1.5), records(0)("dist"))
   }
 
   @Test
@@ -68,8 +68,8 @@ class K_Spatial extends TestBase {
         |RETURN distance(p1,p2) AS dist
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(1269.9148706779097, records(0).getAsDouble("dist").get.v, 0.00001)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(1269.9148706779097, records(0).getAsDouble("dist").get.v, 0.00001)
   }
 
   @Test
@@ -81,8 +81,8 @@ class K_Spatial extends TestBase {
         |RETURN round(distance(trainPoint, officePoint)) AS travelDistance
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(LynxFloat(27842.0), records(0)("travelDistance"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(LynxFloat(27842.0), records(0)("travelDistance"))
   }
 
   @Test
@@ -92,8 +92,8 @@ class K_Spatial extends TestBase {
         |RETURN distance(NULL , point({ longitude: 56.7, latitude: 12.78 })) AS d
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(LynxNull, records(0)("d"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(LynxNull, records(0)("d"))
   }
 
   @Test
@@ -103,8 +103,8 @@ class K_Spatial extends TestBase {
         |RETURN point({ longitude: 56.7, latitude: 12.78 }) AS point
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals("point({x: 56.7, y: 12.78, crs: 'wgs-84'})", records(0)("point").asInstanceOf[LynxValue].value.toString  )
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals("point({x: 56.7, y: 12.78, crs: 'wgs-84'})", records(0)("point").asInstanceOf[LynxValue].value.toString  )
   }
 
   @Test
@@ -114,8 +114,8 @@ class K_Spatial extends TestBase {
         |RETURN point({ x: 2.3, y: 4.5, crs: 'WGS-84' }) AS point
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals("point({x: 2.3, y: 4.5, crs: 'wgs-84'})", records(0)("point").asInstanceOf[LynxValue].value.toString)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals("point({x: 2.3, y: 4.5, crs: 'wgs-84'})", records(0)("point").asInstanceOf[LynxValue].value.toString)
   }
 
   @Test
@@ -126,8 +126,8 @@ class K_Spatial extends TestBase {
         |RETURN point({ longitude: p.longitude, latitude: p.latitude }) AS officePoint
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals("point({x: 12.994341, y: 55.611784, crs: 'wgs-84'})", records(0)("officePoint").asInstanceOf[LynxValue].value.toString)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals("point({x: 12.994341, y: 55.611784, crs: 'wgs-84'})", records(0)("officePoint").asInstanceOf[LynxValue].value.toString)
   }
 
   @Test
@@ -137,8 +137,8 @@ class K_Spatial extends TestBase {
         |RETURN point(NULL ) AS p
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(LynxNull, records(0)("p"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(LynxNull, records(0)("p"))
   }
 
   @Test
@@ -148,8 +148,8 @@ class K_Spatial extends TestBase {
         |RETURN point({ longitude: 56.7, latitude: 12.78, height: 8 }) AS point
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals("point({x: 56.7, y: 12.78, z: 8.0, crs: 'wgs-84-3d'})", records(0)("point").asInstanceOf[LynxValue].value.toString)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals("point({x: 56.7, y: 12.78, z: 8.0, crs: 'wgs-84-3d'})", records(0)("point").asInstanceOf[LynxValue].value.toString)
   }
 
 
@@ -160,8 +160,8 @@ class K_Spatial extends TestBase {
         |RETURN point({ x: 2.3, y: 4.5 }) AS point
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals("point({x: 2.3, y: 4.5, crs: 'cartesian'})", records(0)("point").asInstanceOf[LynxValue].value.toString)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals("point({x: 2.3, y: 4.5, crs: 'cartesian'})", records(0)("point").asInstanceOf[LynxValue].value.toString)
   }
 
   @Test
@@ -171,8 +171,8 @@ class K_Spatial extends TestBase {
         |RETURN point({ x: 2.3, y: 4.5, z: 2 }) AS point
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals("point({x: 2.3, y: 4.5, z: 2.0, crs: 'cartesian-3d'})", records(0)("point").asInstanceOf[LynxValue].value.toString)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals("point({x: 2.3, y: 4.5, z: 2.0, crs: 'cartesian-3d'})", records(0)("point").asInstanceOf[LynxValue].value.toString)
   }
 }
 

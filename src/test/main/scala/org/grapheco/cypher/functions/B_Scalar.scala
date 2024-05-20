@@ -8,8 +8,7 @@ import org.grapheco.lynx.types.property.{LynxNull, LynxString}
 import org.grapheco.lynx.types.structural._
 import org.grapheco.lynx.types.time.LynxLocalTime
 import org.grapheco.lynx.util.LynxTemporalParser
-import org.junit.{Assert, Before, Test}
-
+import org.junit.jupiter.api.{Assertions, BeforeEach, Test}
 import java.time.{LocalDateTime, LocalTime, ZoneId}
 import java.util.Date
 import scala.collection.mutable.ArrayBuffer
@@ -82,7 +81,7 @@ class B_Scalar extends TestBase {
   val r4 = TestRelationship(TestId(4), TestId(3), TestId(4), Option(LynxRelationshipType("KNOWS")), Map.empty)
   val r5 = TestRelationship(TestId(5), TestId(3), TestId(5), Option(LynxRelationshipType("MARRIED")), Map.empty)
 
-  @Before
+  @BeforeEach
   def init(): Unit = {
     nodesInput.append(("n1", NodeInput(n1.labels, n1.props.toSeq)))
     nodesInput.append(("n2", NodeInput(n2.labels, n2.props.toSeq)))
@@ -113,8 +112,8 @@ class B_Scalar extends TestBase {
         |RETURN coalesce(a.hairColor, a.eyes)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(LynxValue("brown"), records(0)("coalesce(a.hairColor, a.eyes)"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(LynxValue("brown"), records(0)("coalesce(a.hairColor, a.eyes)"))
   }
 
   @Test
@@ -126,8 +125,8 @@ class B_Scalar extends TestBase {
         |RETURN endNode(r)
         |""".stripMargin).records().map(f => f("endNode(r)").asInstanceOf[TestNode]).toArray
 
-    Assert.assertEquals(2, records.length)
-    records.sortBy(_.id.value).zip(List(n2, n3)).foreach(item => Assert.assertEquals(item._1, item._2))
+    Assertions.assertEquals(2, records.length)
+    records.sortBy(_.id.value).zip(List(n2, n3)).foreach(item => Assertions.assertEquals(item._1, item._2))
   }
 
 
@@ -141,9 +140,9 @@ class B_Scalar extends TestBase {
         |RETURN a.array, head(a.array)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(List(LynxString("one"), LynxString("two"), LynxString("three")), records.head("a.array").asInstanceOf[LynxList].value.toList)
-    Assert.assertEquals("one", records.head("head(a.array)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(List(LynxString("one"), LynxString("two"), LynxString("three")), records.head("a.array").asInstanceOf[LynxList].value.toList)
+    Assertions.assertEquals("one", records.head("head(a.array)").asInstanceOf[LynxValue].value)
   }
 
   /*
@@ -160,11 +159,11 @@ class B_Scalar extends TestBase {
         |RETURN id(a)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(5, records.length)
+    Assertions.assertEquals(5, records.length)
     Array(1,2,3,4,5)
       .map(LynxValue.apply)
       .zip(records.map(_.getAsInt("id(a)")).sortBy(_.get.v))
-      .foreach{ case (id, value) => Assert.assertEquals(id, value.get)}
+      .foreach{ case (id, value) => Assertions.assertEquals(id, value.get)}
   }
 
   @Test
@@ -177,9 +176,9 @@ class B_Scalar extends TestBase {
         |RETURN a.array, last(a.array)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(List(LynxString("one"), LynxString("two"), LynxString("three")), records.head("a.array").asInstanceOf[LynxList].value.toList)
-    Assert.assertEquals("three", records.head("last(a.array)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(List(LynxString("one"), LynxString("two"), LynxString("three")), records.head("a.array").asInstanceOf[LynxList].value.toList)
+    Assertions.assertEquals("three", records.head("last(a.array)").asInstanceOf[LynxValue].value)
   }
 
 
@@ -193,10 +192,10 @@ class B_Scalar extends TestBase {
         |RETURN length(p)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(3, records.length)
-    Assert.assertEquals(LynxValue(2), records(0)("length(p)"))
-    Assert.assertEquals(LynxValue(2), records(1)("length(p)"))
-    Assert.assertEquals(LynxValue(2), records(2)("length(p)"))
+    Assertions.assertEquals(3, records.length)
+    Assertions.assertEquals(LynxValue(2), records(0)("length(p)"))
+    Assertions.assertEquals(LynxValue(2), records(1)("length(p)"))
+    Assertions.assertEquals(LynxValue(2), records(2)("length(p)"))
   }
 
   /*
@@ -211,10 +210,10 @@ class B_Scalar extends TestBase {
         |RETURN properties(p)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(Map("name" -> LynxString("Stefan"), "city" -> LynxString("Berlin")), records(0)("properties(p)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(Map("name" -> LynxString("Stefan"), "city" -> LynxString("Berlin")), records(0)("properties(p)").asInstanceOf[LynxValue].value)
     //TODO   Labels added: 1
-    Assert.assertEquals(num + 1, all_nodes.size)
+    Assertions.assertEquals(num + 1, all_nodes.size)
   }
 
   @Test
@@ -229,11 +228,11 @@ class B_Scalar extends TestBase {
         |RETURN randomUUID() AS uuid
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records0.length)
-    Assert.assertEquals(1, records1.length)
-    Assert.assertEquals(records1.head("uuid").value.asInstanceOf[String].length,
+    Assertions.assertEquals(1, records0.length)
+    Assertions.assertEquals(1, records1.length)
+    Assertions.assertEquals(records1.head("uuid").value.asInstanceOf[String].length,
       records0.head("uuid").value.asInstanceOf[String].length)
-    Assert.assertNotEquals(records1.head("uuid"), records0.head("uuid"))
+    Assertions.assertNotEquals(records1.head("uuid"), records0.head("uuid"))
   }
 
   /*
@@ -246,8 +245,8 @@ class B_Scalar extends TestBase {
         |RETURN size(['Alice', 'Bob'])
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(LynxValue(2), records.head("size(['Alice', 'Bob'])"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(LynxValue(2), records.head("size(['Alice', 'Bob'])"))
   }
 
   @Test
@@ -259,8 +258,8 @@ class B_Scalar extends TestBase {
         |RETURN size((a)-->()) AS fof
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(LynxValue(2), records.head("fof"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(LynxValue(2), records.head("fof"))
   }
 
   /*
@@ -275,8 +274,8 @@ class B_Scalar extends TestBase {
         |RETURN size(a.name)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(LynxValue(7), records.head("size(a.name)"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(LynxValue(7), records.head("size(a.name)"))
   }
 
   @Test
@@ -287,9 +286,9 @@ class B_Scalar extends TestBase {
         |RETURN startNode(r)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(2, records.length)
-    Assert.assertEquals(n1, records(0)("startNode(r)"))
-    Assert.assertEquals(n1, records(1)("startNode(r)"))
+    Assertions.assertEquals(2, records.length)
+    Assertions.assertEquals(n1, records(0)("startNode(r)"))
+    Assertions.assertEquals(n1, records(1)("startNode(r)"))
   }
 
   @Test
@@ -305,8 +304,8 @@ class B_Scalar extends TestBase {
     val localTime_Cypher = LynxLocalTime(LocalDateTime.ofInstant(date_System.toInstant, ZoneId.systemDefault()).toLocalTime)
     val localTime_System = LynxLocalTime(LocalDateTime.ofInstant(date_Cypher.toInstant, ZoneId.systemDefault()).toLocalTime)
 
-    Assert.assertEquals(1, records0.length)
-    Assert.assertTrue(LynxTemporalParser.isSameCurrentTime(localTime_System, localTime_Cypher))
+    Assertions.assertEquals(1, records0.length)
+    Assertions.assertTrue(LynxTemporalParser.isSameCurrentTime(localTime_System, localTime_Cypher))
   }
 
   @Test
@@ -316,9 +315,9 @@ class B_Scalar extends TestBase {
         |RETURN toBoolean('TRUE'), toBoolean('not a boolean')
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(true, records(0)("toBoolean('TRUE')").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(null, records(0)("toBoolean('not a boolean')").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(true, records(0)("toBoolean('TRUE')").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(null, records(0)("toBoolean('not a boolean')").asInstanceOf[LynxValue].value)
   }
 
 
@@ -329,9 +328,9 @@ class B_Scalar extends TestBase {
         |RETURN toFloat('11.5'), toFloat('not a number')
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(11.5, records(0)("toFloat('11.5')").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(null, records(0)("toFloat('not a number')").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(11.5, records(0)("toFloat('11.5')").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(null, records(0)("toFloat('not a number')").asInstanceOf[LynxValue].value)
   }
 
   /*
@@ -344,9 +343,9 @@ class B_Scalar extends TestBase {
         |RETURN toInteger('42'), toInteger('not a number')
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(LynxValue(42), records(0)("toInteger('42')"))
-    Assert.assertEquals(LynxNull, records(0)("toInteger('not a number')"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(LynxValue(42), records(0)("toInteger('42')"))
+    Assertions.assertEquals(LynxNull, records(0)("toInteger('not a number')"))
   }
 
   @Test
@@ -358,9 +357,9 @@ class B_Scalar extends TestBase {
         |RETURN type(r)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(2, records.length)
-    Assert.assertEquals("KNOWS", records(0)("type(r)").asInstanceOf[LynxValue].value)
-    Assert.assertEquals("KNOWS", records(1)("type(r)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(2, records.length)
+    Assertions.assertEquals("KNOWS", records(0)("type(r)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals("KNOWS", records(1)("type(r)").asInstanceOf[LynxValue].value)
 
   }
 }

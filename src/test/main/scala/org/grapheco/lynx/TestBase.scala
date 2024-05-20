@@ -1,6 +1,7 @@
 package org.grapheco.lynx
 
 import com.typesafe.scalalogging.LazyLogging
+import org.grapheco.lynx.parser.{DefaultQueryParser, QueryParser}
 import org.grapheco.lynx.physical._
 import org.grapheco.lynx.procedure.CallableProcedure
 import org.grapheco.lynx.runner._
@@ -179,8 +180,8 @@ class TestBase extends LazyLogging {
       all_rels.iterator.map{ case(_, rel) => PathTriple(nodeAt(rel.startNodeId).get, rel, nodeAt(rel.endNodeId).get)}
   }
 
-  val runner: CypherRunner = new CypherRunner(model) {
 
+  val runner: CypherRunner = new CypherRunner(model) {
     procedures.register("test.authors", 0, new CallableProcedure {
       override val inputs: Seq[(String, LynxType)] = Seq()
       override val outputs: Seq[(String, LynxType)] = Seq("name" -> CTString)

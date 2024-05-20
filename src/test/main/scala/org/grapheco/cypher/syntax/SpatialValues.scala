@@ -4,7 +4,7 @@ import org.grapheco.lynx.TestBase
 import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.property.LynxNull
 import org.grapheco.lynx.types.spatial.LynxPoint
-import org.junit.{Assert, Test}
+import org.junit.jupiter.api.{Assertions, BeforeEach, Test}
 
 class SpatialValues extends TestBase{
   @Test
@@ -15,7 +15,7 @@ class SpatialValues extends TestBase{
         |RETURN toInteger(distance(p1,p2)/1000) AS km
         |""".stripMargin)
       .records().map(f=>f("km")).toArray
-    Assert.assertEquals(LynxValue(42),records(0))
+    Assertions.assertEquals(LynxValue(42),records(0))
   }
 
   @Test
@@ -26,7 +26,7 @@ class SpatialValues extends TestBase{
     val expectResult = Map("bad"-> LynxNull, "good"->LynxValue(5.0))
 
     expectResult.foreach(f=>{
-      Assert.assertEquals(f._2,records(0)(f._1))
+      Assertions.assertEquals(f._2,records(0)(f._1))
     })
   }
 
@@ -40,7 +40,7 @@ class SpatialValues extends TestBase{
       "geo_3d"->f("geo_3d")
     ))
     /*Don't know how to create point object, so use this instead*/
-    Assert.assertEquals(1,records.length)
+    Assertions.assertEquals(1,records.length)
   }
 
   @Test
@@ -64,7 +64,7 @@ class SpatialValues extends TestBase{
     )
 
     expectResult.foreach(f=>{
-      Assert.assertEquals(f._2,records(0)(f._1))
+      Assertions.assertEquals(f._2,records(0)(f._1))
     })
   }
 
@@ -97,7 +97,7 @@ class SpatialValues extends TestBase{
     )
 
     expectResult.foreach(f=>{
-      Assert.assertEquals(f._2,records(0)(f._1))
+      Assertions.assertEquals(f._2,records(0)(f._1))
     })
   }
 
@@ -124,7 +124,7 @@ class SpatialValues extends TestBase{
     )
 
     expectResult.foreach(f=>{
-      Assert.assertEquals(f._2,records(0)(f._1))
+      Assertions.assertEquals(f._2,records(0)(f._1))
     })
   }
   @Test
@@ -134,7 +134,7 @@ class SpatialValues extends TestBase{
         |RETURN point
         |ORDER BY point
         |""".stripMargin).records().map(f=>f("point"))
-    Assert.assertTrue(Seq("wgs-84","wgs-84-3d","cartesian","cartesian-3d")
+    Assertions.assertTrue(Seq("wgs-84","wgs-84-3d","cartesian","cartesian-3d")
       .zip(records.toSeq)
       .forall{case(e,a) => a.asInstanceOf[LynxPoint].crs.value == e})
   }

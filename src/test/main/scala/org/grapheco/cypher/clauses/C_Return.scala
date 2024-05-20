@@ -5,7 +5,7 @@ import org.grapheco.lynx.physical.{NodeInput, RelationshipInput, StoredNodeInput
 import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.composite.LynxList
 import org.grapheco.lynx.types.structural.{LynxNode, LynxPropertyKey, LynxRelationship, LynxRelationshipType}
-import org.junit.{Assert, Before, Test}
+import org.junit.jupiter.api.{Assertions, BeforeEach, Test}
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -26,7 +26,7 @@ class C_Return extends TestBase{
   val r2 = TestRelationship(TestId(2), TestId(1), TestId(2), Option(LynxRelationshipType("KNOWS")), Map.empty)
 
 
-  @Before
+  @BeforeEach
   def init(): Unit ={
     nodesInput.append(("n1", NodeInput(n1.labels, n1.props.toSeq)))
     nodesInput.append(("n2", NodeInput(n2.labels, n2.props.toSeq)))
@@ -48,7 +48,7 @@ class C_Return extends TestBase{
         |RETURN n
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(n2, res(0)("n").asInstanceOf[LynxNode])
+    Assertions.assertEquals(n2, res(0)("n").asInstanceOf[LynxNode])
   }
 
   @Test
@@ -59,7 +59,7 @@ class C_Return extends TestBase{
         |RETURN r
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(r2, res(0)("r").asInstanceOf[LynxRelationship])
+    Assertions.assertEquals(r2, res(0)("r").asInstanceOf[LynxRelationship])
   }
 
   @Test
@@ -70,7 +70,7 @@ class C_Return extends TestBase{
         |RETURN n.name
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(n1.property(LynxPropertyKey("name")).get, res(0)("n.name").asInstanceOf[LynxValue])
+    Assertions.assertEquals(n1.property(LynxPropertyKey("name")).get, res(0)("n.name").asInstanceOf[LynxValue])
   }
 
   @Test
@@ -81,12 +81,12 @@ class C_Return extends TestBase{
         |RETURN *
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(n1, res(0)("a").asInstanceOf[LynxNode])
-    Assert.assertEquals(n2, res(0)("b").asInstanceOf[LynxNode])
-    Assert.assertEquals(r1, res(0)("r").asInstanceOf[LynxRelationship])
-    Assert.assertEquals(r2, res(1)("r").asInstanceOf[LynxRelationship])
-    Assert.assertEquals(List(n1, r1, n2), res(0)("p").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(List(n1, r2, n2), res(1)("p").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(n1, res(0)("a").asInstanceOf[LynxNode])
+    Assertions.assertEquals(n2, res(0)("b").asInstanceOf[LynxNode])
+    Assertions.assertEquals(r1, res(0)("r").asInstanceOf[LynxRelationship])
+    Assertions.assertEquals(r2, res(1)("r").asInstanceOf[LynxRelationship])
+    Assertions.assertEquals(List(n1, r1, n2), res(0)("p").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(List(n1, r2, n2), res(1)("p").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -98,7 +98,7 @@ class C_Return extends TestBase{
         |RETURN `This isn\'t a common variable`.happy
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals("YES!", res(0)("`This isn\\'t a common variable`.happy").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals("YES!", res(0)("`This isn\\'t a common variable`.happy").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -109,7 +109,7 @@ class C_Return extends TestBase{
         |RETURN a.age AS SomethingTotallyDifferent
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(55L, res(0)("SomethingTotallyDifferent").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(55L, res(0)("SomethingTotallyDifferent").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -120,8 +120,8 @@ class C_Return extends TestBase{
         |RETURN n.age
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(55L, res(0)("n.age").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(null, res(1)("n.age").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(55L, res(0)("n.age").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(null, res(1)("n.age").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -132,8 +132,8 @@ class C_Return extends TestBase{
         |RETURN DISTINCT b
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, res.length)
-    Assert.assertEquals(n2, res(0)("b").asInstanceOf[LynxNode])
+    Assertions.assertEquals(1, res.length)
+    Assertions.assertEquals(n2, res(0)("b").asInstanceOf[LynxNode])
   }
 
   @Test

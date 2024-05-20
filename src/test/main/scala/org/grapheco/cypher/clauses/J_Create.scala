@@ -4,8 +4,7 @@ import org.grapheco.lynx.TestBase
 import org.grapheco.lynx.physical.{NodeInput, RelationshipInput}
 import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.structural.{LynxNode, LynxNodeLabel, LynxPropertyKey, LynxRelationship}
-import org.junit.{Assert, Before, Test}
-
+import org.junit.jupiter.api.{Assertions, BeforeEach, Test}
 import scala.collection.mutable.ArrayBuffer
 
 /**
@@ -22,7 +21,7 @@ class J_Create extends TestBase{
   val n2 = TestNode(TestId(2), Seq(LynxNodeLabel("Person")), Map(LynxPropertyKey("name")-> LynxValue("B")))
 
 
-  @Before
+  @BeforeEach
   def init(): Unit ={
     nodesInput.append(("n1", NodeInput(n1.labels, n1.props.toSeq)))
     nodesInput.append(("n2", NodeInput(n2.labels, n2.props.toSeq)))
@@ -43,7 +42,7 @@ class J_Create extends TestBase{
         |create (n)
         |""".stripMargin)
 
-    Assert.assertEquals(num + 1, all_nodes.size)
+    Assertions.assertEquals(num + 1, all_nodes.size)
   }
 
   @Test
@@ -54,7 +53,7 @@ class J_Create extends TestBase{
         |CREATE (n), (m)
         |""".stripMargin)
 
-    Assert.assertEquals(num + 2, all_nodes.size)
+    Assertions.assertEquals(num + 2, all_nodes.size)
   }
 
   @Test
@@ -64,7 +63,7 @@ class J_Create extends TestBase{
       """
         |CREATE (n:Person)
         |""".stripMargin)
-    Assert.assertEquals(num + 1, all_nodes.size)
+    Assertions.assertEquals(num + 1, all_nodes.size)
   }
 
   @Test
@@ -74,7 +73,7 @@ class J_Create extends TestBase{
       """
         |CREATE (n:Person:Swedish)
         |""".stripMargin)
-    Assert.assertEquals(num + 1, all_nodes.size)
+    Assertions.assertEquals(num + 1, all_nodes.size)
   }
 
   @Test
@@ -84,7 +83,7 @@ class J_Create extends TestBase{
       """
         |CREATE (n:Person {name: 'Andy', title: 'Developer'})
         |""".stripMargin)
-    Assert.assertEquals(num + 1, all_nodes.size)
+    Assertions.assertEquals(num + 1, all_nodes.size)
   }
 
   @Test
@@ -96,8 +95,8 @@ class J_Create extends TestBase{
         |CREATE (a {name: 'Andy'})
         |RETURN a.name
         |""".stripMargin).records().toArray
-    Assert.assertEquals(num + 1, all_nodes.size)
-    Assert.assertEquals("Andy", res(0)("a.name").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(num + 1, all_nodes.size)
+    Assertions.assertEquals("Andy", res(0)("a.name").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -112,7 +111,7 @@ class J_Create extends TestBase{
         |RETURN type(r)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals("RELTYPE", res(0)("type(r)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals("RELTYPE", res(0)("type(r)").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -127,8 +126,8 @@ class J_Create extends TestBase{
         |RETURN type(r), r.name
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals("RELTYPE", res(0)("type(r)").asInstanceOf[LynxValue].value)
-    Assert.assertEquals("A<->B", res(0)("r.name").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals("RELTYPE", res(0)("type(r)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals("A<->B", res(0)("r.name").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -140,8 +139,8 @@ class J_Create extends TestBase{
         |CREATE p = (andy {name:'Andy'})-[:WORKS_AT]->(neo)<-[:WORKS_AT]-(michael {name: 'Michael'})
         |RETURN p
         |""".stripMargin).records().toArray
-    Assert.assertEquals(numNode + 3, all_nodes.size)
-    Assert.assertEquals(numRels + 2, all_rels.size)
+    Assertions.assertEquals(numNode + 3, all_nodes.size)
+    Assertions.assertEquals(numRels + 2, all_rels.size)
   }
 
   @Test
@@ -155,7 +154,7 @@ class J_Create extends TestBase{
         "name" -> "Andy",
         "position" -> "Developer"
       )))
-    Assert.assertEquals(num + 1, all_nodes.size)
+    Assertions.assertEquals(num + 1, all_nodes.size)
   }
 
   @Test
@@ -175,6 +174,6 @@ class J_Create extends TestBase{
             "name"-> "Michael",
             "position"-> "Developer"
         ))))
-    Assert.assertEquals(numNode + 2, all_nodes.size)
+    Assertions.assertEquals(numNode + 2, all_nodes.size)
   }
 }

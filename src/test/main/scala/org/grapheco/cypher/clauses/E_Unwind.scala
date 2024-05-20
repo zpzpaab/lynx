@@ -4,7 +4,7 @@ import org.grapheco.lynx.TestBase
 import org.grapheco.lynx.physical.{NodeInput, RelationshipInput, StoredNodeInputRef}
 import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.structural.{LynxNode, LynxPropertyKey, LynxRelationship, LynxRelationshipType}
-import org.junit.{Assert, Before, Test}
+import org.junit.jupiter.api.{Assertions, BeforeEach, Test}
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -33,7 +33,7 @@ class E_Unwind extends TestBase{
 
 
 
-  @Before
+  @BeforeEach
   def init(): Unit ={
     nodesInput.append(("n1", NodeInput(n1.labels, n1.props.toSeq)))
     nodesInput.append(("n2", NodeInput(n2.labels, n2.props.toSeq)))
@@ -63,15 +63,15 @@ class E_Unwind extends TestBase{
         |UNWIND [1, 2, 3, null] AS x
         |RETURN x, 'val' AS y
         |""".stripMargin).records().toArray
-    Assert.assertEquals(1L, res(0)("x").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(2L, res(1)("x").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(3L, res(2)("x").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(null, res(3)("x").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1L, res(0)("x").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(2L, res(1)("x").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(3L, res(2)("x").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(null, res(3)("x").asInstanceOf[LynxValue].value)
 
-    Assert.assertEquals("val", res(0)("y").asInstanceOf[LynxValue].value)
-    Assert.assertEquals("val", res(1)("y").asInstanceOf[LynxValue].value)
-    Assert.assertEquals("val", res(2)("y").asInstanceOf[LynxValue].value)
-    Assert.assertEquals("val", res(3)("y").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals("val", res(0)("y").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals("val", res(1)("y").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals("val", res(2)("y").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals("val", res(3)("y").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -83,7 +83,7 @@ class E_Unwind extends TestBase{
         |WITH DISTINCT x
         |RETURN collect(x) AS setOfVals
         |""".stripMargin).records().toArray
-    Assert.assertEquals(List(1, 2).map(LynxValue(_)), res(0)("setOfVals").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(List(1, 2).map(LynxValue(_)), res(0)("setOfVals").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -95,10 +95,10 @@ class E_Unwind extends TestBase{
         |RETURN x
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1L, res(0)("x").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(2L, res(1)("x").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(3L, res(2)("x").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(4L, res(3)("x").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1L, res(0)("x").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(2L, res(1)("x").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(3L, res(2)("x").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(4L, res(3)("x").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -110,11 +110,11 @@ class E_Unwind extends TestBase{
         |UNWIND x AS y
         |RETURN y
         |""".stripMargin).records().toArray
-    Assert.assertEquals(1L, res(0)("y").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(2L, res(1)("y").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(3L, res(2)("y").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(4L, res(3)("y").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(5L, res(4)("y").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1L, res(0)("y").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(2L, res(1)("y").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(3L, res(2)("y").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(4L, res(3)("y").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(5L, res(4)("y").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -124,7 +124,7 @@ class E_Unwind extends TestBase{
         |UNWIND [] AS empty
         |RETURN empty, 'literal_that_is_not_returned'
         |""".stripMargin).records().toArray
-    Assert.assertEquals(0, res.length)
+    Assertions.assertEquals(0, res.length)
   }
 
   @Test
@@ -134,7 +134,7 @@ class E_Unwind extends TestBase{
         |UNWIND [] AS empty
         |RETURN empty, 'literal_that_is_not_returned'
         |""".stripMargin).records().toArray
-    Assert.assertEquals(0, res.length)
+    Assertions.assertEquals(0, res.length)
   }
 
   @Test
@@ -147,7 +147,7 @@ class E_Unwind extends TestBase{
         |RETURN e.id AS x
         |ORDER BY x
         |""".stripMargin, Map("events" -> List(Map("year"->2014, "id" -> 1), Map("year" -> 2014, "id" -> 2)))).records().toArray
-    Assert.assertEquals(1L, res(0)("x").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(2L, res(1)("x").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1L, res(0)("x").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(2L, res(1)("x").asInstanceOf[LynxValue].value)
   }
 }

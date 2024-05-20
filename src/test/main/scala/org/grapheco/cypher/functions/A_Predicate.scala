@@ -7,7 +7,7 @@ import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.composite.LynxList
 import org.grapheco.lynx.types.property.{LynxNull, LynxString}
 import org.grapheco.lynx.types.structural._
-import org.junit.{Assert, Before, Test}
+import org.junit.jupiter.api.{Assertions, BeforeEach, Test}
 import org.opencypher.v9_0.expressions.SemanticDirection
 
 import scala.collection.mutable.ArrayBuffer
@@ -123,7 +123,7 @@ class A_Predicate extends TestBase {
   val r4 = TestRelationship(TestId(4), TestId(3), TestId(4), Option(LynxRelationshipType("KNOWS")), Map.empty)
   val r5 = TestRelationship(TestId(5), TestId(3), TestId(5), Option(LynxRelationshipType("MARRIED")), Map.empty)
 
-  @Before
+  @BeforeEach
   def init(): Unit = {
 //    nodeCreateCyphers.foreach(cypher=>runOnDemoGraph(cypher))
 //    relCreateCyphers.foreach(cypher=>runOnDemoGraph(cypher))
@@ -158,7 +158,7 @@ class A_Predicate extends TestBase {
         |WHERE a.name = 'Alice' AND b.name = 'Daniel' AND ALL (x IN nodes(p) WHERE x.age > 30)
         |RETURN p
         |""".stripMargin).records().map(f => f("p").asInstanceOf[LynxValue].value).toArray
-    Assert.assertEquals(1, records.length)
+    Assertions.assertEquals(1, records.length)
   }
 
   @Test
@@ -170,9 +170,9 @@ class A_Predicate extends TestBase {
         |RETURN a.name, a.array
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals("Eskil", records(0)("a.name").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(List(LynxString("one"), LynxString("two"), LynxString("three")), records.head("a.array").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals("Eskil", records(0)("a.name").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(List(LynxString("one"), LynxString("two"), LynxString("three")), records.head("a.array").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -184,15 +184,15 @@ class A_Predicate extends TestBase {
         |RETURN n.name AS name, exists((n)-[:MARRIED]->()) AS is_married
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(5, records.length)
+    Assertions.assertEquals(5, records.length)
     for (record <- records) {
       record("name").asInstanceOf[LynxValue].value match {
-        case "Alice" => Assert.assertEquals(false, record("is_married").asInstanceOf[LynxValue].value)
-        case "Bob" => Assert.assertEquals(true, record("is_married").asInstanceOf[LynxValue].value)
-        case "Charlie" => Assert.assertEquals(false, record("is_married").asInstanceOf[LynxValue].value)
-        case "Daniel" => Assert.assertEquals(false, record("is_married").asInstanceOf[LynxValue].value)
-        case "Eskil" => Assert.assertEquals(false, record("is_married").asInstanceOf[LynxValue].value)
-        case _ => Assert.assertEquals(true, false)
+        case "Alice" => Assertions.assertEquals(false, record("is_married").asInstanceOf[LynxValue].value)
+        case "Bob" => Assertions.assertEquals(true, record("is_married").asInstanceOf[LynxValue].value)
+        case "Charlie" => Assertions.assertEquals(false, record("is_married").asInstanceOf[LynxValue].value)
+        case "Daniel" => Assertions.assertEquals(false, record("is_married").asInstanceOf[LynxValue].value)
+        case "Eskil" => Assertions.assertEquals(false, record("is_married").asInstanceOf[LynxValue].value)
+        case _ => Assertions.assertEquals(true, false)
       }
     }
   }
@@ -209,12 +209,12 @@ class A_Predicate extends TestBase {
         |Limit 1
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(LynxValue("Alice"), records(0)("a_name"))
-    Assert.assertEquals(LynxValue(null), records(0)("b_name"))
-    Assert.assertEquals(LynxValue(false), records(0)("b_has_name"))
-    Assert.assertEquals(LynxNull, records(0)("c_name"))
-    Assert.assertEquals(LynxValue(false), records(0)("c_has_name"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(LynxValue("Alice"), records(0)("a_name"))
+    Assertions.assertEquals(LynxValue(null), records(0)("b_name"))
+    Assertions.assertEquals(LynxValue(false), records(0)("b_has_name"))
+    Assertions.assertEquals(LynxNull, records(0)("c_name"))
+    Assertions.assertEquals(LynxValue(false), records(0)("c_has_name"))
   }
 
   @Test
@@ -226,9 +226,9 @@ class A_Predicate extends TestBase {
         |RETURN p
         |""".stripMargin).records().map(f => f("p").asInstanceOf[LynxValue].value).toArray
 
-    Assert.assertEquals(2, records.length)
-    Assert.assertEquals(List(n1, r1, n2 ), records(0))
-    Assert.assertEquals(List(n1, r1, n2, r3, n4), records(1))
+    Assertions.assertEquals(2, records.length)
+    Assertions.assertEquals(List(n1, r1, n2 ), records(0))
+    Assertions.assertEquals(List(n1, r1, n2, r3, n4), records(1))
   }
 
   @Test
@@ -241,8 +241,8 @@ class A_Predicate extends TestBase {
         |  AND single(var IN nodes(p) WHERE var.eyes = 'blue')
         |RETURN p
         |""".stripMargin).records().map(f => f("p")).toArray
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(List(n1, r2, n3), records(0).value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(List(n1, r2, n3), records(0).value)
   }
 }
 

@@ -5,7 +5,7 @@ import org.grapheco.lynx.physical.{NodeInput, RelationshipInput, StoredNodeInput
 import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.property.LynxString
 import org.grapheco.lynx.types.structural.{LynxNode, LynxPropertyKey, LynxRelationship, LynxRelationshipType}
-import org.junit.{Assert, Before, Test}
+import org.junit.jupiter.api.{Assertions, BeforeEach, Test}
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -32,7 +32,7 @@ class D_With extends TestBase{
   val r5 = TestRelationship(TestId(5), TestId(3), TestId(5), Option(LynxRelationshipType("BLOCKS")), Map.empty)
   val r6 = TestRelationship(TestId(6), TestId(5), TestId(1), Option(LynxRelationshipType("KNOWS")), Map.empty)
 
-  @Before
+  @BeforeEach
   def init(): Unit ={
     nodesInput.append(("n1", NodeInput(n1.labels, n1.props.toSeq)))
     nodesInput.append(("n2", NodeInput(n2.labels, n2.props.toSeq)))
@@ -76,7 +76,7 @@ class D_With extends TestBase{
         |RETURN collect(n.name)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(List("George","David","Caesar").map(LynxString), res(0)("collect(n.name)").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(List("George","David","Caesar").map(LynxString), res(0)("collect(n.name)").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -91,7 +91,7 @@ class D_With extends TestBase{
         |RETURN o.name
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals("Bossman", res(0)("o.name").asInstanceOf[LynxValue].value)
-    Assert.assertEquals("Anders", res(1)("o.name").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals("Bossman", res(0)("o.name").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals("Anders", res(1)("o.name").asInstanceOf[LynxValue].value)
   }
 }

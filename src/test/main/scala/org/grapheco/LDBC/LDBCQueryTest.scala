@@ -5,7 +5,7 @@ import org.grapheco.lynx.types.property.LynxInteger
 import org.grapheco.lynx.types.structural.LynxPropertyKey
 import org.grapheco.lynx.types.time.LynxDate
 import org.grapheco.lynx.util.Profiler
-import org.junit.{Assert, BeforeClass, Test}
+import org.junit.jupiter.api.{BeforeAll, Test, Assertions}
 
 import java.io.File
 import java.time.LocalDate
@@ -25,7 +25,7 @@ object LDBCQueryTest {
   var commontIds: Array[LynxInteger] = _
   val ldbcTestBase: LDBCTestBase = new LDBCTestBase
 
-  @BeforeClass
+  @BeforeAll
   def importData(): Unit ={
     Profiler.timing("Import the test data. ", ldbcTestBase.loadLDBC(path))
   }
@@ -47,8 +47,8 @@ class LDBCQueryTest {
 //    try {
       ldbcTestBase.run(cypher, params)
 //    } catch {
-//      case ex: Exception => Assert.assertEquals("ShortestPaths not supported.", ex.getMessage)
-//      case _ => Assert.assertTrue(false)
+//      case ex: Exception => Assertions.assertEquals("ShortestPaths not supported.", ex.getMessage)
+//      case _ => Assertions.assertTrue(false)
 //    }
   }
 
@@ -238,7 +238,7 @@ class LDBCQueryTest {
     run(q, p)
     val verify = "MATCH (person:Person {id: $personId})-[r:LIKES]->(post:Post {id: $postId}) return r"
     val result = ldbcTestBase.runner.run(verify, p)
-    Assert.assertTrue(
+    Assertions.assertTrue(
       result.records()
       .flatMap(_.getAsRelationship("r"))
       .flatMap(_.property(LynxPropertyKey("creationDate")))
@@ -254,7 +254,7 @@ class LDBCQueryTest {
     run(q, p)
     val verify = "MATCH (person:Person {id: $personId})-[r:LIKES]->(comment:Comment {id: $commentId}) return r"
     val result = ldbcTestBase.runner.run(verify, p)
-    Assert.assertTrue(
+    Assertions.assertTrue(
       result.records()
         .flatMap(_.getAsRelationship("r"))
         .flatMap(_.property(LynxPropertyKey("creationDate")))
@@ -289,7 +289,7 @@ class LDBCQueryTest {
     run(q, p)
     val verify = "MATCH (f:Forum {id: $forumId})-[r:HAS_MEMBER]->(p:Person {id: $personId}) return r"
     val result = ldbcTestBase.runner.run(verify, p)
-    Assert.assertTrue(
+    Assertions.assertTrue(
       result.records()
         .flatMap(_.getAsRelationship("r"))
         .flatMap(_.property(LynxPropertyKey("joinDate")))
@@ -343,7 +343,7 @@ class LDBCQueryTest {
     run(q, p)
     val verify = "MATCH (p1:Person {id: $person1Id})-[r:KNOWS]->(p2:Person {id: $person2Id}) return r"
     val result = ldbcTestBase.runner.run(verify, p)
-    Assert.assertTrue(
+    Assertions.assertTrue(
       result.records()
         .flatMap(_.getAsRelationship("r"))
         .flatMap(_.property(LynxPropertyKey("creationDate")))
@@ -354,8 +354,21 @@ class LDBCQueryTest {
   def test(): Unit = {
     ldbcTestBase.run(
       """
-        |MATCH p=(a:Person{id:'210995116277782'})-[r:KNOWS*2]->(e:Person{firstName:'Bryn'})
-        |return count(p)
+        |MATCH (n)--(m)
+        |RETURN n, count(m) AS num_edges
+        |ORDER BY num_edges DESC
+        |LIMIT 10
         |""".stripMargin, Map.empty).show()
+  }
+
+  @Test
+  def testMy(): Unit = {
+    ldbcTestBase.run(
+      """
+        |MATCH (a)-[]->(b)-[]->(c)
+        |MATCH (c)-[]->(d)
+        |OPTIONAL MATCH (b)-[]->(d)
+        |RETURN a,b,c,d
+        |""".stripMargin)
   }
 }

@@ -5,7 +5,7 @@ import org.grapheco.lynx.physical.{NodeInput, RelationshipInput, StoredNodeInput
 import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.composite.LynxList
 import org.grapheco.lynx.types.structural._
-import org.junit.{Assert, Before, Test}
+import org.junit.jupiter.api.{Assertions, BeforeEach, Test}
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -37,7 +37,7 @@ class A_Match extends TestBase{
   val r7 = TestRelationship(TestId(7), TestId(5), TestId(7), Option(LynxRelationshipType("DIRECTED")), Map.empty)
 
 
-  @Before
+  @BeforeEach
   def init(): Unit ={
     all_nodes.clear()
     all_rels.clear()
@@ -69,77 +69,77 @@ class A_Match extends TestBase{
   @Test
   def getAllNodes(): Unit ={
     val records = runOnDemoGraph("Match (n) Return n").records().map(f => f("n").asInstanceOf[TestNode]).toArray.sortBy(r => (r.id.value))
-    Assert.assertEquals(7, records.length)
-    Assert.assertEquals(n1, records(0))
-    Assert.assertEquals(n2, records(1))
-    Assert.assertEquals(n3, records(2))
-    Assert.assertEquals(n4, records(3))
-    Assert.assertEquals(n5, records(4))
-    Assert.assertEquals(m1, records(5))
-    Assert.assertEquals(m2, records(6))
+    Assertions.assertEquals(7, records.length)
+    Assertions.assertEquals(n1, records(0))
+    Assertions.assertEquals(n2, records(1))
+    Assertions.assertEquals(n3, records(2))
+    Assertions.assertEquals(n4, records(3))
+    Assertions.assertEquals(n5, records(4))
+    Assertions.assertEquals(m1, records(5))
+    Assertions.assertEquals(m2, records(6))
   }
 
   @Test
   def getAllNodesWithLabel(): Unit ={
     val records = runOnDemoGraph("match (movie:Movie) return movie.title").records().map(f => f("movie.title").asInstanceOf[LynxValue].value).toArray
-    Assert.assertEquals("Wall Street", records(0))
-    Assert.assertEquals("The American President", records(1))
+    Assertions.assertEquals("Wall Street", records(0))
+    Assertions.assertEquals("The American President", records(1))
   }
 
   @Test
   def relatedNodes(): Unit ={
     val records = runOnDemoGraph("MATCH (director {name: 'Oliver Stone'})--(movie) return movie.title").records().map(f => f("movie.title").asInstanceOf[LynxValue].value).toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals("Wall Street", records.head)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals("Wall Street", records.head)
   }
 
   @Test
   def matchWithLabels(): Unit ={
     val records = runOnDemoGraph("MATCH (:Person {name: 'Oliver Stone'})--(movie:Movie) return movie.title").records().map(f => f("movie.title").asInstanceOf[LynxValue].value).toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals("Wall Street", records.head)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals("Wall Street", records.head)
   }
 
   @Test
   def outgoingRelationships(): Unit ={
     val records = runOnDemoGraph("MATCH (:Person {name: 'Oliver Stone'})-->(movie) return movie.title").records().map(f => f("movie.title").asInstanceOf[LynxValue].value).toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals("Wall Street", records.head)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals("Wall Street", records.head)
   }
 
   @Test
   def directedRelationshipsAndVariable(): Unit ={
     val records = runOnDemoGraph("MATCH (:Person {name: 'Oliver Stone'})-[r]->(movie) return type(r)").records().map(f => f("type(r)").asInstanceOf[LynxValue].value).toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals("DIRECTED", records.head)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals("DIRECTED", records.head)
   }
 
   @Test
   def matchOnRelationshipType(): Unit ={
     val records = runOnDemoGraph("MATCH (wallstreet:Movie {title: 'Wall Street'})<-[:ACTED_IN]-(actor) return actor.name").records().map(f => f("actor.name").asInstanceOf[LynxValue].value).toArray
 
-    Assert.assertEquals(3, records.length)
-    Assert.assertEquals(Set("Michael Douglas", "Martin Sheen", "Charlie Sheen"), records.toSet)
+    Assertions.assertEquals(3, records.length)
+    Assertions.assertEquals(Set("Michael Douglas", "Martin Sheen", "Charlie Sheen"), records.toSet)
   }
 
   @Test
   def matchOnMultipleRelationshipTypes(): Unit ={
     val records = runOnDemoGraph("MATCH (wallstreet {title: 'Wall Street'})<-[:ACTED_IN|:DIRECTED]-(person) return person.name").records().map(f => f("person.name").asInstanceOf[LynxValue].value).toArray
 
-    Assert.assertEquals(4, records.length)
-    Assert.assertEquals(Set("Michael Douglas", "Martin Sheen", "Charlie Sheen", "Oliver Stone"), records.toSet)
+    Assertions.assertEquals(4, records.length)
+    Assertions.assertEquals(Set("Michael Douglas", "Martin Sheen", "Charlie Sheen", "Oliver Stone"), records.toSet)
   }
 
   @Test
   def matchOnRelationshipTypeAndUseAVariable(): Unit ={
     val records = runOnDemoGraph("MATCH (wallstreet {title: 'Wall Street'})<-[r:ACTED_IN]-(actor) return r.role").records().map(f => f("r.role").asInstanceOf[LynxValue].value).toArray
 
-    Assert.assertEquals(3, records.length)
-    Assert.assertEquals(Set("Gordon Gekko", "Carl Fox", "Bud Fox"), records.toSet)
+    Assertions.assertEquals(3, records.length)
+    Assertions.assertEquals(Set("Gordon Gekko", "Carl Fox", "Bud Fox"), records.toSet)
   }
 
   @Test
@@ -157,8 +157,8 @@ class A_Match extends TestBase{
         |RETURN type(r)
         |""".stripMargin).records().map(f => f("type(r)").asInstanceOf[LynxValue].value).toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals("TYPE INCLUDING A SPACE", records.head)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals("TYPE INCLUDING A SPACE", records.head)
   }
 
   @Test
@@ -170,9 +170,9 @@ class A_Match extends TestBase{
         |""".stripMargin).records().toArray
 
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals("Wall Street", records.head("movie.title").asInstanceOf[LynxValue].value)
-    Assert.assertEquals("Oliver Stone", records.head("director.name").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals("Wall Street", records.head("movie.title").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals("Oliver Stone", records.head("director.name").asInstanceOf[LynxValue].value)
   }
 
   /**
@@ -189,8 +189,8 @@ class A_Match extends TestBase{
         |RETURN movie.title
         |""".stripMargin).records().map(f => f("movie.title").asInstanceOf[LynxValue].value).toArray
 
-    Assert.assertEquals(3, records.length)
-    Assert.assertEquals(List("Wall Street", "The American President", "The American President"), records.toList)
+    Assertions.assertEquals(3, records.length)
+    Assertions.assertEquals(List("Wall Street", "The American President", "The American President"), records.toList)
   }
 
   /**
@@ -206,8 +206,8 @@ class A_Match extends TestBase{
         |""".stripMargin).records().map(f => f("person.name").asInstanceOf[LynxValue].value).toArray
 
 
-    Assert.assertEquals(3, records.length)
-    Assert.assertEquals(Set("Oliver Stone", "Michael Douglas", "Martin Sheen"), records.toSet)
+    Assertions.assertEquals(3, records.length)
+    Assertions.assertEquals(Set("Oliver Stone", "Michael Douglas", "Martin Sheen"), records.toSet)
   }
 
 
@@ -218,12 +218,12 @@ class A_Match extends TestBase{
         |MATCH p = (actor {name: 'Charlie Sheen'})-[r:ACTED_IN*2]-(co_actor)
         |RETURN relationships(p)
         |""".stripMargin).records().toArray
-    Assert.assertEquals(2, records.length)
+    Assertions.assertEquals(2, records.length)
     val rels1 = records(0)("relationships(p)").value
     val rels2 = records(1)("relationships(p)").value
 
-    Assert.assertEquals(List(r4, r5), rels1)
-    Assert.assertEquals(List(r4, r2), rels2)
+    Assertions.assertEquals(List(r4, r5), rels1)
+    Assertions.assertEquals(List(r4, r2), rels2)
 
   }
 
@@ -245,7 +245,7 @@ class A_Match extends TestBase{
         |RETURN p
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
+    Assertions.assertEquals(1, records.length)
     //should get: (0)-[X,7]->(7)<-[X,8]-(1)
   }
 
@@ -257,7 +257,7 @@ class A_Match extends TestBase{
         |RETURN x
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(5, records.length)
+    Assertions.assertEquals(5, records.length)
   }
 
   @Test
@@ -268,9 +268,9 @@ class A_Match extends TestBase{
         |RETURN p
         |""".stripMargin).records().map(f => f("p").asInstanceOf[LynxValue].value).toArray
 
-    Assert.assertEquals(2, records.length)
-    Assert.assertEquals(List(n2, r3, m2), records.head)
-    Assert.assertEquals(List(n2, r2, m1), records(1))
+    Assertions.assertEquals(2, records.length)
+    Assertions.assertEquals(List(n2, r3, m2), records.head)
+    Assertions.assertEquals(List(n2, r2, m1), records(1))
   }
 
   @Test
@@ -282,11 +282,11 @@ class A_Match extends TestBase{
         |RETURN a, b
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(2, records.length)
-    Assert.assertEquals(n1, records.head("a"))
-    Assert.assertEquals(m1, records.head("b"))
-    Assert.assertEquals(m1, records(1)("a"))
-    Assert.assertEquals(n1, records(1)("b"))
+    Assertions.assertEquals(2, records.length)
+    Assertions.assertEquals(n1, records.head("a"))
+    Assertions.assertEquals(m1, records.head("b"))
+    Assertions.assertEquals(m1, records(1)("a"))
+    Assertions.assertEquals(n1, records(1)("b"))
   }
 
   @Test
@@ -300,7 +300,7 @@ class A_Match extends TestBase{
         |RETURN p
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
+    Assertions.assertEquals(1, records.length)
   }
 
   @Test
@@ -315,7 +315,7 @@ class A_Match extends TestBase{
         |RETURN p
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
+    Assertions.assertEquals(1, records.length)
   }
   @Test
   def allShortestPath(): Unit ={
@@ -328,7 +328,7 @@ class A_Match extends TestBase{
         |RETURN p
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(2, records.length)
+    Assertions.assertEquals(2, records.length)
   }
 
   @Test
@@ -340,8 +340,8 @@ class A_Match extends TestBase{
         |RETURN n
         |""".stripMargin).records().map(f => f("n").asInstanceOf[LynxValue].value).toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(n1, records.head)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(n1, records.head)
   }
 
   @Test
@@ -353,8 +353,8 @@ class A_Match extends TestBase{
         |RETURN r
         |""".stripMargin).records().map(f => f("r").asInstanceOf[LynxValue].value).toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(r1, records.head)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(r1, records.head)
   }
 
   @Test
@@ -365,9 +365,9 @@ class A_Match extends TestBase{
         |WHERE id(n) IN [1, 3, 5]
         |RETURN n
         |""".stripMargin).records().map(_.getAsNode("n").get).toArray.sortBy(_.id.toLynxInteger.value)
-    Assert.assertEquals(3, records.length)
-    Assert.assertEquals(n1, records.head)
-    Assert.assertEquals(n3, records(1))
-    Assert.assertEquals(n5, records(2))
+    Assertions.assertEquals(3, records.length)
+    Assertions.assertEquals(n1, records.head)
+    Assertions.assertEquals(n3, records(1))
+    Assertions.assertEquals(n5, records(2))
   }
 }

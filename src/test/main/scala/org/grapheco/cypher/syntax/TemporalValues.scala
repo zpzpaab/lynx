@@ -2,7 +2,7 @@ package org.grapheco.cypher.syntax
 
 import org.grapheco.lynx.TestBase
 import org.grapheco.lynx.types.time.{LynxDateTime, LynxDuration, LynxLocalDateTime}
-import org.junit.{Assert, Test}
+import org.junit.jupiter.api.{Assertions, BeforeEach, Test}
 
 import java.time.{LocalDate, Month, ZonedDateTime}
 import java.time.format.DateTimeFormatter
@@ -19,35 +19,35 @@ class TemporalValues extends TestBase {
       .records().map(f => f("theDateTime").asInstanceOf[LynxDateTime]).toArray
 
     /*how to create Lynx temporal object by 2015-06-24T12:50:35.556+0100 */
-    Assert.assertEquals(LynxDateTime.parse("2015-06-24T12:50:35.556+0100"), records(0))
+    Assertions.assertEquals(LynxDateTime.parse("2015-06-24T12:50:35.556+0100"), records(0))
   }
 
   @Test
   def temporalInstantsEx2(): Unit = {
     val records = runOnDemoGraph("RETURN localdatetime('2015185T19:32:24') AS theLocalDateTime")
       .records().map(f => f("theLocalDateTime").asInstanceOf[LynxLocalDateTime]).toArray
-    Assert.assertEquals(1, records.length)
+    Assertions.assertEquals(1, records.length)
   }
 
   @Test
   def temporalInstantsEx3(): Unit = {
     val records = runOnDemoGraph("RETURN date('+2015-W13-4') AS theDate")
       .records().map(f => f("theDate")).toArray
-    Assert.assertEquals(1, records.length)
+    Assertions.assertEquals(1, records.length)
   }
 
   @Test
   def temporalInstantsEx4(): Unit = {
     val records = runOnDemoGraph("RETURN time('125035.556+0100') AS theTime")
       .records().map(f => f("theTime")).toArray
-    Assert.assertEquals(1, records.length)
+    Assertions.assertEquals(1, records.length)
   }
 
   @Test
   def temporalInstantsEx5(): Unit = {
     val records = runOnDemoGraph("RETURN localtime('12:50:35.556') AS theLocalTime")
       .records().map(f => f("theLocalTime")).toArray
-    Assert.assertEquals(1, records.length)
+    Assertions.assertEquals(1, records.length)
   }
 
   /**
@@ -65,7 +65,7 @@ class TemporalValues extends TestBase {
       "d.week" -> f("d.week").value, "d.weekYear" -> f("d.weekYear").value, "d.day" -> f("d.day").value,
       "d.ordinalDay" -> f("d.ordinalDay").value, "d.dayOfWeek" -> f("d.dayOfWeek").value, "d.dayOfQuarter" -> f("d.dayOfQuarter").value
     )).toArray
-    Assert.assertEquals(1, records.length)
+    Assertions.assertEquals(1, records.length)
   }
 
 
@@ -81,7 +81,7 @@ class TemporalValues extends TestBase {
       "d.week" -> f("d.week").value, "d.weekYear" -> f("d.weekYear").value, "d.day" -> f("d.day").value,
       "d.ordinalDay" -> f("d.ordinalDay").value, "d.dayOfWeek" -> f("d.dayOfWeek").value, "d.dayOfQuarter" -> f("d.dayOfQuarter").value
     ))
-    Assert.assertEquals(1, records.length)
+    Assertions.assertEquals(1, records.length)
   }
 
 
@@ -102,7 +102,7 @@ class TemporalValues extends TestBase {
       "d.millisecond" -> 645l, "d.microsecond" -> 645876l, "d.nanosecond" -> 645876123l,
     )
     expectResult.foreach(f => {
-      Assert.assertEquals(f._2, records(0)(f._1))
+      Assertions.assertEquals(f._2, records(0)(f._1))
     })
   }
 
@@ -126,7 +126,7 @@ class TemporalValues extends TestBase {
     )
 
     expectResult.foreach(f => {
-      Assert.assertEquals(f._2, records(0)(f._1))
+      Assertions.assertEquals(f._2, records(0)(f._1))
     })
   }
 
@@ -136,25 +136,25 @@ class TemporalValues extends TestBase {
   @Test
   def createDurationByStrEx1(): Unit = {
     val records = runOnDemoGraph("RETURN duration('P14DT16H12M') AS theDuration").records().toArray
-    Assert.assertEquals(LynxDuration.parse("P14DT16H12M").toString, records(0)("theDuration").toString)
+    Assertions.assertEquals(LynxDuration.parse("P14DT16H12M").toString, records(0)("theDuration").toString)
   }
 
   @Test
   def createDurationByStrEx2(): Unit = {
     val records = runOnDemoGraph("RETURN duration('P5M1.5D') AS theDuration").records().toArray
-    Assert.assertEquals(LynxDuration.parse("P5M1DT12H").toString, records(0)("theDuration").toString)
+    Assertions.assertEquals(LynxDuration.parse("P5M1DT12H").toString, records(0)("theDuration").toString)
   }
 
   @Test
   def createDurationByStrEx3(): Unit = {
     val records = runOnDemoGraph("RETURN duration('PT0.75M') AS theDuration").records().toArray
-    Assert.assertEquals(LynxDuration.parse("PT45S").toString, records(0)("theDuration").toString)
+    Assertions.assertEquals(LynxDuration.parse("PT45S").toString, records(0)("theDuration").toString)
   }
 
   @Test
   def createDurationByStrEx4(): Unit = {
     val records = runOnDemoGraph("RETURN duration('P2.5W') AS theDuration").records().toArray
-    Assert.assertEquals(LynxDuration.parse("P17DT12H").toString, records(0)("theDuration").toString)
+    Assertions.assertEquals(LynxDuration.parse("P17DT12H").toString, records(0)("theDuration").toString)
   }
 
   /**
@@ -180,7 +180,7 @@ class TemporalValues extends TestBase {
     )
 
     expectResult.foreach(f => {
-      Assert.assertEquals(f._2, records(0)(f._1))
+      Assertions.assertEquals(f._2, records(0)(f._1))
     })
   }
 
@@ -195,7 +195,7 @@ class TemporalValues extends TestBase {
     val expectResult = Map("d.weeks" -> 3l, "d.days" -> 25l, "d.daysOfWeek" -> 4l)
 
     expectResult.foreach(f => {
-      Assert.assertEquals(f._2, records(0)(f._1))
+      Assertions.assertEquals(f._2, records(0)(f._1))
     })
   }
 
@@ -218,7 +218,7 @@ class TemporalValues extends TestBase {
       "d.nanoseconds" -> 3661111111111l
     )
     expectResult.foreach(f => {
-      Assert.assertEquals(f._2, records(0)(f._1))
+      Assertions.assertEquals(f._2, records(0)(f._1))
     })
   }
 
@@ -241,7 +241,7 @@ class TemporalValues extends TestBase {
       "d.microsecondsOfSecond" -> 111111l, "d.nanosecondsOfSecond" -> 111111111l
     )
     expectResult.foreach(f => {
-      Assert.assertEquals(f._2, records(0)(f._1))
+      Assertions.assertEquals(f._2, records(0)(f._1))
     })
   }
 
@@ -253,7 +253,7 @@ class TemporalValues extends TestBase {
     val records = runOnDemoGraph(
       "RETURN duration({ days: 1, hours: 12 }) AS theDuration"
     ).records().map(f => f("theDuration").toString).toArray
-    Assert.assertEquals("P1DT12H", records(0))
+    Assertions.assertEquals("P1DT12H", records(0))
   }
 
   @Test
@@ -261,7 +261,7 @@ class TemporalValues extends TestBase {
     val records = runOnDemoGraph(
       "RETURN duration.between(date('1984-10-11'), date('2015-06-24')) AS theDuration"
     ).records().toArray
-    Assert.assertEquals(LynxDuration.parse("P30Y8M13D").toString, records(0)("theDuration").toString)
+    Assertions.assertEquals(LynxDuration.parse("P30Y8M13D").toString, records(0)("theDuration").toString)
   }
 
   @Test
@@ -269,7 +269,7 @@ class TemporalValues extends TestBase {
     val records = runOnDemoGraph(
       "RETURN duration.inDays(date('2014-10-11'), date('2015-08-06')) AS theDuration"
     ).records().map(f => f("theDuration").toString).toArray
-    Assert.assertEquals("P299D", records(0))
+    Assertions.assertEquals("P299D", records(0))
   }
 
   /*TODO*/
@@ -282,7 +282,7 @@ class TemporalValues extends TestBase {
     val records = runOnDemoGraph(
       "RETURN date.truncate('week', date(), { dayOfWeek: 4 }) AS thursday"
     ).records().map(f => f("thursday").value).toArray
-    Assert.assertEquals(formattedDate, records(0).toString)
+    Assertions.assertEquals(formattedDate, records(0).toString)
   }
 
   @Test
@@ -295,7 +295,7 @@ class TemporalValues extends TestBase {
     val records = runOnDemoGraph(
       "RETURN date.truncate('month',date()+duration('P2M'))- duration('P1D') AS lastDay"
     ).records().map(f => f("lastDay").value).toArray
-    Assert.assertEquals(formattedDate, records(0).toString)
+    Assertions.assertEquals(formattedDate, records(0).toString)
   }
 
   @Test
@@ -303,7 +303,7 @@ class TemporalValues extends TestBase {
     val records = runOnDemoGraph(
       "RETURN time('13:42:19')+ duration({ days: 1, hours: 12 }) AS theTime"
     ).records().map(f => f("theTime").value).toArray
-    Assert.assertEquals("01:42:19Z", records(0).toString)
+    Assertions.assertEquals("01:42:19Z", records(0).toString)
   }
 
   @Test
@@ -312,7 +312,7 @@ class TemporalValues extends TestBase {
       "RETURN duration({ days: 2, hours: 7 })+ duration({ months: 1, hours: 18 }) AS theDuration"
     ).records().map(
       f => f("theDuration").toString).toArray
-    Assert.assertEquals("P1M3DT1H", records(0)) // 1DT == 24H
+    Assertions.assertEquals("P1M3DT1H", records(0)) // 1DT == 24H
   }
 
   @Test
@@ -320,7 +320,7 @@ class TemporalValues extends TestBase {
     val records = runOnDemoGraph(
       "RETURN duration({ hours: 5, minutes: 21 })* 14 AS theDuration"
     ).records().map(f => f("theDuration").value).toArray
-    Assert.assertEquals("PT74H54M", records(0).toString)
+    Assertions.assertEquals("PT74H54M", records(0).toString)
   }
 
   @Test
@@ -328,7 +328,7 @@ class TemporalValues extends TestBase {
     val records = runOnDemoGraph(
       "RETURN duration({ hours: 3, minutes: 16 })/ 2 AS theDuration"
     ).records().map(f => f("theDuration").value).toArray
-    Assert.assertEquals("PT1H38M", records(0).toString)
+    Assertions.assertEquals("PT1H38M", records(0).toString)
   }
 
   @Test
@@ -343,7 +343,7 @@ class TemporalValues extends TestBase {
         |ELSE date2 + duration("P1D")> date1 END AS lessThanOneDayApart
         |""".stripMargin
     ).records().map(f => f("lessThanOneDayApart").value).toArray
-    Assert.assertEquals(true, records(0))
+    Assertions.assertEquals(true, records(0))
   }
 
   @Test
@@ -354,6 +354,6 @@ class TemporalValues extends TestBase {
         |RETURN ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][date().month-1] AS month
         |""".stripMargin
     ).records().map(f => f("month").value).toArray
-    Assert.assertEquals(curMonthAbb, records(0).toString.toUpperCase())
+    Assertions.assertEquals(curMonthAbb, records(0).toString.toUpperCase())
   }
 }

@@ -6,8 +6,7 @@ import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.property.{LynxInteger, LynxString}
 import org.grapheco.lynx.types.structural._
 import org.grapheco.lynx.types.time.LynxTemporalValue
-import org.junit.{Assert, Before, Test}
-
+import org.junit.jupiter.api.{Assertions, BeforeEach, Test}
 import scala.collection.mutable.ArrayBuffer
 
 /**
@@ -38,7 +37,7 @@ class O_Merge extends TestBase{
   val r8 = TestRelationship(TestId(8), TestId(5), TestId(7), Option(LynxRelationshipType("ACTED_IN")), Map.empty)
 
 
-  @Before
+  @BeforeEach
   def init(): Unit ={
     all_nodes.clear()
     all_rels.clear()
@@ -80,9 +79,9 @@ class O_Merge extends TestBase{
         |RETURN keanu.name, keanu.created
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(nodeNum + 1, all_nodes.size)
-    Assert.assertEquals(LynxValue("Keanu Reeves"), records.head.getAsString("keanu.name").get)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(nodeNum + 1, all_nodes.size)
+    Assertions.assertEquals(LynxValue("Keanu Reeves"), records.head.getAsString("keanu.name").get)
   }
 
   @Test
@@ -97,8 +96,8 @@ class O_Merge extends TestBase{
         |RETURN person.name, person.found
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(5, records.length)
-    Assert.assertEquals(nodeNum, all_nodes.size)
+    Assertions.assertEquals(5, records.length)
+    Assertions.assertEquals(nodeNum, all_nodes.size)
   }
 
   @Test
@@ -115,9 +114,9 @@ class O_Merge extends TestBase{
         |RETURN keanu.name, keanu.created, keanu.lastSeen
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(nodeNum + 1, all_nodes.size)
-    Assert.assertEquals(null, records.head("keanu.lastSeen").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(nodeNum + 1, all_nodes.size)
+    Assertions.assertEquals(null, records.head("keanu.lastSeen").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -134,8 +133,8 @@ class O_Merge extends TestBase{
         |RETURN person.name, person.found, person.lastAccessed
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(5, records.length)
-    Assert.assertEquals(nodeNum, all_nodes.size)
+    Assertions.assertEquals(5, records.length)
+    Assertions.assertEquals(nodeNum, all_nodes.size)
   }
 
   @Test
@@ -147,10 +146,10 @@ class O_Merge extends TestBase{
         |RETURN robert, labels(robert)
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(nodeNum + 1, all_nodes.size)
-    Assert.assertEquals(TestNode(TestId(nodeNum + 1), Seq(LynxNodeLabel("Critic")), Map.empty), records.head.getAsNode("robert").get)
-    Assert.assertEquals(List("Critic"), records.head("labels(robert)").value.asInstanceOf[List[LynxValue]].map(f => f.value))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(nodeNum + 1, all_nodes.size)
+    Assertions.assertEquals(TestNode(TestId(nodeNum + 1), Seq(LynxNodeLabel("Critic")), Map.empty), records.head.getAsNode("robert").get)
+    Assertions.assertEquals(List("Critic"), records.head("labels(robert)").value.asInstanceOf[List[LynxValue]].map(f => f.value))
   }
 
   @Test
@@ -162,9 +161,9 @@ class O_Merge extends TestBase{
         |RETURN charlie
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(nodeNum + 1, all_nodes.size)
-    Assert.assertEquals(TestNode(TestId(nodeNum + 1), Seq.empty, Seq(LynxPropertyKey("name")->LynxString("Charlie Sheen"), LynxPropertyKey("age")->LynxInteger(10)).toMap), records.head("charlie"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(nodeNum + 1, all_nodes.size)
+    Assertions.assertEquals(TestNode(TestId(nodeNum + 1), Seq.empty, Seq(LynxPropertyKey("name")->LynxString("Charlie Sheen"), LynxPropertyKey("age")->LynxInteger(10)).toMap), records.head("charlie"))
 
   }
 
@@ -177,10 +176,10 @@ class O_Merge extends TestBase{
         |RETURN michael.name, michael.bornIn
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(nodeNum, all_nodes.size)
-    Assert.assertEquals(n3.property(LynxPropertyKey("name")).get, records.head("michael.name"))
-    Assert.assertEquals(n3.property(LynxPropertyKey("bornIn")).get, records.head("michael.bornIn"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(nodeNum, all_nodes.size)
+    Assertions.assertEquals(n3.property(LynxPropertyKey("name")).get, records.head("michael.name"))
+    Assertions.assertEquals(n3.property(LynxPropertyKey("bornIn")).get, records.head("michael.bornIn"))
   }
 
   @Test
@@ -195,10 +194,10 @@ class O_Merge extends TestBase{
 
     val records2 = runOnDemoGraph("match (n:City) return n").records().toArray
 
-    Assert.assertEquals(5, records1.length)
-    Assert.assertEquals(3, records2.length)
-    Assert.assertEquals(nodeNum + 3, all_nodes.size)
-    Assert.assertEquals(Set("New York", "New Jersey", "Ohio"), records2.map(f => f("n").asInstanceOf[LynxNode].property(LynxPropertyKey("name")).get.value).toSet)
+    Assertions.assertEquals(5, records1.length)
+    Assertions.assertEquals(3, records2.length)
+    Assertions.assertEquals(nodeNum + 3, all_nodes.size)
+    Assertions.assertEquals(Set("New York", "New Jersey", "Ohio"), records2.map(f => f("n").asInstanceOf[LynxNode].property(LynxPropertyKey("name")).get.value).toSet)
   }
 
   @Test
@@ -214,11 +213,11 @@ class O_Merge extends TestBase{
         |RETURN charlie.name, type(r),wallStreet.title
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(relNum, all_nodes.size)
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(LynxString("Charlie Sheen"), records.head("charlie.name"))
-    Assert.assertEquals(LynxString("ACTED_IN"), records.head("type(r)"))
-    Assert.assertEquals(LynxString("Wall Street"), records.head("wallStreet.title"))
+    Assertions.assertEquals(relNum, all_nodes.size)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(LynxString("Charlie Sheen"), records.head("charlie.name"))
+    Assertions.assertEquals(LynxString("ACTED_IN"), records.head("type(r)"))
+    Assertions.assertEquals(LynxString("Wall Street"), records.head("wallStreet.title"))
   }
 
   @Test
@@ -235,12 +234,12 @@ class O_Merge extends TestBase{
         |RETURN charlie.name, type(r), wallStreet.title
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(relNum + 1, all_rels.size)
-    Assert.assertEquals(nodesNum, all_nodes.size)
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(LynxString("Charlie Sheen"), records.head("charlie.name"))
-    Assert.assertEquals(LynxString("ACTED_XXX"), records.head("type(r)"))
-    Assert.assertEquals(LynxString("Wall Street"), records.head("wallStreet.title"))
+    Assertions.assertEquals(relNum + 1, all_rels.size)
+    Assertions.assertEquals(nodesNum, all_nodes.size)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(LynxString("Charlie Sheen"), records.head("charlie.name"))
+    Assertions.assertEquals(LynxString("ACTED_XXX"), records.head("type(r)"))
+    Assertions.assertEquals(LynxString("Wall Street"), records.head("wallStreet.title"))
   }
 
   @Test
@@ -258,14 +257,14 @@ class O_Merge extends TestBase{
 
     val movie = TestNode(TestId(nodesNum + 1), Seq(LynxNodeLabel("Movie")), Map.empty)
 
-//    Assert.assertEquals(nodesNum + 1, all_nodes.size)
-//    Assert.assertEquals(relNum + 2, all_rels.size)
-//    Assert.assertEquals(movie, records.head("movie"))
-//    Assert.assertEquals(
+//    Assertions.assertEquals(nodesNum + 1, all_nodes.size)
+//    Assertions.assertEquals(relNum + 2, all_rels.size)
+//    Assertions.assertEquals(movie, records.head("movie"))
+//    Assertions.assertEquals(
 //      TestRelationship(TestId(relNum + 1), TestId(n2.id.value), TestId(movie.id.value), Option(LynxRelationshipType("DIRECTED")), Map.empty),
 //      all_rels(relNum)
 //    )
-//    Assert.assertEquals(
+//    Assertions.assertEquals(
 //      TestRelationship(TestId(relNum + 2), TestId(n5.id.value), TestId(movie.id.value), Option(LynxRelationshipType("ACTED_IN")), Map.empty),
 //      all_rels(relNum + 1)
 //    )
@@ -285,9 +284,9 @@ class O_Merge extends TestBase{
         |RETURN r
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(relNum + 1, all_rels.size)
-    Assert.assertEquals(nodesNum, all_nodes.size)
-    Assert.assertEquals(LynxRelationshipType("KNOWS"), records.head.getAsRelationship("r").get.relationType.get)
+    Assertions.assertEquals(relNum + 1, all_rels.size)
+    Assertions.assertEquals(nodesNum, all_nodes.size)
+    Assertions.assertEquals(LynxRelationshipType("KNOWS"), records.head.getAsRelationship("r").get.relationType.get)
   }
 
   @Test
@@ -303,8 +302,8 @@ class O_Merge extends TestBase{
         |RETURN person.name, person.bornIn, city
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(nodesNum + 3, all_nodes.size)
-    Assert.assertEquals(relNum + 5, all_rels.size)
+    Assertions.assertEquals(nodesNum + 3, all_nodes.size)
+    Assertions.assertEquals(relNum + 5, all_rels.size)
   }
 
   @Test
@@ -319,7 +318,7 @@ class O_Merge extends TestBase{
         |RETURN person.name, person.chauffeurName, chauffeur
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(nodesNum + 5, all_nodes.size)
-    Assert.assertEquals(relNum + 5, all_rels.size)
+    Assertions.assertEquals(nodesNum + 5, all_nodes.size)
+    Assertions.assertEquals(relNum + 5, all_rels.size)
   }
 }

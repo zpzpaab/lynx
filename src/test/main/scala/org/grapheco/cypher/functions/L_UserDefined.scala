@@ -3,7 +3,7 @@ package org.grapheco.cypher.functions
 import org.grapheco.lynx.TestBase
 import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.property.LynxString
-import org.junit.{Assert, Test}
+import org.junit.jupiter.api.{Assertions, BeforeEach, Test}
 
 /**
  * @program: lynx
@@ -21,8 +21,8 @@ class L_UserDefined extends TestBase {
         |RETURN test.authors() AS members
         |""".stripMargin).records().toArray
 
-//    Assert.assertEquals(1, records.length)
-//    Assert.assertEquals("John,Paul,George,Ringo", records(0)("members").asInstanceOf[LynxValue].value)
+//    Assertions.assertEquals(1, records.length)
+//    Assertions.assertEquals("John,Paul,George,Ringo", records(0)("members").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -33,8 +33,8 @@ class L_UserDefined extends TestBase {
         |RETURN toInterger("2023") AS member
         |""".stripMargin).records().toArray
 
-//    Assert.assertEquals(1, records.length)
-//    Assert.assertEquals("George", records(0)("member").asInstanceOf[LynxValue].value)
+//    Assertions.assertEquals(1, records.length)
+//    Assertions.assertEquals("George", records(0)("member").asInstanceOf[LynxValue].value)
   }
 
 

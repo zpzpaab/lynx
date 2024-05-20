@@ -4,7 +4,7 @@ import org.grapheco.lynx.physical.{NodeInput, RelationshipInput, StoredNodeInput
 import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.composite.LynxList
 import org.grapheco.lynx.types.structural._
-import org.junit.{Assert, Before, Test}
+import org.junit.jupiter.api.{Assertions, BeforeEach, Test}
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -54,7 +54,7 @@ class Expressions extends TestBase {
   val r4 = TestRelationship(TestId(1), TestId(2), TestId(4), Option(LynxRelationshipType("KNOWS")), Map.empty)
   val r5 = TestRelationship(TestId(1), TestId(2), TestId(5), Option(LynxRelationshipType("MARRIED")), Map.empty)
 
-  @Before
+  @BeforeEach
   def init(): Unit = {
     all_nodes.clear()
     all_rels.clear()
@@ -130,10 +130,10 @@ class Expressions extends TestBase {
       Map("name" -> "Eskil", "age_10_years_ago" -> 31)
     ).sortBy(e => e("name").toString)
 
-    Assert.assertEquals(expectResult.length, records.length)
+    Assertions.assertEquals(expectResult.length, records.length)
     for (i <- 0 to records.length - 1) {
-      Assert.assertEquals(LynxValue(expectResult(i)("name")), records(i)("name"))
-      Assert.assertEquals(LynxValue(expectResult(i)("age_10_years_ago")), records(i)("age_10_years_ago"))
+      Assertions.assertEquals(LynxValue(expectResult(i)("name")), records(i)("name"))
+      Assertions.assertEquals(LynxValue(expectResult(i)("age_10_years_ago")), records(i)("age_10_years_ago"))
     }
   }
 
@@ -157,10 +157,10 @@ class Expressions extends TestBase {
       Map("name" -> "Eskil", "age_10_years_ago" -> 31)
     ).sortBy(e => e("name").toString)
 
-    Assert.assertEquals(expectResult.length, records.length)
+    Assertions.assertEquals(expectResult.length, records.length)
     for (i <- 0 to records.length - 1) {
-      Assert.assertEquals(LynxValue(expectResult(i)("name")), records(i)("name"))
-      Assert.assertEquals(LynxValue(expectResult(i)("age_10_years_ago")), records(i)("age_10_years_ago"))
+      Assertions.assertEquals(LynxValue(expectResult(i)("name")), records(i)("name"))
+      Assertions.assertEquals(LynxValue(expectResult(i)("age_10_years_ago")), records(i)("age_10_years_ago"))
     }
   }
 
@@ -173,9 +173,9 @@ class Expressions extends TestBase {
    * @tparam A
    */
   def compareArray[A](expectResult: Array[A], records: Array[Any]): Unit = {
-    Assert.assertEquals(expectResult.length, records.length)
+    Assertions.assertEquals(expectResult.length, records.length)
     for (i <- 0 to records.length - 1) {
-      Assert.assertEquals(expectResult(i), records(i))
+      Assertions.assertEquals(expectResult(i), records(i))
     }
   }
 }

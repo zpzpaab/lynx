@@ -4,7 +4,7 @@ import org.grapheco.lynx.TestBase
 import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.time.{LynxDate, LynxDateTime, LynxLocalDateTime, LynxLocalTime, LynxTime}
 import org.grapheco.lynx.util.LynxTemporalParser
-import org.junit.{Assert, Test}
+import org.junit.jupiter.api.{Assertions, BeforeEach, Test}
 
 import java.time._
 import java.time.format.DateTimeFormatter
@@ -26,8 +26,8 @@ class I_Temporal_InstantTypes extends TestBase {
         |RETURN date() AS currentDate
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(LynxDate.now(), records(0)("currentDate"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(LynxDate.now(), records(0)("currentDate"))
   }
 
   @Test
@@ -37,8 +37,8 @@ class I_Temporal_InstantTypes extends TestBase {
         |RETURN date({ timezone: 'America/Los Angeles' }) AS currentDateInLA
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(LynxDate.now(ZoneId.of("America/Los_Angeles")), records(0)("currentDateInLA"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(LynxDate.now(ZoneId.of("America/Los_Angeles")), records(0)("currentDateInLA"))
   }
 
   //@Test
@@ -49,8 +49,8 @@ class I_Temporal_InstantTypes extends TestBase {
         |""".stripMargin).records().toArray
 
     val now_date = LynxDate(java.time.LocalDate.now)
-    Assert.assertEquals(1, records.length)
-    Assert.assertTrue(LynxTemporalParser.isSameCurrentTime(now_date, records(0)("currentDate")))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertTrue(LynxTemporalParser.isSameCurrentTime(now_date, records(0)("currentDate")))
   }
 
   @Test
@@ -60,8 +60,8 @@ class I_Temporal_InstantTypes extends TestBase {
         |RETURN date.statement() AS currentDate
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(LynxDate.now(), records(0)("currentDate"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(LynxDate.now(), records(0)("currentDate"))
   }
 
   @Test
@@ -71,8 +71,8 @@ class I_Temporal_InstantTypes extends TestBase {
         |RETURN date.realtime() AS currentDate
         |""".stripMargin).records().toArray
     //TODO
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(LynxDate.now(), records(0)("currentDate"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(LynxDate.now(), records(0)("currentDate"))
   }
 
   @Test
@@ -83,8 +83,8 @@ class I_Temporal_InstantTypes extends TestBase {
         |""".stripMargin).records().toArray
     //TODO
     val zone_LA = ZoneId.of("America/Los_Angeles")
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(LynxDate.now(zone_LA), records(0)("currentDateInLA"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(LynxDate.now(zone_LA), records(0)("currentDateInLA"))
   }
 
   @Test
@@ -103,10 +103,10 @@ class I_Temporal_InstantTypes extends TestBase {
     val date_2 = LynxDate.parse("1984-10-01")
     val date_3 = LynxDate.parse("1984-01-01")
 
-    Assert.assertEquals(3, records.length)
-    Assert.assertEquals(date_1, records(0)("theDate"))
-    Assert.assertEquals(date_2, records(1)("theDate"))
-    Assert.assertEquals(date_3, records(2)("theDate"))
+    Assertions.assertEquals(3, records.length)
+    Assertions.assertEquals(date_1, records(0)("theDate"))
+    Assertions.assertEquals(date_2, records(1)("theDate"))
+    Assertions.assertEquals(date_3, records(2)("theDate"))
   }
 
   @Test
@@ -125,10 +125,10 @@ class I_Temporal_InstantTypes extends TestBase {
     val date_2 = LynxDate.parse("1984-03-05")
     val date_3 = LynxDate.parse("1984-01-01")
 
-    Assert.assertEquals(3, records.length)
-    Assert.assertEquals(date_1, records(0)("theDate"))
-    Assert.assertEquals(date_2, records(1)("theDate"))
-    Assert.assertEquals(date_3, records(2)("theDate"))
+    Assertions.assertEquals(3, records.length)
+    Assertions.assertEquals(date_1, records(0)("theDate"))
+    Assertions.assertEquals(date_2, records(1)("theDate"))
+    Assertions.assertEquals(date_3, records(2)("theDate"))
   }
 
   @Test
@@ -147,10 +147,10 @@ class I_Temporal_InstantTypes extends TestBase {
     val date_2 = LynxDate.parse("1984-07-01")
     val date_3 = LynxDate.parse("1984-01-01")
 
-    Assert.assertEquals(3, records.length)
-    Assert.assertEquals(date_1, records(0)("theDate"))
-    Assert.assertEquals(date_2, records(1)("theDate"))
-    Assert.assertEquals(date_3, records(2)("theDate"))
+    Assertions.assertEquals(3, records.length)
+    Assertions.assertEquals(date_1, records(0)("theDate"))
+    Assertions.assertEquals(date_2, records(1)("theDate"))
+    Assertions.assertEquals(date_3, records(2)("theDate"))
   }
 
   @Test
@@ -167,9 +167,9 @@ class I_Temporal_InstantTypes extends TestBase {
     val date_1 = LynxDate.parse("1984-07-20")
     val date_2 = LynxDate.parse("1984-01-01")
 
-    Assert.assertEquals(2, records.length)
-    Assert.assertEquals(date_1, records(0)("theDate"))
-    Assert.assertEquals(date_2, records(1)("theDate"))
+    Assertions.assertEquals(2, records.length)
+    Assertions.assertEquals(date_1, records(0)("theDate"))
+    Assertions.assertEquals(date_2, records(1)("theDate"))
   }
 
   @Test
@@ -194,13 +194,13 @@ class I_Temporal_InstantTypes extends TestBase {
     val date_5 = LynxDate.parse("2015-07-21")
     val date_6 = LynxDate.parse("2015-01-01")
 
-    Assert.assertEquals(6, records.length)
-    Assert.assertEquals(date_1, records(0)("theDate"))
-    Assert.assertEquals(date_2, records(1)("theDate"))
-    Assert.assertEquals(date_3, records(2)("theDate"))
-    Assert.assertEquals(date_4, records(3)("theDate"))
-    Assert.assertEquals(date_5, records(4)("theDate"))
-    Assert.assertEquals(date_6, records(5)("theDate"))
+    Assertions.assertEquals(6, records.length)
+    Assertions.assertEquals(date_1, records(0)("theDate"))
+    Assertions.assertEquals(date_2, records(1)("theDate"))
+    Assertions.assertEquals(date_3, records(2)("theDate"))
+    Assertions.assertEquals(date_4, records(3)("theDate"))
+    Assertions.assertEquals(date_5, records(4)("theDate"))
+    Assertions.assertEquals(date_6, records(5)("theDate"))
   }
 
   @Test
@@ -220,13 +220,13 @@ class I_Temporal_InstantTypes extends TestBase {
     val date_1 = LocalDate.parse("1984-11-11", dataform)
     val date_2 = LocalDate.parse("1984-11-28", dataform)
 
-    Assert.assertEquals(3, records.length)
-    Assert.assertEquals(date_1, records(0)("dateOnly").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(date_1, records(1)("dateOnly").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(date_1, records(2)("dateOnly").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(date_2, records(0)("dateDay").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(date_2, records(1)("dateDay").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(date_2, records(2)("dateDay").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(3, records.length)
+    Assertions.assertEquals(date_1, records(0)("dateOnly").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(date_1, records(1)("dateOnly").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(date_1, records(2)("dateOnly").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(date_2, records(0)("dateDay").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(date_2, records(1)("dateDay").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(date_2, records(2)("dateDay").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -255,16 +255,16 @@ class I_Temporal_InstantTypes extends TestBase {
     val date_7 = LynxDate.parse("2017-11-11")
 
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(date_0, records(0)("truncMillenium"))
-    Assert.assertEquals(date_0, records(0)("truncCentury"))
-    Assert.assertEquals(date_1, records(0)("truncDecade"))
-    Assert.assertEquals(date_2, records(0)("truncYear"))
-    Assert.assertEquals(date_3, records(0)("truncWeekYear")) //TODO
-    Assert.assertEquals(date_4, records(0)("truncQuarter"))
-    Assert.assertEquals(date_5, records(0)("truncMonth"))
-    Assert.assertEquals(date_6, records(0)("truncWeek"))
-    Assert.assertEquals(date_7, records(0)("truncDay"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(date_0, records(0)("truncMillenium"))
+    Assertions.assertEquals(date_0, records(0)("truncCentury"))
+    Assertions.assertEquals(date_1, records(0)("truncDecade"))
+    Assertions.assertEquals(date_2, records(0)("truncYear"))
+    Assertions.assertEquals(date_3, records(0)("truncWeekYear")) //TODO
+    Assertions.assertEquals(date_4, records(0)("truncQuarter"))
+    Assertions.assertEquals(date_5, records(0)("truncMonth"))
+    Assertions.assertEquals(date_6, records(0)("truncWeek"))
+    Assertions.assertEquals(date_7, records(0)("truncDay"))
   }
 
   /*
@@ -278,8 +278,8 @@ class I_Temporal_InstantTypes extends TestBase {
         |""".stripMargin).records().toArray
 
     val now_zonedTime = LynxDateTime.now()
-    Assert.assertEquals(1, records.length)
-    Assert.assertTrue(LynxTemporalParser.isSameCurrentTime(now_zonedTime, records(0)("currentDateTime")))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertTrue(LynxTemporalParser.isSameCurrentTime(now_zonedTime, records(0)("currentDateTime")))
   }
 
   @Test
@@ -289,8 +289,8 @@ class I_Temporal_InstantTypes extends TestBase {
         |RETURN datetime({ timezone: 'America/Los Angeles' }) AS currentDateTimeInLA
         |""".stripMargin).records().toArray
     val now_zonedTime = LynxDateTime.now(ZoneId.of("America/Los_Angeles"))
-    Assert.assertEquals(1, records.length)
-    Assert.assertTrue(LynxTemporalParser.isSameCurrentTime(now_zonedTime, records(0)("currentDateTimeInLA")))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertTrue(LynxTemporalParser.isSameCurrentTime(now_zonedTime, records(0)("currentDateTimeInLA")))
   }
 
   @Test
@@ -301,8 +301,8 @@ class I_Temporal_InstantTypes extends TestBase {
         |""".stripMargin).records().toArray
     //TODO
     val now_zonedTime = LynxDateTime.now
-    Assert.assertEquals(1, records.length)
-    Assert.assertTrue(LynxTemporalParser.isSameCurrentTime(now_zonedTime, records(0)("currentDateTime")))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertTrue(LynxTemporalParser.isSameCurrentTime(now_zonedTime, records(0)("currentDateTime")))
   }
 
   //@Test
@@ -313,8 +313,8 @@ class I_Temporal_InstantTypes extends TestBase {
         |""".stripMargin).records().toArray
 
     val now_zonedTime = LynxDateTime.now(ZoneId.of("America/Los_Angeles"))
-    Assert.assertEquals(1, records.length)
-    Assert.assertTrue(LynxTemporalParser.isSameCurrentTime(now_zonedTime, records(0)("currentDateTimeInLA")))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertTrue(LynxTemporalParser.isSameCurrentTime(now_zonedTime, records(0)("currentDateTimeInLA")))
   }
 
   @Test
@@ -324,8 +324,8 @@ class I_Temporal_InstantTypes extends TestBase {
         |RETURN datetime.statement() AS currentDateTime
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertTrue(LynxTemporalParser.isSameCurrentTime(LynxDateTime.now, records(0)("currentDateTime")))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertTrue(LynxTemporalParser.isSameCurrentTime(LynxDateTime.now, records(0)("currentDateTime")))
   }
 
   @Test
@@ -336,8 +336,8 @@ class I_Temporal_InstantTypes extends TestBase {
         |""".stripMargin).records().toArray
     //TODO
     val now_zonedTime = LynxDateTime.now
-    Assert.assertEquals(1, records.length)
-    Assert.assertTrue(LynxTemporalParser.isSameCurrentTime(now_zonedTime, records(0)("currentDateTime")))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertTrue(LynxTemporalParser.isSameCurrentTime(now_zonedTime, records(0)("currentDateTime")))
   }
 
   @Test
@@ -366,15 +366,15 @@ class I_Temporal_InstantTypes extends TestBase {
     val date_7 = LynxDateTime.parse("1984-10-11T12:00+01:00")
     val date_8 = LynxDateTime.parse("1984-10-11T00:00+01:00", zone_Europe)
 
-    Assert.assertEquals(8, records.length)
-    Assert.assertEquals(date_1, records(0)("theDate"))
-    Assert.assertEquals(date_2, records(1)("theDate"))
-    Assert.assertEquals(date_3, records(2)("theDate"))
-    Assert.assertEquals(date_4, records(3)("theDate"))
-    Assert.assertEquals(date_5, records(4)("theDate"))
-    Assert.assertEquals(date_6, records(5)("theDate"))
-    Assert.assertEquals(date_7, records(6)("theDate"))
-    Assert.assertEquals(date_8, records(7)("theDate"))
+    Assertions.assertEquals(8, records.length)
+    Assertions.assertEquals(date_1, records(0)("theDate"))
+    Assertions.assertEquals(date_2, records(1)("theDate"))
+    Assertions.assertEquals(date_3, records(2)("theDate"))
+    Assertions.assertEquals(date_4, records(3)("theDate"))
+    Assertions.assertEquals(date_5, records(4)("theDate"))
+    Assertions.assertEquals(date_6, records(5)("theDate"))
+    Assertions.assertEquals(date_7, records(6)("theDate"))
+    Assertions.assertEquals(date_8, records(7)("theDate"))
   }
 
   @Test
@@ -402,14 +402,14 @@ class I_Temporal_InstantTypes extends TestBase {
     val date_6 = LynxDateTime.parse("1984-03-07T12:00+01:00")
     val date_7 = LynxDateTime.parse("1984-03-07T00:00+01:00", zone_Europe)
 
-    Assert.assertEquals(7, records.length)
-    Assert.assertEquals(date_1, records(0)("theDate"))
-    Assert.assertEquals(date_2, records(1)("theDate"))
-    Assert.assertEquals(date_3, records(2)("theDate"))
-    Assert.assertEquals(date_4, records(3)("theDate"))
-    Assert.assertEquals(date_5, records(4)("theDate"))
-    Assert.assertEquals(date_6, records(5)("theDate"))
-    Assert.assertEquals(date_7, records(6)("theDate"))
+    Assertions.assertEquals(7, records.length)
+    Assertions.assertEquals(date_1, records(0)("theDate"))
+    Assertions.assertEquals(date_2, records(1)("theDate"))
+    Assertions.assertEquals(date_3, records(2)("theDate"))
+    Assertions.assertEquals(date_4, records(3)("theDate"))
+    Assertions.assertEquals(date_5, records(4)("theDate"))
+    Assertions.assertEquals(date_6, records(5)("theDate"))
+    Assertions.assertEquals(date_7, records(6)("theDate"))
   }
 
   @Test
@@ -431,11 +431,11 @@ class I_Temporal_InstantTypes extends TestBase {
     val date_3 = LynxDateTime.parse("1984-08-14T12:00+02:00", zone_Europe)
     val date_4 = LynxDateTime.parse("1984-08-14T00:00Z")
 
-    Assert.assertEquals(4, records.length)
-    Assert.assertEquals(date_1, records(0)("theDate"))
-    Assert.assertEquals(date_2, records(1)("theDate"))
-    Assert.assertEquals(date_3, records(2)("theDate"))
-    Assert.assertEquals(date_4, records(3)("theDate"))
+    Assertions.assertEquals(4, records.length)
+    Assertions.assertEquals(date_1, records(0)("theDate"))
+    Assertions.assertEquals(date_2, records(1)("theDate"))
+    Assertions.assertEquals(date_3, records(2)("theDate"))
+    Assertions.assertEquals(date_4, records(3)("theDate"))
   }
 
   @Test
@@ -457,11 +457,11 @@ class I_Temporal_InstantTypes extends TestBase {
     val date_3 = LynxDateTime.parse("1984-07-20T00:00+02:00", zone_Europe)
     val date_4 = LynxDateTime.parse("1984-07-20T00:00Z")
 
-    Assert.assertEquals(4, records.length)
-    Assert.assertEquals(date_1, records(0)("theDate"))
-    Assert.assertEquals(date_2, records(1)("theDate"))
-    Assert.assertEquals(date_3, records(2)("theDate"))
-    Assert.assertEquals(date_4, records(3)("theDate"))
+    Assertions.assertEquals(4, records.length)
+    Assertions.assertEquals(date_1, records(0)("theDate"))
+    Assertions.assertEquals(date_2, records(1)("theDate"))
+    Assertions.assertEquals(date_3, records(2)("theDate"))
+    Assertions.assertEquals(date_4, records(3)("theDate"))
   }
 
   @Test
@@ -492,15 +492,15 @@ class I_Temporal_InstantTypes extends TestBase {
     val date_7 = LynxDateTime.parse("2015-07-21T21:40:32.142+01:00", zone_Europe)
     val date_8 = LynxDateTime.parse("2015-07-21T21:40:32.142-04:00", zone_America)
 
-    Assert.assertEquals(8, records.length)
-    Assert.assertEquals(date_1, records(0)("theDate"))
-    Assert.assertEquals(date_2, records(1)("theDate"))
-    Assert.assertEquals(date_3, records(2)("theDate"))
-    Assert.assertEquals(date_4, records(3)("theDate"))
-    Assert.assertEquals(date_5, records(4)("theDate"))
-    Assert.assertEquals(date_6, records(5)("theDate"))
-    Assert.assertEquals(date_7, records(6)("theDate"))
-    Assert.assertEquals(date_8, records(7)("theDate"))
+    Assertions.assertEquals(8, records.length)
+    Assertions.assertEquals(date_1, records(0)("theDate"))
+    Assertions.assertEquals(date_2, records(1)("theDate"))
+    Assertions.assertEquals(date_3, records(2)("theDate"))
+    Assertions.assertEquals(date_4, records(3)("theDate"))
+    Assertions.assertEquals(date_5, records(4)("theDate"))
+    Assertions.assertEquals(date_6, records(5)("theDate"))
+    Assertions.assertEquals(date_7, records(6)("theDate"))
+    Assertions.assertEquals(date_8, records(7)("theDate"))
   }
 
   @Test
@@ -520,11 +520,11 @@ class I_Temporal_InstantTypes extends TestBase {
     val date_3 = LynxDateTime.parse("1984-10-28T10:10:10Z")
     val date_4 = LynxDateTime.parse("1984-10-28T10:10:10-10:00", zone_Pacific)
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(date_1, records(0)("dateHHMMSS"))
-    Assert.assertEquals(date_2, records(0)("dateHHMMSSTimezone"))
-    Assert.assertEquals(date_3, records(0)("dateDDHHMMSS"))
-    Assert.assertEquals(date_4, records(0)("dateDDHHMMSSTimezone"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(date_1, records(0)("dateHHMMSS"))
+    Assertions.assertEquals(date_2, records(0)("dateHHMMSSTimezone"))
+    Assertions.assertEquals(date_3, records(0)("dateDDHHMMSS"))
+    Assertions.assertEquals(date_4, records(0)("dateDDHHMMSSTimezone"))
   }
 
   @Test
@@ -544,11 +544,11 @@ class I_Temporal_InstantTypes extends TestBase {
     val date_3 = LynxDateTime.parse("1984-10-11T12:31:42.645876+01:00")
     val date_4 = LynxDateTime.parse("1984-10-11T01:31:42.645876-10:00", zone_Pacific)
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(date_1, records(0)("YYYYMMDDTime"))
-    Assert.assertEquals(date_2, records(0)("YYYYMMDDTimeTimezone"))
-    Assert.assertEquals(date_3, records(0)("YYYYMMDDTimeSS"))
-    Assert.assertEquals(date_4, records(0)("YYYYMMDDTimeSSTimezone"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(date_1, records(0)("YYYYMMDDTime"))
+    Assertions.assertEquals(date_2, records(0)("YYYYMMDDTimeTimezone"))
+    Assertions.assertEquals(date_3, records(0)("YYYYMMDDTimeSS"))
+    Assertions.assertEquals(date_4, records(0)("YYYYMMDDTimeSSTimezone"))
   }
 
   @Test
@@ -569,11 +569,11 @@ class I_Temporal_InstantTypes extends TestBase {
     val date_3 = LynxDateTime.parse("1984-10-28T12:31:42.645Z")
     val date_4 = LynxDateTime.parse("1984-10-28T12:31:42.645-10:00", zone_Pacific)
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(date_1, records(0)("dateTime"))
-    Assert.assertEquals(date_2, records(0)("dateTimeTimezone"))
-    Assert.assertEquals(date_3, records(0)("dateTimeDDSS"))
-    Assert.assertEquals(date_4, records(0)("dateTimeDDSSTimezone"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(date_1, records(0)("dateTime"))
+    Assertions.assertEquals(date_2, records(0)("dateTimeTimezone"))
+    Assertions.assertEquals(date_3, records(0)("dateTimeDDSS"))
+    Assertions.assertEquals(date_4, records(0)("dateTimeDDSSTimezone"))
   }
 
   @Test
@@ -594,11 +594,11 @@ class I_Temporal_InstantTypes extends TestBase {
     val date_3 = LynxDateTime.parse("1984-10-28T12:00:42+01:00", zone_Europe)
     val date_4 = LynxDateTime.parse("1984-10-28T01:00:42-10:00", zone_Pacific)
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(date_1, records(0)("dateTime"))
-    Assert.assertEquals(date_2, records(0)("dateTimeTimezone"))
-    Assert.assertEquals(date_3, records(0)("dateTimeDDSS"))
-    Assert.assertEquals(date_4, records(0)("dateTimeDDSSTimezone"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(date_1, records(0)("dateTime"))
+    Assertions.assertEquals(date_2, records(0)("dateTimeTimezone"))
+    Assertions.assertEquals(date_3, records(0)("dateTimeDDSS"))
+    Assertions.assertEquals(date_4, records(0)("dateTimeDDSSTimezone"))
   }
 
   @Test
@@ -610,8 +610,8 @@ class I_Temporal_InstantTypes extends TestBase {
 
     val date_1 = LynxDateTime.parse(ZonedDateTime.now(ZoneId.of("Z")).toString.split("\\.")(0) + ".000000023Z")
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(date_1, records(0)("theDate"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(date_1, records(0)("theDate"))
   }
 
   @Test
@@ -623,8 +623,8 @@ class I_Temporal_InstantTypes extends TestBase {
 
     val date_1 = ZonedDateTime.parse("1983-06-18T15:15Z")
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(date_1, records(0)("theDate").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(date_1, records(0)("theDate").asInstanceOf[LynxValue].value)
   }
 
   @Test
@@ -648,13 +648,13 @@ class I_Temporal_InstantTypes extends TestBase {
     val date_5 = ZonedDateTime.parse("2017-11-11T12:00+03:00")
     val date_6 = ZonedDateTime.parse("2017-11-11T12:31:14+03:00")
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(date_1, records(0)("truncMillenium").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(date_2, records(0)("truncYear").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(date_3, records(0)("truncMonth").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(date_4, records(0)("truncDay").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(date_5, records(0)("truncHour").asInstanceOf[LynxValue].value)
-    Assert.assertEquals(date_6, records(0)("truncSecond").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(date_1, records(0)("truncMillenium").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(date_2, records(0)("truncYear").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(date_3, records(0)("truncMonth").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(date_4, records(0)("truncDay").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(date_5, records(0)("truncHour").asInstanceOf[LynxValue].value)
+    Assertions.assertEquals(date_6, records(0)("truncSecond").asInstanceOf[LynxValue].value)
   }
 
   /*
@@ -668,8 +668,8 @@ class I_Temporal_InstantTypes extends TestBase {
         |""".stripMargin).records().toArray
     val now_localdatetime = LynxLocalDateTime.now()
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertTrue(LynxTemporalParser.isSameCurrentTime(now_localdatetime, records(0)("now")))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertTrue(LynxTemporalParser.isSameCurrentTime(now_localdatetime, records(0)("now")))
   }
 
   @Test
@@ -680,8 +680,8 @@ class I_Temporal_InstantTypes extends TestBase {
         |""".stripMargin).records().toArray
     val LocaldateTime_LA = LynxLocalDateTime.now(ZoneId.of("America/Los_Angeles"))
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertTrue(LynxTemporalParser.isSameCurrentTime(LocaldateTime_LA, records(0)("now")))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertTrue(LynxTemporalParser.isSameCurrentTime(LocaldateTime_LA, records(0)("now")))
   }
 
   //@Test
@@ -692,8 +692,8 @@ class I_Temporal_InstantTypes extends TestBase {
         |""".stripMargin).records().toArray
 
     val now_localdatetime = LynxLocalDateTime(java.time.LocalDateTime.now())
-    Assert.assertEquals(1, records.length)
-    Assert.assertTrue(LynxTemporalParser.isSameCurrentTime(now_localdatetime, records(0)("now")))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertTrue(LynxTemporalParser.isSameCurrentTime(now_localdatetime, records(0)("now")))
   }
 
   @Test
@@ -705,8 +705,8 @@ class I_Temporal_InstantTypes extends TestBase {
 
     val now_localdatetime = LynxLocalDateTime.now()
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertTrue(LynxTemporalParser.isSameCurrentTime(now_localdatetime, records(0)("now")))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertTrue(LynxTemporalParser.isSameCurrentTime(now_localdatetime, records(0)("now")))
   }
 
   @Test
@@ -718,8 +718,8 @@ class I_Temporal_InstantTypes extends TestBase {
 
     val now_localdatetime = LynxLocalDateTime.now()
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertTrue(LynxTemporalParser.isSameCurrentTime(now_localdatetime, records(0)("now")))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertTrue(LynxTemporalParser.isSameCurrentTime(now_localdatetime, records(0)("now")))
   }
 
   @Test
@@ -731,7 +731,7 @@ class I_Temporal_InstantTypes extends TestBase {
 
     val zone_localdatetime = LynxLocalDateTime.now(ZoneId.of("America/Los_Angeles"))
 
-    Assert.assertEquals(1, records.length)
+    Assertions.assertEquals(1, records.length)
 
   }
 
@@ -744,8 +744,8 @@ class I_Temporal_InstantTypes extends TestBase {
 
     val localDateTime_1 = LynxLocalDateTime.parse("1984-10-11T12:31:14.123456789").asInstanceOf[LynxLocalDateTime]
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(localDateTime_1, records(0)("theDate"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(localDateTime_1, records(0)("theDate"))
   }
 
   @Test
@@ -757,8 +757,8 @@ class I_Temporal_InstantTypes extends TestBase {
 
     val localdatetime_1 = LynxLocalDateTime.parse("1984-03-07T12:31:14.645")
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(localdatetime_1, records(0)("theDate"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(localdatetime_1, records(0)("theDate"))
   }
 
   @Test
@@ -770,8 +770,8 @@ class I_Temporal_InstantTypes extends TestBase {
 
     val localdatetime_1 = LynxLocalDateTime.parse("1984-08-14T12:31:14.645876123")
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(localdatetime_1, records(0)("theDate"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(localdatetime_1, records(0)("theDate"))
   }
 
   @Test
@@ -783,8 +783,8 @@ class I_Temporal_InstantTypes extends TestBase {
 
     val localdatetime_1 = LynxLocalDateTime.parse("1984-07-20T12:31:14.645876")
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(localdatetime_1, records(0)("theDate"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(localdatetime_1, records(0)("theDate"))
   }
 
   @Test
@@ -805,11 +805,11 @@ class I_Temporal_InstantTypes extends TestBase {
     val localdatetime_3 = LynxLocalDateTime.parse("2015-07-21T21:40:32")
     val localdatetime_4 = LynxLocalDateTime.parse("2015202T21")
 
-    Assert.assertEquals(4, records.length)
-    Assert.assertEquals(localdatetime_1, records(0)("theDate"))
-    Assert.assertEquals(localdatetime_2, records(1)("theDate"))
-    Assert.assertEquals(localdatetime_3, records(2)("theDate"))
-    Assert.assertEquals(localdatetime_4, records(3)("theDate"))
+    Assertions.assertEquals(4, records.length)
+    Assertions.assertEquals(localdatetime_1, records(0)("theDate"))
+    Assertions.assertEquals(localdatetime_2, records(1)("theDate"))
+    Assertions.assertEquals(localdatetime_3, records(2)("theDate"))
+    Assertions.assertEquals(localdatetime_4, records(3)("theDate"))
   }
 
   @Test
@@ -824,9 +824,9 @@ class I_Temporal_InstantTypes extends TestBase {
     val localDateTime_1 = LynxLocalDateTime.parse("1984-10-11T10:10:10")
     val localDateTime_2 = LynxLocalDateTime.parse("1984-10-28T10:10:10")
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(localDateTime_1, records(0)("dateHHMMSS"))
-    Assert.assertEquals(localDateTime_2, records(0)("dateDDHHMMSS"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(localDateTime_1, records(0)("dateHHMMSS"))
+    Assertions.assertEquals(localDateTime_2, records(0)("dateDDHHMMSS"))
   }
 
   @Test
@@ -841,9 +841,9 @@ class I_Temporal_InstantTypes extends TestBase {
     val localDateTime_1 = LynxLocalDateTime.parse("1984-10-11T12:31:14.645876")
     val localDateTime_2 = LynxLocalDateTime.parse("1984-10-11T12:31:42.645876")
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(localDateTime_1, records(0)("YYYYMMDDTime"))
-    Assert.assertEquals(localDateTime_2, records(0)("YYYYMMDDTimeSS"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(localDateTime_1, records(0)("YYYYMMDDTime"))
+    Assertions.assertEquals(localDateTime_2, records(0)("YYYYMMDDTimeSS"))
   }
 
   @Test
@@ -859,9 +859,9 @@ class I_Temporal_InstantTypes extends TestBase {
     val localDateTime_1 = LynxLocalDateTime.parse("1984-10-11T12:31:14.645876")
     val localDateTime_2 = LynxLocalDateTime.parse("1984-10-28T12:31:42.645876")
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(localDateTime_1, records(0)("dateTime"))
-    Assert.assertEquals(localDateTime_2, records(0)("dateTimeDDSS"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(localDateTime_1, records(0)("dateTime"))
+    Assertions.assertEquals(localDateTime_2, records(0)("dateTimeDDSS"))
   }
 
   @Test
@@ -876,9 +876,9 @@ class I_Temporal_InstantTypes extends TestBase {
     val localDateTime_1 = LynxLocalDateTime.parse("19841011T12:00")
     val localDateTime_2 = LynxLocalDateTime.parse("1984-10-28T12:00:42")
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(localDateTime_1, records(0)("dateTime"))
-    Assert.assertEquals(localDateTime_2, records(0)("dateTimeDDSS"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(localDateTime_1, records(0)("dateTime"))
+    Assertions.assertEquals(localDateTime_2, records(0)("dateTimeDDSS"))
   }
 
   @Test
@@ -901,13 +901,13 @@ class I_Temporal_InstantTypes extends TestBase {
     val localDateTimetime_5 = LynxLocalDateTime.parse("20171111T12:00:00.000000002")
     val localDateTimetime_6 = LynxLocalDateTime.parse("20171111T12:31:14")
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(localDateTimetime_1, records(0)("truncMillenium"))
-    Assert.assertEquals(localDateTimetime_2, records(0)("truncYear"))
-    Assert.assertEquals(localDateTimetime_3, records(0)("truncMonth"))
-    Assert.assertEquals(localDateTimetime_4, records(0)("truncDay"))
-    Assert.assertEquals(localDateTimetime_5, records(0)("truncHour"))
-    Assert.assertEquals(localDateTimetime_6, records(0)("truncSecond"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(localDateTimetime_1, records(0)("truncMillenium"))
+    Assertions.assertEquals(localDateTimetime_2, records(0)("truncYear"))
+    Assertions.assertEquals(localDateTimetime_3, records(0)("truncMonth"))
+    Assertions.assertEquals(localDateTimetime_4, records(0)("truncDay"))
+    Assertions.assertEquals(localDateTimetime_5, records(0)("truncHour"))
+    Assertions.assertEquals(localDateTimetime_6, records(0)("truncSecond"))
   }
 
 
@@ -920,8 +920,8 @@ class I_Temporal_InstantTypes extends TestBase {
 
     val now_time = LynxLocalTime.now()
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertTrue(LynxTemporalParser.isSameCurrentTime(now_time, records(0)("now")))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertTrue(LynxTemporalParser.isSameCurrentTime(now_time, records(0)("now")))
   }
 
   @Test
@@ -933,8 +933,8 @@ class I_Temporal_InstantTypes extends TestBase {
 
     val zoneTime_LA = LynxLocalTime.now(ZoneId.of("America/Los_Angeles"))
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertTrue(LynxTemporalParser.isSameCurrentTime(zoneTime_LA, records(0)("nowInLA")))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertTrue(LynxTemporalParser.isSameCurrentTime(zoneTime_LA, records(0)("nowInLA")))
   }
 
   @Test
@@ -944,8 +944,8 @@ class I_Temporal_InstantTypes extends TestBase {
         |RETURN localtime.transaction() AS now
         |""".stripMargin).records().toArray
     //TODO
-    Assert.assertEquals(1, records.length)
-    Assert.assertTrue(LynxTemporalParser.isSameCurrentTime(LynxLocalTime.now(), records(0)("now")))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertTrue(LynxTemporalParser.isSameCurrentTime(LynxLocalTime.now(), records(0)("now")))
   }
 
   @Test
@@ -956,8 +956,8 @@ class I_Temporal_InstantTypes extends TestBase {
         |""".stripMargin).records().toArray
 
     val zoneTime = LynxLocalTime(java.time.LocalTime.now())
-    Assert.assertEquals(1, records.length)
-    Assert.assertTrue(LynxTemporalParser.isSameCurrentTime(zoneTime, records(0)("now")))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertTrue(LynxTemporalParser.isSameCurrentTime(zoneTime, records(0)("now")))
   }
 
   @Test
@@ -967,8 +967,8 @@ class I_Temporal_InstantTypes extends TestBase {
         |RETURN localtime.statement('America/Los Angeles') AS nowInLA
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertTrue(LynxTemporalParser.isSameCurrentTime(LynxLocalTime.now(ZoneId.of("America/Los_Angeles")), records(0)("nowInLA")))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertTrue(LynxTemporalParser.isSameCurrentTime(LynxLocalTime.now(ZoneId.of("America/Los_Angeles")), records(0)("nowInLA")))
   }
 
   @Test
@@ -978,8 +978,8 @@ class I_Temporal_InstantTypes extends TestBase {
         |RETURN localtime.realtime() AS now
         |""".stripMargin).records().toArray
     //TODO
-    Assert.assertEquals(1, records.length)
-    Assert.assertTrue(LynxTemporalParser.isSameCurrentTime(LynxLocalTime.now(), records(0)("now")))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertTrue(LynxTemporalParser.isSameCurrentTime(LynxLocalTime.now(), records(0)("now")))
   }
 
   @Test
@@ -998,10 +998,10 @@ class I_Temporal_InstantTypes extends TestBase {
     val time_2 = LocalTime.of(12, 31, 14)
     val time_3 = LocalTime.of(12, 0)
 
-    Assert.assertEquals(3, records.length)
-    Assert.assertEquals(time_1, records(0)("theTime").value)
-    Assert.assertEquals(time_2, records(1)("theTime").value)
-    Assert.assertEquals(time_3, records(2)("theTime").value)
+    Assertions.assertEquals(3, records.length)
+    Assertions.assertEquals(time_1, records(0)("theTime").value)
+    Assertions.assertEquals(time_2, records(1)("theTime").value)
+    Assertions.assertEquals(time_3, records(2)("theTime").value)
   }
 
   @Test
@@ -1021,11 +1021,11 @@ class I_Temporal_InstantTypes extends TestBase {
     val time_2 = LynxLocalTime(LocalTime.of(21, 40))
     val time_3 = LynxLocalTime(LocalTime.of(21, 0))
 
-    Assert.assertEquals(4, records.length)
-    Assert.assertEquals(time_1, records(0)("theTime"))
-    Assert.assertEquals(time_1, records(1)("theTime"))
-    Assert.assertEquals(time_2, records(2)("theTime"))
-    Assert.assertEquals(time_3, records(3)("theTime"))
+    Assertions.assertEquals(4, records.length)
+    Assertions.assertEquals(time_1, records(0)("theTime"))
+    Assertions.assertEquals(time_1, records(1)("theTime"))
+    Assertions.assertEquals(time_2, records(2)("theTime"))
+    Assertions.assertEquals(time_3, records(3)("theTime"))
   }
 
   @Test
@@ -1040,9 +1040,9 @@ class I_Temporal_InstantTypes extends TestBase {
     val time_1 = LynxLocalTime(LocalTime.of(12, 31, 14, 645876000))
     val time_2 = LynxLocalTime(LocalTime.of(12, 31, 42, 645876000))
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(time_1, records(0)("timeOnly"))
-    Assert.assertEquals(time_2, records(0)("timeSS"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(time_1, records(0)("timeOnly"))
+    Assertions.assertEquals(time_2, records(0)("timeSS"))
   }
 
   @Test
@@ -1065,13 +1065,13 @@ class I_Temporal_InstantTypes extends TestBase {
     val time_5 = LynxLocalTime(LocalTime.of(12, 31, 14, 645000000))
     val time_6 = LynxLocalTime(LocalTime.of(12, 31, 14, 645876000))
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(time_1, records(0)("truncDay"))
-    Assert.assertEquals(time_2, records(0)("truncHour"))
-    Assert.assertEquals(time_3, records(0)("truncMinute"))
-    Assert.assertEquals(time_4, records(0)("truncSecond"))
-    Assert.assertEquals(time_5, records(0)("truncMillisecond"))
-    Assert.assertEquals(time_6, records(0)("truncMicrosecond"))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(time_1, records(0)("truncDay"))
+    Assertions.assertEquals(time_2, records(0)("truncHour"))
+    Assertions.assertEquals(time_3, records(0)("truncMinute"))
+    Assertions.assertEquals(time_4, records(0)("truncSecond"))
+    Assertions.assertEquals(time_5, records(0)("truncMillisecond"))
+    Assertions.assertEquals(time_6, records(0)("truncMicrosecond"))
   }
 
   /*
@@ -1086,8 +1086,8 @@ class I_Temporal_InstantTypes extends TestBase {
 
     val now_time = LynxTime.now()
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertTrue(LynxTemporalParser.isSameCurrentTime(now_time, records(0)("currentTime")))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertTrue(LynxTemporalParser.isSameCurrentTime(now_time, records(0)("currentTime")))
   }
 
   @Test
@@ -1099,7 +1099,7 @@ class I_Temporal_InstantTypes extends TestBase {
 
     val now_time = LynxTime.now()
 
-    Assert.assertEquals(1, records.length)
+    Assertions.assertEquals(1, records.length)
   }
   @Test
   def currentTime_2(): Unit = {
@@ -1109,8 +1109,8 @@ class I_Temporal_InstantTypes extends TestBase {
         |""".stripMargin).records().toArray
 
     val now_zonedTime = LynxTime.now(ZoneId.of("America/Los_Angeles"))
-    Assert.assertEquals(1, records.length)
-    Assert.assertTrue(LynxTemporalParser.isSameCurrentTime(now_zonedTime, records(0)("currentTimeInLA")))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertTrue(LynxTemporalParser.isSameCurrentTime(now_zonedTime, records(0)("currentTimeInLA")))
   }
 
 
@@ -1121,8 +1121,8 @@ class I_Temporal_InstantTypes extends TestBase {
         |RETURN time.transaction() AS currentTime
         |""".stripMargin).records().toArray
     //TODO
-    Assert.assertEquals(1, records.length)
-    Assert.assertTrue(LynxTemporalParser.isSameCurrentTime(LynxTime.now(), records(0)("currentTime")))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertTrue(LynxTemporalParser.isSameCurrentTime(LynxTime.now(), records(0)("currentTime")))
   }
 
   @Test
@@ -1132,8 +1132,8 @@ class I_Temporal_InstantTypes extends TestBase {
         |RETURN time.statement() AS currentTime
         |""".stripMargin).records().toArray
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertTrue(LynxTemporalParser.isSameCurrentTime(LynxTime.now(), records(0)("currentTime")))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertTrue(LynxTemporalParser.isSameCurrentTime(LynxTime.now(), records(0)("currentTime")))
   }
 
   @Test
@@ -1144,8 +1144,8 @@ class I_Temporal_InstantTypes extends TestBase {
         |""".stripMargin).records().toArray
 
     val now_zonedTime = LynxTime.now(ZoneId.of("America/Los_Angeles"))
-    Assert.assertEquals(1, records.length)
-    Assert.assertTrue(LynxTemporalParser.isSameCurrentTime(now_zonedTime, records(0)("currentTimeInLA")))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertTrue(LynxTemporalParser.isSameCurrentTime(now_zonedTime, records(0)("currentTimeInLA")))
   }
 
   @Test
@@ -1155,8 +1155,8 @@ class I_Temporal_InstantTypes extends TestBase {
         |RETURN time.realtime() AS currentTime
         |""".stripMargin).records().toArray
     //TODO
-    Assert.assertEquals(1, records.length)
-    Assert.assertTrue(LynxTemporalParser.isSameCurrentTime(LynxTime.now(), records(0)("currentTime")))
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertTrue(LynxTemporalParser.isSameCurrentTime(LynxTime.now(), records(0)("currentTime")))
   }
 
   @Test
@@ -1179,12 +1179,12 @@ class I_Temporal_InstantTypes extends TestBase {
     val time_4 = "12:31+01:00"
     val time_5 = "12:00+01:00"
 
-    Assert.assertEquals(5, records.length)
-    Assert.assertEquals(time_1, records(0)("theTime").asInstanceOf[LynxValue].value.toString)
-    Assert.assertEquals(time_2, records(1)("theTime").asInstanceOf[LynxValue].value.toString)
-    Assert.assertEquals(time_3, records(2)("theTime").asInstanceOf[LynxValue].value.toString)
-    Assert.assertEquals(time_4, records(3)("theTime").asInstanceOf[LynxValue].value.toString)
-    Assert.assertEquals(time_5, records(4)("theTime").asInstanceOf[LynxValue].value.toString)
+    Assertions.assertEquals(5, records.length)
+    Assertions.assertEquals(time_1, records(0)("theTime").asInstanceOf[LynxValue].value.toString)
+    Assertions.assertEquals(time_2, records(1)("theTime").asInstanceOf[LynxValue].value.toString)
+    Assertions.assertEquals(time_3, records(2)("theTime").asInstanceOf[LynxValue].value.toString)
+    Assertions.assertEquals(time_4, records(3)("theTime").asInstanceOf[LynxValue].value.toString)
+    Assertions.assertEquals(time_5, records(4)("theTime").asInstanceOf[LynxValue].value.toString)
   }
 
   @Test
@@ -1213,15 +1213,15 @@ class I_Temporal_InstantTypes extends TestBase {
     val time_7 = "21:40-02:00"
     val time_8 = "22:00+18:00"
 
-    Assert.assertEquals(8, records.length)
-    Assert.assertEquals(time_1, records(0)("theTime").value.toString)
-    Assert.assertEquals(time_2, records(1)("theTime").value.toString)
-    Assert.assertEquals(time_3, records(2)("theTime").value.toString)
-    Assert.assertEquals(time_4, records(3)("theTime").value.toString)
-    Assert.assertEquals(time_5, records(4)("theTime").value.toString)
-    Assert.assertEquals(time_6, records(5)("theTime").value.toString)
-    Assert.assertEquals(time_7, records(6)("theTime").value.toString)
-    Assert.assertEquals(time_8, records(7)("theTime").value.toString)
+    Assertions.assertEquals(8, records.length)
+    Assertions.assertEquals(time_1, records(0)("theTime").value.toString)
+    Assertions.assertEquals(time_2, records(1)("theTime").value.toString)
+    Assertions.assertEquals(time_3, records(2)("theTime").value.toString)
+    Assertions.assertEquals(time_4, records(3)("theTime").value.toString)
+    Assertions.assertEquals(time_5, records(4)("theTime").value.toString)
+    Assertions.assertEquals(time_6, records(5)("theTime").value.toString)
+    Assertions.assertEquals(time_7, records(6)("theTime").value.toString)
+    Assertions.assertEquals(time_8, records(7)("theTime").value.toString)
   }
 
   @Test
@@ -1240,11 +1240,11 @@ class I_Temporal_InstantTypes extends TestBase {
     val time_3 = "12:31:42.645876Z"
     val time_4 = "12:31:42.645876+05:00"
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(time_1, records(0)("timeOnly").value.toString)
-    Assert.assertEquals(time_2, records(0)("timeTimezone").value.toString)
-    Assert.assertEquals(time_3, records(0)("timeSS").value.toString)
-    Assert.assertEquals(time_4, records(0)("timeSSTimezone").value.toString)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(time_1, records(0)("timeOnly").value.toString)
+    Assertions.assertEquals(time_2, records(0)("timeTimezone").value.toString)
+    Assertions.assertEquals(time_3, records(0)("timeSS").value.toString)
+    Assertions.assertEquals(time_4, records(0)("timeSSTimezone").value.toString)
   }
 
   @Test
@@ -1263,13 +1263,13 @@ class I_Temporal_InstantTypes extends TestBase {
     val time_5 = "12:31:14.645000002-01:00"
     val time_6 = "12:31:14.645876-01:00"
 
-    Assert.assertEquals(1, records.length)
-    Assert.assertEquals(time_1, records(0)("truncDay").value.toString)
-    Assert.assertEquals(time_2, records(0)("truncHour").value.toString)
-    Assert.assertEquals(time_3, records(0)("truncMinute").value.toString)
-    Assert.assertEquals(time_4, records(0)("truncSecond").value.toString)
-    Assert.assertEquals(time_5, records(0)("truncMillisecond").value.toString)
-    Assert.assertEquals(time_6, records(0)("truncMicrosecond").value.toString)
+    Assertions.assertEquals(1, records.length)
+    Assertions.assertEquals(time_1, records(0)("truncDay").value.toString)
+    Assertions.assertEquals(time_2, records(0)("truncHour").value.toString)
+    Assertions.assertEquals(time_3, records(0)("truncMinute").value.toString)
+    Assertions.assertEquals(time_4, records(0)("truncSecond").value.toString)
+    Assertions.assertEquals(time_5, records(0)("truncMillisecond").value.toString)
+    Assertions.assertEquals(time_6, records(0)("truncMicrosecond").value.toString)
   }
 
 }

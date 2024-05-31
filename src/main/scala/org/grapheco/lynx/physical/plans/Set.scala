@@ -1,6 +1,6 @@
 package org.grapheco.lynx.physical.plans
 
-import org.grapheco.lynx.LynxType
+import org.grapheco.lynx.types.LynxType
 import org.grapheco.lynx.dataframe.DataFrame
 import org.grapheco.lynx.physical._
 import org.grapheco.lynx.runner.ExecutionContext
@@ -8,6 +8,7 @@ import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.composite.LynxMap
 import org.grapheco.lynx.types.property.LynxNull
 import org.grapheco.lynx.types.structural._
+import org.grapheco.lynx.types.traits.HasProperty
 import org.opencypher.v9_0.ast._
 import org.opencypher.v9_0.expressions._
 

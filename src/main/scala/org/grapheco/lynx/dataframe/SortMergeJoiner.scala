@@ -1,7 +1,6 @@
 package org.grapheco.lynx.dataframe
 
-import org.grapheco.lynx.LynxType
-import org.grapheco.lynx.types.LynxValue
+import org.grapheco.lynx.types.{LynxType, LynxValue}
 import org.grapheco.lynx.types.property.LynxNull
 import org.grapheco.lynx.util.Profiler
 

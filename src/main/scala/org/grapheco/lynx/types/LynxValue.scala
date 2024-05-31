@@ -1,6 +1,5 @@
 package org.grapheco.lynx.types
 
-import org.grapheco.lynx.LynxType
 import org.grapheco.lynx.types.composite.{LynxList, LynxMap}
 import org.grapheco.lynx.types.property.{LynxBoolean, LynxFloat, LynxInteger, LynxNull, LynxNumber, LynxString}
 import org.grapheco.lynx.types.spatial.{Cartesian2D, Cartesian3D, Geographic2D, Geographic3D, LynxPoint}
@@ -32,7 +31,9 @@ trait LynxValue extends Comparable[LynxValue] {
 
   def valueEq(lynxValue: LynxValue): Boolean = this.compareTo(lynxValue) == 0
 
-  def sameTypeCompareTo(o: LynxValue): Int
+  def sameTypeCompareTo(o: LynxValue): Int = 0
+
+  def compareOrder: Int = 0
 
   /*
     To accomplish this, we propose a pre-determined order of types and ensure that each value falls
@@ -54,6 +55,11 @@ trait LynxValue extends Comparable[LynxValue] {
   private final val CART = 73
   private final val CART_3D = 74
 
+  private final val DATE = 81
+  private final val TIME = 82
+  private final val DATETIME = 83
+
+
   private final val VOID = 999
 
   def typeOrder(lynxValue: LynxValue): Int = lynxValue match {
@@ -71,14 +77,17 @@ trait LynxValue extends Comparable[LynxValue] {
       case _: Cartesian2D => CART
       case _: Cartesian3D => CART_3D
     }
+    case _: LynxDate => DATE
+    case _: LynxTime => TIME
+    case _: LynxDateTime => DATETIME
     case LynxNull => VOID
-    case _ => 0
+    case _ => lynxValue.compareOrder
   }
-
 
   override def compareTo(o: LynxValue): Int = {
     val o1 = typeOrder(this)
     val o2 = typeOrder(o)
+    if (o1 == 0 && o2 == 0) throw TypeCompareException(this.lynxType, o.lynxType)
     if (o1 == o2) this.sameTypeCompareTo(o)
     else o1 - o2
   }

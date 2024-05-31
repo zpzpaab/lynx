@@ -2,7 +2,8 @@ package org.grapheco.lynx.physical.plans
 
 import org.grapheco.lynx.dataframe.DataFrame
 import org.grapheco.lynx.runner.ExecutionContext
-import org.grapheco.lynx.{LynxType, TreeNode}
+import org.grapheco.lynx.TreeNode
+import org.grapheco.lynx.types.LynxType
 
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer

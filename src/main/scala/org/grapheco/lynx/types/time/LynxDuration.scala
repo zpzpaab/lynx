@@ -1,12 +1,11 @@
 package org.grapheco.lynx.types.time
 
-import org.grapheco.lynx.LynxType
-import org.grapheco.lynx.types.LynxValue
+import org.grapheco.lynx.types.{DurationType, LTDuration, LynxValue}
 import org.grapheco.lynx.types.property.{LynxInteger, LynxNull}
 import org.grapheco.lynx.types.structural.LynxPropertyKey
 import org.grapheco.lynx.types.time.LynxComponentDuration.{AVG_DAYS_OF_MONTH, SECOND_OF_DAY}
 import org.grapheco.lynx.types.time.LynxDuration.{getDurationMap, toSecond}
-import org.opencypher.v9_0.util.symbols.CTDuration
+import org.grapheco.lynx.types.traits.HasProperty
 
 import java.math.BigDecimal
 import java.time.temporal.{ChronoField, ChronoUnit, TemporalUnit}
@@ -20,7 +19,7 @@ import java.util.regex.Pattern
  * @Date 2022/4/1
  * @Version 0.1
  */
-case class LynxDuration(duration: String, map: Map[String, Int] = Map("days" -> 0)) extends LynxTemporalValue with LynxComponentDuration {
+case class LynxDuration(duration: String, map: Map[String, Int] = Map("days" -> 0)) extends LynxTemporalValue with LynxComponentDuration with HasProperty{
 
   def nano: Long = getDurationMap(duration)._1 match {
     case "-" => (-1 * (toSecond(getDurationMap(getDurationMap(duration)._2)) * Math.pow(10, 9))).toLong
@@ -84,7 +83,7 @@ case class LynxDuration(duration: String, map: Map[String, Int] = Map("days" -> 
   }
 
 
-  def lynxType: LynxType = CTDuration
+  def lynxType: DurationType = LTDuration
 
   var months: Int = duration_Map.getOrElse("months", 0) + duration_Map.getOrElse("years", 0) * 12
   var years: Int = months / 12
@@ -118,7 +117,7 @@ case class LynxDuration(duration: String, map: Map[String, Int] = Map("days" -> 
 
   override def sameTypeCompareTo(o: LynxValue): Int = ???
 
-  override def keys: Seq[LynxPropertyKey] = super.keys ++ Seq("years", "monthsOfYear", "quartersOfYear", "quarters", "months", "monthsOfQuarter",
+  override def keys: Seq[LynxPropertyKey] = Seq("years", "monthsOfYear", "quartersOfYear", "quarters", "months", "monthsOfQuarter",
     "days", "weeks", "daysOfWeek", "hours", "minutesOfHour", "secondsOfMinute", "minutes", "seconds", "nanoseconds", "milliseconds", "microseconds",
     "microsecondsOfSecond", "millisecondsOfSecond", "nanosecondsOfSecond").map(LynxPropertyKey)
 

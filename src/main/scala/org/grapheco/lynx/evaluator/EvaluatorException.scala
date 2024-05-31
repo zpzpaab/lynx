@@ -14,3 +14,7 @@ case class EvaluatorException(msg: String) extends LynxException {
 case class EvaluatorTypeMismatch(actualType: String, expectedType: String) extends LynxException {
   override def getMessage: String = s"Type Mismatch, expected ${expectedType}, actual ${actualType}"
 }
+
+case class EvaluatorOptUnsupported(type1: String, type2: String, opt: String) extends LynxException {
+  override def getMessage: String = s"The operator $opt cannot be used between type $type1 and type $type2."
+}

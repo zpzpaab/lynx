@@ -1,11 +1,10 @@
 package org.grapheco.lynx.physical.planner.translators
 
-import org.grapheco.lynx.LynxType
+import org.grapheco.lynx.types.{LTNode, LTRelationship, LynxType}
 import org.grapheco.lynx.physical.planner.PPTNodeTranslator
 import org.grapheco.lynx.physical._
 import org.grapheco.lynx.physical.plans.PhysicalPlan
 import org.opencypher.v9_0.expressions.{EveryPath, Expression, LabelName, LogicalVariable, NodePattern, Pattern, Range, RelTypeName, RelationshipChain, RelationshipPattern, SemanticDirection}
-import org.opencypher.v9_0.util.symbols.{CTNode, CTRelationship}
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -21,7 +20,7 @@ case class PPTCreateTranslator(p: Pattern) extends PPTNodeTranslator {
               //create (n)
               case NodePattern(var1: Option[LogicalVariable], labels1, properties1, _) =>
                 val leftNodeName = var1.map(_.name).getOrElse(s"__NODE_${element.hashCode}")
-                (schema1 :+ (leftNodeName -> CTNode)) ->
+                (schema1 :+ (leftNodeName -> LTNode)) ->
                   (ops1 :+ FormalNode(leftNodeName, labels1, properties1))
 
               //create (m)-[r]-(n)
@@ -53,16 +52,16 @@ case class PPTCreateTranslator(p: Pattern) extends PPTNodeTranslator {
       case NodePattern(var1: Option[LogicalVariable], labels1, properties1, _) =>
         val varLeftNode = var1.map(_.name).getOrElse(s"__NODE_${left.hashCode}")
         if (!definedVars.contains(varLeftNode)) {
-          schemaLocal += varLeftNode -> CTNode
+          schemaLocal += varLeftNode -> LTNode
           opsLocal += FormalNode(varLeftNode, labels1, properties1)
         }
 
         if (!definedVars.contains(varRightNode)) {
-          schemaLocal += varRightNode -> CTNode
+          schemaLocal += varRightNode -> LTNode
           opsLocal += FormalNode(varRightNode, labels3, properties3)
         }
 
-        schemaLocal += varRelation -> CTRelationship
+        schemaLocal += varRelation -> LTRelationship
         opsLocal += FormalRelationship(varRelation, types, properties2, varLeftNode, varRightNode)
 
         (varRightNode, schemaLocal, opsLocal)
@@ -73,8 +72,8 @@ case class PPTCreateTranslator(p: Pattern) extends PPTNodeTranslator {
         val (varLastNode, schema, ops) = build(leftChain, definedVars)
         (
           varRightNode,
-          schema ++ Seq(varRelation -> CTRelationship) ++ (if (!definedVars.contains(varRightNode)) {
-            Seq(varRightNode -> CTNode)
+          schema ++ Seq(varRelation -> LTRelationship) ++ (if (!definedVars.contains(varRightNode)) {
+            Seq(varRightNode -> LTNode)
           } else {
             Seq.empty
           }),

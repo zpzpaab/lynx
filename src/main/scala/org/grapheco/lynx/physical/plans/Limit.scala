@@ -1,6 +1,5 @@
 package org.grapheco.lynx.physical.plans
 
-import org.grapheco.lynx.LynxType
 import org.grapheco.lynx.dataframe.DataFrame
 import org.grapheco.lynx.evaluator.ExpressionContext
 import org.grapheco.lynx.physical.{ExecuteException, PhysicalPlannerContext}

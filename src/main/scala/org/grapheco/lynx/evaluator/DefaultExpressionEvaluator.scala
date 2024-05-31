@@ -1,20 +1,20 @@
 package org.grapheco.lynx.evaluator
 
 import org.grapheco.lynx.procedure.{ProcedureException, ProcedureExpression, ProcedureRegistry}
+import org.grapheco.lynx.runner.{GraphModel, NodeFilter, RelationshipFilter}
 import org.grapheco.lynx.types.composite.{LynxList, LynxMap}
 import org.grapheco.lynx.types.property._
-import org.grapheco.lynx.types.structural.{HasProperty, LynxNode, LynxNodeLabel, LynxPath, LynxPropertyKey, LynxRelationship, LynxRelationshipType}
-import org.grapheco.lynx.types.time.{LynxDate, LynxDateTime, LynxDuration, LynxLocalDateTime, LynxTemporalValue, LynxTime}
-import org.grapheco.lynx.types.{LynxValue, TypeSystem}
-import org.grapheco.lynx.{LynxException, LynxType}
-import org.grapheco.lynx.runner.{GraphModel, NodeFilter, RelationshipFilter}
-import org.opencypher.v9_0.expressions.functions.{Collect, Id}
+import org.grapheco.lynx.types.structural._
+import org.grapheco.lynx.types.time._
+import org.grapheco.lynx.types.traits.{HasProperty, LynxComputable}
+import org.grapheco.lynx.types.{LTAny, LTBoolean, LTFloat, LTInteger, LTList, LTString, LynxType, LynxValue, TypeSystem}
 import org.opencypher.v9_0.expressions._
-import org.opencypher.v9_0.util.symbols.{CTAny, CTBoolean, CTFloat, CTInteger, CTList, CTString, ListType}
+import org.opencypher.v9_0.expressions.functions.{Collect, Id}
+import org.opencypher.v9_0.util.symbols.ListType
 
 import scala.math.abs
 import scala.util.matching.Regex
-
+import org.grapheco.lynx.types.CT2LT
 /**
  * @ClassName DefaultExpressionEvaluator
  * @Description
@@ -27,22 +27,22 @@ class DefaultExpressionEvaluator(graphModel: GraphModel, types: TypeSystem, proc
   override def typeOf(expr: Expression, definedVarTypes: Map[String, LynxType]): LynxType = {
     expr match {
       case Parameter(name, parameterType) => parameterType
-      case _: BooleanLiteral => CTBoolean
-      case _: StringLiteral => CTString
-      case _: IntegerLiteral => CTInteger
-      case _: DoubleLiteral => CTFloat
-      case CountStar() => CTInteger
+      case _: BooleanLiteral => LTBoolean
+      case _: StringLiteral => LTString
+      case _: IntegerLiteral => LTInteger
+      case _: DoubleLiteral => LTFloat
+      case CountStar() => LTInteger
       case ProcedureExpression(funcInov) => funcInov.function match {
-        case Collect => CTList(typeOf(funcInov.args.head, definedVarTypes))
-        case Id => CTInteger
-        case _ => CTAny
+        case Collect => LTList(typeOf(funcInov.args.head, definedVarTypes))
+        case Id => LTInteger
+        case _ => LTAny
       }
       case ContainerIndex(expr, _) => typeOf(expr, definedVarTypes) match {
         case ListType(cypherType) => cypherType
-        case _ => CTAny
+        case _ => LTAny
       }
       case Variable(name) => definedVarTypes(name)
-      case _ => CTAny
+      case _ => LTAny
     }
   }
 
@@ -130,6 +130,7 @@ class DefaultExpressionEvaluator(graphModel: GraphModel, types: TypeSystem, proc
             case (a: LynxTime, b: LynxDuration) => a.plusDuration(b)
             case (a: LynxDuration, b: LynxDuration) => a.plusByMap(b)
             case (a: LynxDateTime, b: LynxDuration) => a.plusDuration(b)
+            case (a: LynxComputable, b: LynxComputable) => a add b
           }).getOrElse(LynxNull)
 
       case Subtract(lhs, rhs) =>
@@ -141,6 +142,7 @@ class DefaultExpressionEvaluator(graphModel: GraphModel, types: TypeSystem, proc
             case (a: LynxDuration, b: LynxDuration) => a.minusByMap(b)
             case (a: LynxTime, b: LynxDuration) => a.minusDuration(b)
             case (a: LynxDateTime, b: LynxDuration) => a.minusDuration(b)
+            case (a: LynxComputable, b: LynxComputable) => a subtract  b
           }).getOrElse(LynxNull)
 
       case Ors(exprs) => LynxBoolean(exprs.map(eval(_)).exists(judge))
@@ -165,16 +167,18 @@ class DefaultExpressionEvaluator(graphModel: GraphModel, types: TypeSystem, proc
             }
           }
           case (d1: LynxDuration, d2: LynxInteger) => d1.multiplyInt(d2)
+          case (a: LynxComputable, b: LynxComputable) => a multiply  b
+          case (n, m) => throw EvaluatorOptUnsupported(n.lynxType.toString, m.lynxType.toString, expr.toString)
         }
       }
 
-      case Divide(lhs, rhs) => {
+      case Divide(lhs, rhs) =>
         (eval(lhs), eval(rhs)) match {
           case (n: LynxNumber, m: LynxNumber) => n / m
           case (n: LynxDuration, m: LynxInteger) => n.divideInt(m)
-          case (n, m) => throw EvaluatorTypeMismatch(n.lynxType.toString, "LynxNumber")
+          case (a: LynxComputable, b: LynxComputable) => a divide  b
+          case (n, m) => throw EvaluatorOptUnsupported(n.lynxType.toString, m.lynxType.toString, expr.toString)
         }
-      }
 
       case Modulo(lhs, rhs) => {
         (eval(lhs), eval(rhs)) match {
@@ -245,10 +249,6 @@ class DefaultExpressionEvaluator(graphModel: GraphModel, types: TypeSystem, proc
         eval(src) match {
           case LynxNull => LynxNull
           case hp: HasProperty => hp.property(LynxPropertyKey(name)).getOrElse(LynxNull)
-          case time: LynxDateTime => LynxValue(name match { //TODO add HasProperty into LynxDateTime and remove this case.
-            case "epochMillis" => time.epochMillis
-          })
-          case map: LynxMap => map.get(name).getOrElse(LynxNull)
         }
 
       case In(lhs, rhs) =>

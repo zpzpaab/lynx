@@ -1,7 +1,6 @@
 package org.grapheco.lynx.types.property
 
-import org.grapheco.lynx.types.LynxValue
-import org.opencypher.v9_0.util.symbols.{CTInteger, IntegerType}
+import org.grapheco.lynx.types.{IntegerType, LTInteger, LynxValue}
 
 /**
  * @ClassName LynxInteger
@@ -50,5 +49,5 @@ case class LynxInteger(v: Long) extends LynxNumber {
     }
   }
 
-  def lynxType: IntegerType = CTInteger
+  def lynxType: IntegerType = LTInteger
 }

@@ -5,12 +5,11 @@ import org.grapheco.lynx.parser.{DefaultQueryParser, QueryParser}
 import org.grapheco.lynx.physical._
 import org.grapheco.lynx.procedure.CallableProcedure
 import org.grapheco.lynx.runner._
-import org.grapheco.lynx.types.LynxValue
+import org.grapheco.lynx.types.{LTInteger, LTString, LynxType, LynxValue}
 import org.grapheco.lynx.types.composite.LynxList
 import org.grapheco.lynx.types.property.LynxInteger
 import org.grapheco.lynx.types.structural._
 import org.grapheco.lynx.util.Profiler
-import org.opencypher.v9_0.util.symbols.{CTInteger, CTString}
 
 import scala.collection.mutable
 import scala.language.implicitConversions
@@ -184,15 +183,15 @@ class TestBase extends LazyLogging {
   val runner: CypherRunner = new CypherRunner(model) {
     procedures.register("test.authors", 0, new CallableProcedure {
       override val inputs: Seq[(String, LynxType)] = Seq()
-      override val outputs: Seq[(String, LynxType)] = Seq("name" -> CTString)
+      override val outputs: Seq[(String, LynxType)] = Seq("name" -> LTString)
 
       override def call(args: Seq[LynxValue]): LynxValue =
         LynxList(List(LynxValue("bluejoe"), LynxValue("lzx"), LynxValue("airzihao")))
     })
 
     procedures.register("toInterger", 1, new CallableProcedure {
-      override val inputs: Seq[(String, LynxType)] = Seq("text" -> CTString)
-      override val outputs: Seq[(String, LynxType)] = Seq("number" -> CTInteger)
+      override val inputs: Seq[(String, LynxType)] = Seq("text" -> LTString)
+      override val outputs: Seq[(String, LynxType)] = Seq("number" -> LTInteger)
 
       override def call(args: Seq[LynxValue]): LynxValue =
         LynxInteger(args.head.value.toString.toInt)

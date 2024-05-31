@@ -2,7 +2,6 @@ package org.grapheco.lynx.types.composite
 
 import org.grapheco.lynx.types._
 import org.grapheco.lynx.types.property.{LynxFloat, LynxInteger, LynxNull, LynxNumber, LynxString}
-import org.opencypher.v9_0.util.symbols.{CTAny, CTList, CypherType}
 
 /**
  * @ClassName LynxList
@@ -14,7 +13,7 @@ import org.opencypher.v9_0.util.symbols.{CTAny, CTList, CypherType}
 case class LynxList(v: List[LynxValue]) extends LynxCompositeValue {
   override def value: List[LynxValue] = v
 
-  override def lynxType: CypherType = CTList(CTAny)
+  override def lynxType: ListType = LTList(LTAny)
 
   /*
   Lists are compared in dictionary order, i.e. list elements are compared pairwise in

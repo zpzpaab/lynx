@@ -1,24 +1,13 @@
 package org.grapheco.lynx.physical
 
-import org.grapheco.lynx.dataframe.{DataFrame, InnerJoin, JoinType}
-import org.grapheco.lynx.evaluator.ExpressionContext
-import org.grapheco.lynx.logical.plans
-import org.grapheco.lynx.logical.plans.{LogicalAndThen, LogicalPatternMatch, LogicalShortestPaths, LogicalWith}
-import org.grapheco.lynx.physical.planner.PPTNodeTranslator
-import org.grapheco.lynx.physical.plans.{AbstractPhysicalPlan, Expand, Merge, NodeScan, RelationshipScan, Remove, Set, ShortestPath, Unwind, PhysicalPlan, SinglePhysicalPlan}
-import org.grapheco.lynx.procedure.{UnknownProcedureException, WrongArgumentException}
-import org.grapheco.lynx.runner.{CONTAINS, EQUAL, ExecutionContext, GREATER_THAN, GREATER_THAN_OR_EQUAL, GraphModel, IN, LESS_THAN, LESS_THAN_OR_EQUAL, NOT_EQUAL, NodeFilter, PropOp, RelationshipFilter}
-import org.grapheco.lynx.types.LynxValue
-import org.grapheco.lynx.types.composite.{LynxCompositeValue, LynxList, LynxMap}
-import org.grapheco.lynx.types.property.{LynxBoolean, LynxInteger, LynxNull, LynxNumber, LynxString}
-import org.grapheco.lynx.types.spatial.LynxPoint
+import org.grapheco.lynx.dataframe.DataFrame
+import org.grapheco.lynx.physical.plans.{AbstractPhysicalPlan, PhysicalPlan}
+import org.grapheco.lynx.runner.{ExecutionContext, GraphModel}
+import org.grapheco.lynx.types.composite.LynxMap
 import org.grapheco.lynx.types.structural._
-import org.grapheco.lynx.types.time.LynxTemporalValue
-import org.grapheco.lynx.{LynxType, physical, runner}
-import org.opencypher.v9_0.ast._
+import org.grapheco.lynx.types.{LynxType, LynxValue}
 import org.opencypher.v9_0.expressions._
 import org.opencypher.v9_0.util.InputPosition
-import org.opencypher.v9_0.util.symbols.{CTAny, CTList, CTNode, CTPath, CTRelationship}
 
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer

@@ -3,9 +3,8 @@ package org.grapheco.lynx.types.time
 import org.grapheco.lynx.types.property.{LynxInteger, LynxString}
 import org.grapheco.lynx.types.structural.LynxPropertyKey
 import org.grapheco.lynx.types.time.LynxComponentDate._
-import org.grapheco.lynx.types.{LynxValue, TypeMismatchException}
+import org.grapheco.lynx.types.{DateType, LTDate, LynxValue, TypeMismatchException}
 import org.grapheco.lynx.util.LynxTemporalParseException
-import org.opencypher.v9_0.util.symbols.{CTDate, DateType}
 
 import java.time.temporal.ChronoUnit
 import java.time.{LocalDate, ZoneId}
@@ -21,7 +20,7 @@ import java.util.{Calendar, GregorianCalendar}
 case class LynxDate(localDate: LocalDate) extends LynxTemporalValue with LynxComponentDate {
   def value: LocalDate = localDate
 
-  def lynxType: DateType = CTDate
+  def lynxType: DateType = LTDate
 
   def plusDuration(that: LynxDuration): LynxDate = {
 //    var aVal = localDate

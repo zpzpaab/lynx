@@ -1,14 +1,12 @@
 package org.grapheco.lynx.physical.plans
 
-import org.grapheco.lynx.LynxType
+import org.grapheco.lynx.types.{LTNode, LTRelationship, LynxType, LynxValue}
 import org.grapheco.lynx.dataframe.DataFrame
 import org.grapheco.lynx.physical.PhysicalPlannerContext
 import org.grapheco.lynx.runner._
-import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.composite.{LynxList, LynxMap}
 import org.grapheco.lynx.types.structural._
 import org.opencypher.v9_0.expressions.{Expression, LabelName, ListLiteral, LogicalVariable, NodePattern, Range, RelTypeName, RelationshipPattern, SemanticDirection}
-import org.opencypher.v9_0.util.symbols.{CTNode, CTRelationship}
 
 case class MultiStepExpand(rel: RelationshipPattern,
                            rightNode: NodePattern
@@ -24,8 +22,8 @@ case class MultiStepExpand(rel: RelationshipPattern,
     legacyTypeSeparator: Boolean,
     baseRel: Option[LogicalVariable]) = rel
     val NodePattern(var2, labels2: Seq[LabelName], properties2: Option[Expression], baseNode2: Option[LogicalVariable]) = rightNode
-    val schema0 = Seq(variable.map(_.name).getOrElse(s"__RELATIONSHIP_${rel.hashCode}") -> CTRelationship,
-      var2.map(_.name).getOrElse(s"__NODE_${rightNode.hashCode}") -> CTNode)
+    val schema0 = Seq(variable.map(_.name).getOrElse(s"__RELATIONSHIP_${rel.hashCode}") -> LTRelationship,
+      var2.map(_.name).getOrElse(s"__NODE_${rightNode.hashCode}") -> LTNode)
     in.schema ++ schema0
   }
 
@@ -41,8 +39,8 @@ case class MultiStepExpand(rel: RelationshipPattern,
     baseRel: Option[LogicalVariable]) = rel
     val NodePattern(var2, labels2: Seq[LabelName], properties2: Option[Expression], baseNode2: Option[LogicalVariable]) = rightNode
 
-    val schema0 = Seq(variable.map(_.name).getOrElse(s"__RELATIONSHIP_${rel.hashCode}") -> CTRelationship,
-      var2.map(_.name).getOrElse(s"__NODE_${rightNode.hashCode}") -> CTNode)
+    val schema0 = Seq(variable.map(_.name).getOrElse(s"__RELATIONSHIP_${rel.hashCode}") -> LTRelationship,
+      var2.map(_.name).getOrElse(s"__NODE_${rightNode.hashCode}") -> LTNode)
 
     implicit val ec = ctx.expressionContext
 

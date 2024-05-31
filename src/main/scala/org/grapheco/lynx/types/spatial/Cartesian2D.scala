@@ -1,6 +1,6 @@
 package org.grapheco.lynx.types.spatial
 
-import org.grapheco.lynx.LynxType
+import org.grapheco.lynx.types.LynxType
 import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.property.{LynxFloat, LynxInteger, LynxString}
 

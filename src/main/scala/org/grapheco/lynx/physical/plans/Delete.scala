@@ -1,15 +1,12 @@
 package org.grapheco.lynx.physical.plans
 
-import org.grapheco.lynx.LynxType
+import org.grapheco.lynx.types.{LTNode, LTPath, LTRelationship, LynxType, LynxValue}
 import org.grapheco.lynx.dataframe.DataFrame
 import org.grapheco.lynx.physical.{PhysicalPlannerContext, SyntaxErrorException}
 import org.grapheco.lynx.runner.ExecutionContext
-import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.property.LynxNull
 import org.grapheco.lynx.types.structural.{LynxNode, LynxRelationship}
 import org.opencypher.v9_0.expressions.Expression
-import org.opencypher.v9_0.util.symbols.{CTNode, CTPath, CTRelationship}
-
 /**
  * The DELETE clause is used to delete graph elements — nodes, relationships or paths.
  *
@@ -27,15 +24,15 @@ case class Delete(expressions: Seq[Expression], forced: Boolean)(l: PhysicalPlan
       val projected = df.project(Seq(("delete", exp)))(ctx.expressionContext)
       val (_, elementType) = projected.schema.head
       elementType match {
-        case CTNode => graphModel.deleteNodesSafely(
+        case LTNode => graphModel.deleteNodesSafely(
           dropNull(projected.records) map {
             _.asInstanceOf[LynxNode].id
           }, forced)
-        case CTRelationship => graphModel.deleteRelations(
+        case LTRelationship => graphModel.deleteRelations(
           dropNull(projected.records) map {
             _.asInstanceOf[LynxRelationship].id
           })
-        case CTPath =>
+        case LTPath =>
         case _ => throw SyntaxErrorException(s"expected Node, Path pr Relationship, but a ${elementType}")
       }
     }

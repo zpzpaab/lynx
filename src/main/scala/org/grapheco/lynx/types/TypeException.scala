@@ -1,6 +1,6 @@
 package org.grapheco.lynx.types
 
-import org.grapheco.lynx.{LynxException, LynxType}
+import org.grapheco.lynx.LynxException
 
 /**
  * @ClassName InvalidValueException
@@ -19,4 +19,7 @@ case class TypeMismatchException(expected: LynxType, actual: LynxType) extends T
   override def getMessage: String = s"Type mismatch: expected ${expected}but was ${actual}."
 }
 
+case class TypeCompareException(type1: LynxType, type2: LynxType) extends TypeException{
+  override def getMessage: String = s"Type $type1 cannot be compared with Type $type2."
+}
 

@@ -1,14 +1,12 @@
 package org.grapheco.lynx.physical.plans
 
-import org.grapheco.lynx.LynxType
+import org.grapheco.lynx.types.{LTNode, LynxType, LynxValue}
 import org.grapheco.lynx.dataframe.DataFrame
 import org.grapheco.lynx.physical.PhysicalPlannerContext
 import org.grapheco.lynx.runner._
-import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.composite.LynxMap
 import org.grapheco.lynx.types.structural.{LynxNodeLabel, LynxPropertyKey}
 import org.opencypher.v9_0.expressions._
-import org.opencypher.v9_0.util.symbols.CTNode
 
 case class NodeScan(pattern: NodePattern)(implicit val plannerContext: PhysicalPlannerContext) extends LeafPhysicalPlan {
 
@@ -18,7 +16,7 @@ case class NodeScan(pattern: NodePattern)(implicit val plannerContext: PhysicalP
     labels: Seq[LabelName],
     properties: Option[Expression],
     baseNode: Option[LogicalVariable]) = pattern
-    Seq(var0.name -> CTNode)
+    Seq(var0.name -> LTNode)
   }
 
   override def execute(implicit ctx: ExecutionContext): DataFrame = {
@@ -52,7 +50,7 @@ case class NodeScan(pattern: NodePattern)(implicit val plannerContext: PhysicalP
         (properties.map(eval(_).asInstanceOf[LynxMap].value.map(kv => (LynxPropertyKey(kv._1), kv._2))).getOrElse(Map.empty), Map.empty[LynxPropertyKey, PropOp])
       }
     }
-    DataFrame(Seq(var0.name -> CTNode), () => {
+    DataFrame(Seq(var0.name -> LTNode), () => {
       graphModel.nodes(
         NodeFilter(
           labels.map(_.name).map(LynxNodeLabel),

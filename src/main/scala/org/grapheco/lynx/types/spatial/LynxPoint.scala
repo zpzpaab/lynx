@@ -1,14 +1,13 @@
 package org.grapheco.lynx.types.spatial
 
-import org.grapheco.lynx.LynxType
+import org.grapheco.lynx.types.{LTPoint, LynxType, LynxValue, TypeMismatchException}
 import org.grapheco.lynx.procedure.ProcedureException
 import org.grapheco.lynx.runner.ParsingException
-import org.grapheco.lynx.types.{LynxValue, TypeMismatchException}
 import org.grapheco.lynx.types.composite.LynxMap
 import org.grapheco.lynx.types.property.{LynxFloat, LynxInteger, LynxNull, LynxString}
 import org.grapheco.lynx.types.spatial.SpatialType.SpatialType
-import org.grapheco.lynx.types.structural.{HasProperty, LynxPropertyKey}
-import org.opencypher.v9_0.util.symbols.CTPoint
+import org.grapheco.lynx.types.structural.LynxPropertyKey
+import org.grapheco.lynx.types.traits.HasProperty
 
 trait LynxPoint extends LynxValue with HasProperty{
   val x: LynxFloat
@@ -19,7 +18,7 @@ trait LynxPoint extends LynxValue with HasProperty{
 
   val srid: LynxInteger
 
-  override def lynxType: LynxType = CTPoint
+  override def lynxType: LynxType = LTPoint
 
   override def value: Any = this
 

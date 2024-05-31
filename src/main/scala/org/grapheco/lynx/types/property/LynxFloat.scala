@@ -1,7 +1,6 @@
 package org.grapheco.lynx.types.property
 
-import org.grapheco.lynx.types.LynxValue
-import org.opencypher.v9_0.util.symbols.{CTFloat, FloatType}
+import org.grapheco.lynx.types.{FloatType, LTFloat, LynxValue}
 
 /**
  * @ClassName LynxDouble
@@ -15,7 +14,7 @@ case class LynxFloat(v: Double) extends LynxNumber {
 
   def number: Number = v
 
-  def lynxType: FloatType = CTFloat
+  def lynxType: FloatType = LTFloat
 
   def +(that: LynxNumber): LynxNumber = {
     that match {

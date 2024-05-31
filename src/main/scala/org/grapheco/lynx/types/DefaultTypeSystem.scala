@@ -1,12 +1,11 @@
 package org.grapheco.lynx.types
 
-import org.grapheco.lynx.LynxType
+import org.grapheco.lynx.types.LynxType
 import org.grapheco.lynx.types.composite.{LynxList, LynxMap}
 import org.grapheco.lynx.types.property._
 import org.grapheco.lynx.types.spatial.{Cartesian2D, LynxPoint}
 import org.grapheco.lynx.types.structural.{LynxNode, LynxNodeLabel, LynxPath, LynxRelationship}
 import org.grapheco.lynx.types.time._
-import org.opencypher.v9_0.util.symbols.{CTAny, CTBoolean, CTFloat, CTInteger, CTList, CTString, CypherType}
 
 import java.time._
 import scala.collection.mutable
@@ -21,19 +20,19 @@ import scala.collection.mutable
 class DefaultTypeSystem extends TypeSystem {
   val NULL_STRING = "(null)"
   val mapTypes: mutable.Map[Class[_], LynxType] = mutable.Map(
-    //    classOf[BooleanLiteral] -> CTBoolean,
-    //    classOf[StringLiteral] -> CTString,
-    //    classOf[IntegerLiteral] -> CTInteger,
-    //    classOf[DoubleLiteral] -> CTFloat,
-    classOf[LynxBoolean] -> CTBoolean,
-    classOf[LynxString] -> CTString,
-    classOf[LynxInteger] -> CTInteger,
-    classOf[LynxFloat] -> CTFloat,
-    classOf[LynxList] -> CTList(CTAny),
+    //    classOf[BooleanLiteral] -> LTBoolean,
+    //    classOf[StringLiteral] -> LTString,
+    //    classOf[IntegerLiteral] -> LTInteger,
+    //    classOf[DoubleLiteral] -> LTFloat,
+    classOf[LynxBoolean] -> LTBoolean,
+    classOf[LynxString] -> LTString,
+    classOf[LynxInteger] -> LTInteger,
+    classOf[LynxFloat] -> LTFloat,
+    classOf[LynxList] -> LTList(LTAny),
     // todo: time and date.
   )
 
-  override def typeOf(clazz: Class[_]): CypherType = mapTypes.getOrElse(clazz, CTAny)
+  override def typeOf(clazz: Class[_]): LynxType = mapTypes.getOrElse(clazz, LTAny)
 
   override def wrap(value: Any): LynxValue = value match {
     case null => LynxNull

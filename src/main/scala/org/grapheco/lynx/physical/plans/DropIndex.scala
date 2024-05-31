@@ -1,10 +1,9 @@
 package org.grapheco.lynx.physical.plans
 
-import org.grapheco.lynx.LynxType
+import org.grapheco.lynx.types.{LTAny, LynxType}
 import org.grapheco.lynx.dataframe.DataFrame
 import org.grapheco.lynx.physical.PhysicalPlannerContext
 import org.grapheco.lynx.runner.ExecutionContext
-import org.opencypher.v9_0.util.symbols.CTAny
 
 case class DropIndex(labelName: String, properties: List[String])(implicit val plannerContext: PhysicalPlannerContext) extends AbstractPhysicalPlan {
 
@@ -14,6 +13,6 @@ case class DropIndex(labelName: String, properties: List[String])(implicit val p
   }
 
   override val schema: Seq[(String, LynxType)] = {
-    Seq("DropIndex" -> CTAny)
+    Seq("DropIndex" -> LTAny)
   }
 }

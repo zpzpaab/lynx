@@ -1,7 +1,6 @@
 package org.grapheco.lynx.types.property
 
-import org.grapheco.lynx.types.{LynxValue, TypeMismatchException}
-import org.opencypher.v9_0.util.symbols.{BooleanType, CTBoolean}
+import org.grapheco.lynx.types.{BooleanType, LTBoolean, LynxValue, TypeMismatchException}
 
 /**
  * @ClassName LynxBoolean
@@ -13,7 +12,7 @@ import org.opencypher.v9_0.util.symbols.{BooleanType, CTBoolean}
 case class LynxBoolean(v: Boolean) extends LynxValue {
   def value: Boolean = v
 
-  def lynxType: BooleanType = CTBoolean
+  def lynxType: BooleanType = LTBoolean
 
   /*
   Booleans are compared such that false is less than true.

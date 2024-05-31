@@ -3,7 +3,8 @@ package org.grapheco.lynx.types.time
 import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.composite.LynxMap
 import org.grapheco.lynx.types.property.{LynxInteger, LynxString}
-import org.grapheco.lynx.types.structural.{HasProperty, LynxPropertyKey}
+import org.grapheco.lynx.types.structural.LynxPropertyKey
+import org.grapheco.lynx.types.traits.HasProperty
 import org.grapheco.lynx.util.LynxTemporalParseException
 
 import java.time.{Duration, LocalDate, LocalTime, Period, ZoneId, ZoneOffset}

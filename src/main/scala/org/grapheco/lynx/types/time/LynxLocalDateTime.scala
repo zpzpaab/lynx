@@ -1,21 +1,18 @@
 package org.grapheco.lynx.types.time
 
-import org.grapheco.lynx.LynxType
-import org.grapheco.lynx.types.LynxValue
+import org.grapheco.lynx.types.{LTLocalDateTime, LocalDateTimeType, LynxValue}
 import org.grapheco.lynx.types.property.LynxInteger
 import org.grapheco.lynx.types.structural.LynxPropertyKey
 import org.grapheco.lynx.types.time.LynxComponentDate.{getYearMonthDay, transformDate, transformYearOrdinalDay, transformYearQuarterDay, transformYearWeekDay, truncateDate}
 import org.grapheco.lynx.types.time.LynxComponentTime.{getHourMinuteSecond, getNanosecond, truncateTime}
 import org.grapheco.lynx.types.time.LynxComponentTimeZone.{getZone, truncateZone}
 import org.grapheco.lynx.types.time.LynxDateTime.of
+import org.grapheco.lynx.types.traits.HasProperty
 import org.grapheco.lynx.util.LynxTemporalParser.splitDateTime
 import org.grapheco.lynx.util.{LynxTemporalParseException, LynxTemporalParser}
-import org.opencypher.v9_0.util.symbols.CTLocalDateTime
 
 import java.time.temporal.{ChronoUnit, TemporalUnit}
-
 import java.time.{LocalDateTime, LocalTime, ZoneId}
-
 import java.util.{Calendar, GregorianCalendar}
 
 /**
@@ -25,10 +22,10 @@ import java.util.{Calendar, GregorianCalendar}
  * @Date 2022/4/1
  * @Version 0.1
  */
-case class LynxLocalDateTime(localDateTime: LocalDateTime) extends LynxTemporalValue {
+case class LynxLocalDateTime(localDateTime: LocalDateTime) extends LynxTemporalValue with HasProperty{
   def value: LocalDateTime = localDateTime
 
-  def lynxType: LynxType = CTLocalDateTime
+  def lynxType: LocalDateTimeType = LTLocalDateTime
 
   override def sameTypeCompareTo(o: LynxValue): Int = ???
 
@@ -82,7 +79,7 @@ case class LynxLocalDateTime(localDateTime: LocalDateTime) extends LynxTemporalV
   var fraction: Int = localDateTime.getNano
 
 
-  override def keys: Seq[LynxPropertyKey] = super.keys ++ Seq("year", "quarter", "month", "week", "weekYear", "dayOfQuarter", "quarterDay", "day", "ordinalDay", "dayOfWeek", "weekDay", "hour", "minute", "second", "millisecond", "microsecond", "nanosecond").map(LynxPropertyKey)
+  override def keys: Seq[LynxPropertyKey] = Seq("year", "quarter", "month", "week", "weekYear", "dayOfQuarter", "quarterDay", "day", "ordinalDay", "dayOfWeek", "weekDay", "hour", "minute", "second", "millisecond", "microsecond", "nanosecond").map(LynxPropertyKey)
 
   override def property(propertyKey: LynxPropertyKey): Option[LynxValue] = Some(propertyKey.value match {
     case "year" => LynxInteger(this.year)

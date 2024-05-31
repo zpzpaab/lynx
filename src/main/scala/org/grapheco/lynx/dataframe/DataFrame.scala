@@ -1,8 +1,7 @@
 package org.grapheco.lynx.dataframe
 
-import org.grapheco.lynx.LynxType
 import org.grapheco.lynx.evaluator.{ExpressionContext, ExpressionEvaluator}
-import org.grapheco.lynx.types.LynxValue
+import org.grapheco.lynx.types.{LynxType, LynxValue}
 import org.opencypher.v9_0.expressions.Expression
 
 trait DataFrame {

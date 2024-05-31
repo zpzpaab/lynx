@@ -1,18 +1,16 @@
 package org.grapheco.lynx.physical.plans
 
-import org.grapheco.lynx.LynxType
+import org.grapheco.lynx.types.{LTAny, LynxType, LynxValue}
 import org.grapheco.lynx.dataframe.DataFrame
 import org.grapheco.lynx.physical.PhysicalPlannerContext
 import org.grapheco.lynx.runner.ExecutionContext
-import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.composite.LynxList
 import org.opencypher.v9_0.expressions.{Expression, Variable}
-import org.opencypher.v9_0.util.symbols.CTAny
 
 case class Unwind(expression: Expression, variable: Variable)(l: Option[PhysicalPlan], val plannerContext: PhysicalPlannerContext)
   extends AbstractPhysicalPlan(l) {
   def in: Option[PhysicalPlan] = this.left
-  override def schema: Seq[(String, LynxType)] = in.map(_.schema).getOrElse(Seq.empty) ++ Seq((variable.name, CTAny)) // TODO it is CTAny?
+  override def schema: Seq[(String, LynxType)] = in.map(_.schema).getOrElse(Seq.empty) ++ Seq((variable.name, LTAny)) // TODO it is CTAny?
 
   override def execute(implicit ctx: ExecutionContext): DataFrame = // fixme
     in map { inNode =>

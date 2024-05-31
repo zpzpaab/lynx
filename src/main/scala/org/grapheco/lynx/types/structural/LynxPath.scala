@@ -1,15 +1,13 @@
 package org.grapheco.lynx.types.structural
 
-import org.grapheco.lynx.LynxType
 import org.grapheco.lynx.types.composite.LynxList
-import org.grapheco.lynx.types.{InvalidValueException, LynxValue, TypeException}
-import org.opencypher.v9_0.util.symbols.CTPath
+import org.grapheco.lynx.types.{InvalidValueException, LTPath, LynxValue, PathType, TypeException}
 
 case class LynxPath(elements: Seq[LynxElement]) extends LynxValue {
 
   override def value: Any = elements
 
-  override def lynxType: LynxType = CTPath
+  override def lynxType: PathType = LTPath
 
   override def sameTypeCompareTo(o: LynxValue): Int = ???
 

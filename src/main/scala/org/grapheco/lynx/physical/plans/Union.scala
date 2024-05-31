@@ -1,6 +1,6 @@
 package org.grapheco.lynx.physical.plans
 
-import org.grapheco.lynx.LynxType
+import org.grapheco.lynx.types.LynxType
 import org.grapheco.lynx.dataframe.DataFrame
 import org.grapheco.lynx.physical.{PhysicalPlannerContext, SyntaxErrorException}
 import org.grapheco.lynx.runner.ExecutionContext

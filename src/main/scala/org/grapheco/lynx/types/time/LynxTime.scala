@@ -1,14 +1,13 @@
 package org.grapheco.lynx.types.time
 
-import org.grapheco.lynx.LynxType
-import org.grapheco.lynx.types.LynxValue
+import org.grapheco.lynx.types.{LTTime, LynxValue, TimeType}
 import org.grapheco.lynx.types.property.{LynxInteger, LynxString}
 import org.grapheco.lynx.types.structural.LynxPropertyKey
 import org.grapheco.lynx.types.time.LynxComponentTime.{getHourMinuteSecond, getNanosecond, truncateTime}
 import org.grapheco.lynx.types.time.LynxComponentTimeZone.{getZone, truncateZone}
+import org.grapheco.lynx.types.traits.HasProperty
 import org.grapheco.lynx.util.LynxTemporalParseException
 import org.grapheco.lynx.util.LynxTemporalParser.splitDateTime
-import org.opencypher.v9_0.util.symbols.CTTime
 
 import java.time.{Instant, OffsetTime, ZoneId, ZoneOffset}
 
@@ -19,10 +18,10 @@ import java.time.{Instant, OffsetTime, ZoneId, ZoneOffset}
  * @Date 2022/4/1
  * @Version 0.1
  */
-case class LynxTime(offsetTime: OffsetTime) extends LynxTemporalValue with LynxComponentTime with LynxComponentTimeZone {
+case class LynxTime(offsetTime: OffsetTime) extends LynxTemporalValue with LynxComponentTime with LynxComponentTimeZone with HasProperty{
   def value: OffsetTime = offsetTime
 
-  def lynxType: LynxType = CTTime
+  def lynxType: TimeType = LTTime
 
   override def sameTypeCompareTo(o: LynxValue): Int = ???
 
@@ -50,7 +49,7 @@ case class LynxTime(offsetTime: OffsetTime) extends LynxTemporalValue with LynxC
   var offsetMinutes: Int = offsetTime.getOffset.getTotalSeconds / 60
   var offsetSeconds: Int = offsetTime.getOffset.getTotalSeconds
 
-  override def keys: Seq[LynxPropertyKey] = super.keys ++ Seq("timezone", "offset", "offsetMinutes", "offsetSeconds", "hour", "minute", "second", "millisecond", "microsecond", "nanosecond").map(LynxPropertyKey)
+  override def keys: Seq[LynxPropertyKey] = Seq("timezone", "offset", "offsetMinutes", "offsetSeconds", "hour", "minute", "second", "millisecond", "microsecond", "nanosecond").map(LynxPropertyKey)
 
   override def property(propertyKey: LynxPropertyKey): Option[LynxValue] = Some(propertyKey.value match {
     case "hour" => LynxInteger(this.hour)

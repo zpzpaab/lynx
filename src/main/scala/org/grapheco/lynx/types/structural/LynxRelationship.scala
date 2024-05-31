@@ -1,7 +1,7 @@
 package org.grapheco.lynx.types.structural
 
-import org.grapheco.lynx.types.{LynxValue, TypeMismatchException}
-import org.opencypher.v9_0.util.symbols.{CTRelationship, RelationshipType}
+import org.grapheco.lynx.types.traits.HasProperty
+import org.grapheco.lynx.types.{LTRelationship, LynxValue, RelationshipType, TypeMismatchException}
 
 trait LynxRelationship extends LynxValue with HasProperty with LynxElement {
   val id: LynxId
@@ -12,7 +12,7 @@ trait LynxRelationship extends LynxValue with HasProperty with LynxElement {
 
   def relationType: Option[LynxRelationshipType]
 
-  def lynxType: RelationshipType = CTRelationship
+  def lynxType: RelationshipType = LTRelationship
 
   override def sameTypeCompareTo(o: LynxValue): Int = o match {
     case r: LynxRelationship => this.id.toLynxInteger.compareTo(r.id.toLynxInteger)

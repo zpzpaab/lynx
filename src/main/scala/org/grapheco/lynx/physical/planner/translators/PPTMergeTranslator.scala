@@ -1,12 +1,11 @@
 package org.grapheco.lynx.physical.planner.translators
 
-import org.grapheco.lynx.LynxType
+import org.grapheco.lynx.types.{LTNode, LTRelationship, LynxType}
 import org.grapheco.lynx.physical.planner.PPTNodeTranslator
 import org.grapheco.lynx.physical.plans.{Merge, PhysicalPlan}
 import org.grapheco.lynx.physical._
 import org.opencypher.v9_0.ast.{MergeAction, OnCreate, OnMatch}
 import org.opencypher.v9_0.expressions.{EveryPath, Expression, LabelName, LogicalVariable, NodePattern, Pattern, Range, RelTypeName, RelationshipChain, RelationshipPattern, SemanticDirection}
-import org.opencypher.v9_0.util.symbols.{CTNode, CTRelationship}
 
 import scala.collection.mutable
 
@@ -21,7 +20,7 @@ case class PPTMergeTranslator(p: Pattern, a: Seq[MergeAction]) extends PPTNodeTr
         element match {
           case NodePattern(var1: Option[LogicalVariable], labels1, properties1, _) => {
             val leftNodeName = var1.map(_.name).getOrElse(s"__NODE_${element.hashCode}")
-            mergeSchema.append((leftNodeName, CTNode))
+            mergeSchema.append((leftNodeName, LTNode))
             mergeOps.append(FormalNode(leftNodeName, labels1, properties1))
           }
           case chain: RelationshipChain => {
@@ -50,9 +49,9 @@ case class PPTMergeTranslator(p: Pattern, a: Seq[MergeAction]) extends PPTNodeTr
       //create (m)-[r]-(n), left=n
       case NodePattern(var1: Option[LogicalVariable], labels1, properties1, _) =>
         val varLeftNode = var1.map(_.name).getOrElse(s"__NODE_${left.hashCode}")
-        mergeSchema.append((varLeftNode, CTNode))
-        mergeSchema.append((varRelation, CTRelationship))
-        mergeSchema.append((varRightNode, CTNode))
+        mergeSchema.append((varLeftNode, LTNode))
+        mergeSchema.append((varRelation, LTRelationship))
+        mergeSchema.append((varRightNode, LTNode))
 
         mergeOps.append(FormalNode(varLeftNode, labels1, properties1))
         mergeOps.append(FormalRelationship(varRelation, types, properties2, varLeftNode, varRightNode)) // direction
@@ -64,8 +63,8 @@ case class PPTMergeTranslator(p: Pattern, a: Seq[MergeAction]) extends PPTNodeTr
       case leftChain: RelationshipChain =>
         // (m)-[p]-(t)
         val lastNode = buildMerge(leftChain, definedVars, mergeSchema, mergeOps)
-        mergeSchema.append((varRelation, CTRelationship))
-        mergeSchema.append((varRightNode, CTNode))
+        mergeSchema.append((varRelation, LTRelationship))
+        mergeSchema.append((varRightNode, LTNode))
 
         mergeOps.append(FormalRelationship(varRelation, types, properties2, lastNode, varRightNode)) // direction
         mergeOps.append(FormalNode(varRightNode, labels3, properties3))

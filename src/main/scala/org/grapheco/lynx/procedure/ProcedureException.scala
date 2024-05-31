@@ -1,6 +1,7 @@
 package org.grapheco.lynx.procedure
 
-import org.grapheco.lynx.{LynxException, LynxType}
+import org.grapheco.lynx.LynxException
+import org.grapheco.lynx.types.LynxType
 
 case class ProcedureException(msg: String) extends LynxException {
   override def getMessage: String = msg

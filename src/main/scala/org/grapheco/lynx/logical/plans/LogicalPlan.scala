@@ -1,6 +1,6 @@
 package org.grapheco.lynx.logical.plans
 
-import org.grapheco.lynx.{LynxType, TreeNode}
+import org.grapheco.lynx.TreeNode
 
 //logical plan tree node (operator)
 abstract class LogicalPlan(override var left: Option[LogicalPlan], override var right: Option[LogicalPlan]) extends TreeNode {

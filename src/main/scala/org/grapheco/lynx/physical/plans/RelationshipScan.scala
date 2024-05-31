@@ -3,12 +3,11 @@ package org.grapheco.lynx.physical.plans
 import org.grapheco.lynx.dataframe.DataFrame
 import org.grapheco.lynx.physical.PhysicalPlannerContext
 import org.grapheco.lynx.runner._
-import org.grapheco.lynx.types.LynxValue
+import org.grapheco.lynx.types.{LTList, LTNode, LTPath, LTRelationship, LynxType, LynxValue}
 import org.grapheco.lynx.types.composite.{LynxList, LynxMap}
 import org.grapheco.lynx.types.structural.{LynxNodeLabel, LynxPropertyKey, LynxRelationshipType}
-import org.grapheco.lynx.{LynxType, runner}
+import org.grapheco.lynx.runner
 import org.opencypher.v9_0.expressions.{Expression, LabelName, ListLiteral, LogicalVariable, NodePattern, Range, RelTypeName, RelationshipPattern, SemanticDirection}
-import org.opencypher.v9_0.util.symbols.{CTList, CTNode, CTPath, CTRelationship}
 
 case class RelationshipScan(rel: RelationshipPattern, leftNode: NodePattern, rightNode: NodePattern)(implicit val plannerContext: PhysicalPlannerContext) extends LeafPhysicalPlan {
 
@@ -26,17 +25,17 @@ case class RelationshipScan(rel: RelationshipPattern, leftNode: NodePattern, rig
 
     if (length.isEmpty) {
       Seq(
-        var1.map(_.name).getOrElse(s"__NODE_${leftNode.hashCode}") -> CTNode,
-        var2.map(_.name).getOrElse(s"__RELATIONSHIP_${rel.hashCode}") -> CTRelationship,
-        var3.map(_.name).getOrElse(s"__NODE_${rightNode.hashCode}") -> CTNode,
+        var1.map(_.name).getOrElse(s"__NODE_${leftNode.hashCode}") -> LTNode,
+        var2.map(_.name).getOrElse(s"__RELATIONSHIP_${rel.hashCode}") -> LTRelationship,
+        var3.map(_.name).getOrElse(s"__NODE_${rightNode.hashCode}") -> LTNode,
       )
     }
     else {
       Seq(
-        var1.map(_.name).getOrElse(s"__NODE_${leftNode.hashCode}") -> CTNode,
-        var2.map(_.name).getOrElse(s"__RELATIONSHIP_LIST_${rel.hashCode}") -> CTList(CTRelationship),
-        var3.map(_.name).getOrElse(s"__NODE_${rightNode.hashCode}") -> CTNode,
-        var2.map(_.name + "LINK").getOrElse(s"__LINK_${rel.hashCode}") -> CTPath
+        var1.map(_.name).getOrElse(s"__NODE_${leftNode.hashCode}") -> LTNode,
+        var2.map(_.name).getOrElse(s"__RELATIONSHIP_LIST_${rel.hashCode}") -> LTList(LTRelationship),
+        var3.map(_.name).getOrElse(s"__NODE_${rightNode.hashCode}") -> LTNode,
+        var2.map(_.name + "LINK").getOrElse(s"__LINK_${rel.hashCode}") -> LTPath
       )
     }
   }

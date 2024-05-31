@@ -3,7 +3,7 @@ package org.grapheco.lynx.types.time
 import org.grapheco.lynx.types.LynxValue
 import org.grapheco.lynx.types.composite.LynxMap
 import org.grapheco.lynx.types.property.{LynxInteger, LynxString}
-import org.grapheco.lynx.types.structural.HasProperty
+import org.grapheco.lynx.types.traits.HasProperty
 import org.grapheco.lynx.util.LynxTemporalParser.{assureBetween, assureContains}
 
 import scala.util.matching.Regex

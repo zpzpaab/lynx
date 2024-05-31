@@ -1,7 +1,7 @@
 package org.grapheco.lynx.procedure
 
 import org.grapheco.lynx.types.LynxValue
-import org.grapheco.lynx.LynxType
+import org.grapheco.lynx.types.LynxType
 import org.grapheco.lynx.types.property.LynxNull
 
 trait CallableProcedure {

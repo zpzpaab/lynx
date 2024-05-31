@@ -1,13 +1,12 @@
 package org.grapheco.lynx.types.time
 
-import org.grapheco.lynx.LynxType
 import org.grapheco.lynx.types.property.{LynxInteger, LynxString}
 import org.grapheco.lynx.types.structural.LynxPropertyKey
-import org.grapheco.lynx.types.{LynxValue, TypeMismatchException}
+import org.grapheco.lynx.types.{LTLocalTime, LocalDateTimeType, LocalTimeType, LynxValue, TypeMismatchException}
 import org.grapheco.lynx.types.time.LynxComponentTime.{getHourMinuteSecond, getNanosecond, truncateTime}
 import org.grapheco.lynx.types.time.LynxComponentTimeZone.getZone
+import org.grapheco.lynx.types.traits.HasProperty
 import org.grapheco.lynx.util.LynxTemporalParseException
-import org.opencypher.v9_0.util.symbols.CTLocalTime
 
 import java.time.{LocalTime, ZoneId}
 
@@ -18,10 +17,10 @@ import java.time.{LocalTime, ZoneId}
  * @Date 2022/4/1
  * @Version 0.1
  */
-case class LynxLocalTime(localTime: LocalTime) extends LynxTemporalValue with LynxComponentTime {
+case class LynxLocalTime(localTime: LocalTime) extends LynxTemporalValue with LynxComponentTime with HasProperty {
   def value: LocalTime = localTime
 
-  def lynxType: LynxType = CTLocalTime
+  def lynxType: LocalTimeType = LTLocalTime
 
   override def sameTypeCompareTo(o: LynxValue): Int = o match {
     case n: LynxLocalTime => localTime.compareTo(n.localTime)
@@ -38,7 +37,7 @@ case class LynxLocalTime(localTime: LocalTime) extends LynxTemporalValue with Ly
   var fraction: Int = localTime.getNano
 
 
-  override def keys: Seq[LynxPropertyKey] = super.keys ++ Seq("hour", "minute", "second", "millisecond", "microsecond", "nanosecond").map(LynxPropertyKey)
+  override def keys: Seq[LynxPropertyKey] = Seq("hour", "minute", "second", "millisecond", "microsecond", "nanosecond").map(LynxPropertyKey)
 
   override def property(propertyKey: LynxPropertyKey): Option[LynxValue] = Some(propertyKey.value match {
     case "hour" => LynxInteger(this.hour)

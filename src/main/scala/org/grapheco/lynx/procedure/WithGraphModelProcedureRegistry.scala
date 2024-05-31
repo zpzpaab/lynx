@@ -1,13 +1,12 @@
 package org.grapheco.lynx.procedure
 
 import com.typesafe.scalalogging.LazyLogging
-import org.grapheco.lynx.LynxType
+import org.grapheco.lynx.types.LynxType
 import org.grapheco.lynx.func.{LynxProcedure, LynxProcedureArgument}
 import org.grapheco.lynx.types.composite.LynxList
 import org.grapheco.lynx.types.{LynxValue, TypeSystem}
 
 import scala.collection.mutable
-
 /**
  * @Author: Airzihao
  * @Description:

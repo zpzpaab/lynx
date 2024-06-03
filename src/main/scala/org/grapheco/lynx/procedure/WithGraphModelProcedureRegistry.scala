@@ -77,7 +77,7 @@ class WithGraphModelProcedureRegistry(types: TypeSystem,
     val name = _name.toLowerCase()
     name match {
       case "coalesce" => procedures.get(((prefix :+ name).mkString("."), 1))
-      case _ => procedures.get(((prefix :+ name).mkString("."), argsLength))
+      case _ => procedures.get(((prefix :+ name).mkString(".").toLowerCase, argsLength))
     }
   }
 }

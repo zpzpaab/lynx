@@ -26,24 +26,23 @@ import org.opencypher.v9_0.ast.semantics.SemanticState
  * @Date 2022/4/27
  * @Version 0.1
  */
-class CypherRunner(var graphModel: GraphModel, var proceduresName: Seq[String] = Seq.empty) extends LazyLogging {
-  proceduresName ++= Seq(
-    classOf[AggregatingFunctions].getName,
-    classOf[ListFunctions].getName,
-    classOf[LogarithmicFunctions].getName,
-    classOf[NumericFunctions].getName,
-    classOf[PredicateFunctions].getName,
-    classOf[StringFunctions].getName,
-    classOf[TimeFunctions].getName,
-    classOf[TrigonometricFunctions].getName,
-    classOf[SpatialFunctions].getName,
-    classOf[FullTextIndexFunctions].getName)
-  private val proceduresClass: Seq[Class[_]] = proceduresName.map(name => getClassByName(name).get)
+class CypherRunner(var graphModel: GraphModel) extends LazyLogging {
+
   protected lazy val types: TypeSystem = new DefaultTypeSystem()
   val scalarFunctions: ScalarFunctions = new ScalarFunctions(graphModel)
   protected lazy val procedures: WithGraphModelProcedureRegistry = new WithGraphModelProcedureRegistry(types,
     scalarFunctions,
-    proceduresClass:_*)
+    classOf[AggregatingFunctions],
+    classOf[ListFunctions],
+    classOf[LogarithmicFunctions],
+    classOf[NumericFunctions],
+    classOf[PredicateFunctions],
+    classOf[StringFunctions],
+    classOf[TimeFunctions],
+    classOf[TrigonometricFunctions],
+    classOf[SpatialFunctions],
+    classOf[FullTextIndexFunctions])
+
   protected lazy val expressionEvaluator: ExpressionEvaluator = new DefaultExpressionEvaluator(graphModel, types, procedures)
   protected lazy val dataFrameOperator: DataFrameOperator = new DefaultDataFrameOperator(expressionEvaluator)
    implicit lazy val runnerContext = CypherRunnerContext(types, procedures, dataFrameOperator, expressionEvaluator, graphModel)
@@ -51,6 +50,8 @@ class CypherRunner(var graphModel: GraphModel, var proceduresName: Seq[String] =
   protected lazy val physicalPlanner: PhysicalPlanner = new DefaultPhysicalPlanner(runnerContext)
   protected lazy val physicalPlanOptimizer: PhysicalPlanOptimizer = new DefaultPhysicalPlanOptimizer(runnerContext)
   protected lazy val queryParser: QueryParser = new CachedQueryParser(new DefaultQueryParser(runnerContext))
+
+  def registerAnnotatedClass(clazz: Class[_]): Unit = procedures.registerAnnotatedClass(clazz)
 
   def compile(query: String): (Statement, Map[String, Any], SemanticState) = queryParser.parse(query)
 
@@ -111,14 +112,6 @@ class CypherRunner(var graphModel: GraphModel, var proceduresName: Seq[String] =
 
         }
       }
-    }
-  }
-  def getClassByName[T](className: String): Option[Class[_]] = {
-    try {
-      val classLoader = Thread.currentThread.getContextClassLoader
-      Some(classLoader.loadClass(className))
-    } catch {
-      case _: ClassNotFoundException => None
     }
   }
 }

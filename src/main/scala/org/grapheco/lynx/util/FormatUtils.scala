@@ -1,25 +1,10 @@
 package org.grapheco.lynx.util
 
-import java.text.SimpleDateFormat
-import java.util.Date
 import org.apache.commons.lang3.StringUtils
-import org.grapheco.lynx.types.LynxValue
 
 object FormatUtils {
-//  def format(x: Any, nullString: String = "(null)"): String = {
-//    x match {
-//      case null => nullString
-//      case None => nullString
-//      case Some(m) => format(m, nullString);
-//      case date: Date => new SimpleDateFormat("yyyy-MM-dd HH:mm:SS").format(date)
-//      case _ => x.toString
-//    }
-//  }
 
-  def printTable(columns: Seq[String], data: Seq[Seq[String]]) = {
-//    val formattedColumns: Seq[String] = columns.map(format(_, nullString))
-//    val formattedData: Seq[Seq[String]] = data.map(_.map(format(_, nullString)))
-
+  def resultAsString(columns: Seq[String], data: Seq[Seq[String]]): String = {
     val sb = new StringBuilder
     val numCols = columns.length
 
@@ -53,10 +38,12 @@ object FormatUtils {
     }
 
     colWidths.map("═" * _).addString(sb, "╚", "╧", "╝\n")
-
-    println(sb)
+    sb.result()
   }
 
+  def printTable(columns: Seq[String], data: Seq[Seq[String]]) = {
+    println(resultAsString(columns, data))
+  }
 
   def convertPatternComprehension(query: String): String = {
     if (!containsPatternComprehension(query)) {

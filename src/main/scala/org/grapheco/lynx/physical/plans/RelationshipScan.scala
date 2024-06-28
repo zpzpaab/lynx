@@ -115,8 +115,6 @@ case class RelationshipScan(rel: RelationshipPattern, leftNode: NodePattern, rig
         (props3.map(eval(_).asInstanceOf[LynxMap].value.map(kv => (LynxPropertyKey(kv._1), kv._2))).getOrElse(Map.empty), Map.empty[LynxPropertyKey, PropOp])
       }
     }
-    println(runner.NodeFilter(labels1.map(_.name).map(LynxNodeLabel), leftProperties, leftProps))
-    println(runner.NodeFilter(labels3.map(_.name).map(LynxNodeLabel), rightProperties, rightProps))
     DataFrame(schema,
       () => {
         val paths = graphModel.paths(

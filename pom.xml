@@ -7,7 +7,7 @@
     <groupId>org.grapheco</groupId>
     <artifactId>lynx</artifactId>
     <packaging>jar</packaging>
-    <version>0.66</version>
+    <version>0.6.7</version>
 
     <name>Lynx</name>
     <description>A graph query engine framework</description>

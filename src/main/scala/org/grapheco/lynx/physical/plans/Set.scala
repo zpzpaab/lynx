@@ -1,7 +1,7 @@
 package org.grapheco.lynx.physical.plans
 
-import org.grapheco.lynx.types.LynxType
 import org.grapheco.lynx.dataframe.DataFrame
+import org.grapheco.lynx.evaluator.ExpressionContext
 import org.grapheco.lynx.physical._
 import org.grapheco.lynx.runner.ExecutionContext
 import org.grapheco.lynx.types.LynxValue
@@ -9,15 +9,15 @@ import org.grapheco.lynx.types.composite.LynxMap
 import org.grapheco.lynx.types.property.LynxNull
 import org.grapheco.lynx.types.structural._
 import org.grapheco.lynx.types.traits.HasProperty
-import org.opencypher.v9_0.ast._
+import org.opencypher.v9_0.ast.{SetItem, SetLabelItem, SetPropertyItem, SetExactPropertiesFromMapItem, SetIncludingPropertiesFromMapItem}
 import org.opencypher.v9_0.expressions._
 
 case class Set(setItems: Seq[SetItem])(l: PhysicalPlan, val plannerContext: PhysicalPlannerContext) extends SinglePhysicalPlan(l) with WritePlan {
 
   override def execute(implicit ctx: ExecutionContext): DataFrame = {
     val df = in.execute(ctx)
-    val records = df.records.toList // danger!
-    val columnsName = df.columnsName
+    val records = df.records.toList // danger! TODO may cause OOM
+    val columnNames = df.columnsName
 
     /*
     setItems case:
@@ -27,107 +27,90 @@ case class Set(setItems: Seq[SetItem])(l: PhysicalPlan, val plannerContext: Phys
       - SetExactPropertiesFromMapItem(Variable, Expression) p={...}
       - SetIncludingPropertiesFromMapItem(Variable, Expression) p+={...}
      */
-    def getIndex(name: String): Int = columnsName.indexOf(name) // throw
-
-    trait SetOp
-
-    case class CaseSet(caseExp: CaseExpression, propOp: (Map[LynxPropertyKey, LynxValue], Expression => LynxValue) => Map[LynxPropertyKey, LynxValue]) extends SetOp
-
-    case class Label(labelOp: Seq[LynxNodeLabel] => Seq[LynxNodeLabel]) extends SetOp
-
-    case class Static(propOp: Map[LynxPropertyKey, LynxValue] => Map[LynxPropertyKey, LynxValue]) extends SetOp
-
-    case class Dynamic(propOp: (Map[LynxPropertyKey, LynxValue], Expression => LynxValue) => Map[LynxPropertyKey, LynxValue]) extends SetOp
-
-    // START process for map item
-    def fromMapItem(name: String, expression: Expression, including: Boolean): (Int, SetOp) = (
-      getIndex(name),
-      expression match {
-        case l: Literal => {
-          val theMap = toMap(eval(expression)(ctx.expressionContext))
-          if (including) Static(_ ++ theMap)
-          else Static(_ => theMap)
-        }
-        case p: Parameter => {
-          val theMap = toMap(eval(expression)(ctx.expressionContext))
-          if (including) Static(_ ++ theMap)
-          else Static(_ => theMap)
-        }
-        case _ => if (including) Dynamic((old, evalD) => old ++ toMap(evalD(expression)))
-        else Dynamic((_, evalD) => toMap(evalD(expression)))
-      }
-    )
-
-    def toMap(v: LynxValue): Map[LynxPropertyKey, LynxValue] = v match {
-      case m: LynxMap => m.v.map { case (str, value) => LynxPropertyKey(str) -> value }
-      case h: HasProperty => h.keys.map(k => k -> h.property(k).getOrElse(LynxNull)).toMap
-      case o => throw ExecuteException(s"can't find props map from type ${o.lynxType}")
-    }
-
-    //END
-    /*
-      Map[columnIndex, Seq[Ops]]
-     */
-    val ops: Map[Int, Seq[SetOp]] = setItems.map {
-      case SetLabelItem(Variable(name), labels) => (getIndex(name), Label(_ ++ labels.map(_.name).map(LynxNodeLabel)))
-      case SetPropertyItem(LogicalProperty(key, map), expression) =>
-        (key, expression) match {
-          case (Variable(name), l: Literal) => (getIndex(name), {
-            val newData = eval(expression)(ctx.expressionContext)
-            Static(old => old + (LynxPropertyKey(map.name) -> newData))
-          })
-          case (Variable(name), p: Parameter) => (getIndex(name), {
-            val newData = eval(expression)(ctx.expressionContext)
-            Static(old => old + (LynxPropertyKey(map.name) -> newData))
-          })
-          case (Variable(name), _) => (getIndex(name), Dynamic((old, evalD) => old + (LynxPropertyKey(map.name) -> evalD(expression))))
-          case (ce: CaseExpression, l: Literal) => (getIndex(ce.alternatives.head._2.asInstanceOf[Variable].name), {
-            val newData = eval(expression)(ctx.expressionContext)
-            Dynamic((old, evalD) => evalD(ce) match {
-              case LynxNull => old
-              case _ => old + (LynxPropertyKey(map.name) -> newData)
-            })
-          })
-          case (ce: CaseExpression, _) => (getIndex(ce.alternatives.head._2.asInstanceOf[Variable].name),
-            Dynamic((old, evalD) => evalD(ce) match {
-              case LynxNull => old
-              case _ => old + (LynxPropertyKey(map.name) -> evalD(expression))
-            }))
-          case _ => throw ExecuteException("Unsupported type of logical property")
-        }
-      case SetExactPropertiesFromMapItem(Variable(name), expression) => fromMapItem(name, expression, false)
-      case SetIncludingPropertiesFromMapItem(Variable(name), expression) => fromMapItem(name, expression, true)
-    }.groupBy(_._1).mapValues(_.map(_._2)) //group ops of same column
+    val ops: Map[Int, Seq[SetOperator]] = setItems.map( _ match {
+      case i: SetLabelItem => new SetLabelOperator(i)
+      case SetPropertyItem(LogicalProperty(colExpr, propKeyName), propValueExpr) => new AddSinglePropertyOperator(false, colExpr, propKeyName, propValueExpr)
+      case SetIncludingPropertiesFromMapItem(Variable(colName), propValueExpr) => new SetMultiplePropertiesOperator(propValueExpr, false, colName)
+      case SetExactPropertiesFromMapItem(Variable(colName), propValueExpr) => new SetMultiplePropertiesOperator(propValueExpr, true, colName)
+    }).groupBy(_.colIndex(columnNames))
 
     val needIndexes = ops.keySet
 
-    DataFrame(schema, () => records.map { record =>
+    DataFrame.cached(schema,  records.map { record =>
       record.zipWithIndex.map {
-        case (e: LynxElement, index) if needIndexes.contains(index) => {
-          val opsOfIt = ops(index)
-          // setLabels if e is Node
-          val updatedLabels = e match {
-            case n: LynxNode => opsOfIt.collect { case Label(labelOp) => labelOp }
-              .foldLeft(n.labels) { (labels, ops) => ops(labels) } // (default Label) => (op1) => (op2) => ... => (updated)
-            case _ => Seq.empty
-          }
-
-          val updatedProps = opsOfIt.filterNot(_.isInstanceOf[Label])
-            .foldLeft(e.keys.map(k => k -> e.property(k).getOrElse(LynxNull)).toMap) {
-              (props, ops) =>
-                ops match {
-                  case Static(propOp) => propOp(props)
-                  case Dynamic(propOp) => propOp(props, eval(_)(ctx.expressionContext.withVars(columnsName.zip(record).toMap)))
-                }
-            }
-
-          (e match {
-            case n: LynxNode => graphModel.write.updateNode(n.id, updatedLabels, updatedProps)
-            case r: LynxRelationship => graphModel.write.updateRelationShip(r.id, updatedProps)
-          }).getOrElse(LynxNull)
-        }
+        case (e: LynxElement, index) if needIndexes.contains(index) =>
+          ops(index).map(_.perform(e, record, columnNames, ctx.expressionContext)).last
         case other => other._1 // the column do not need change
       }
-    }.toIterator)
+    })
+  }
+
+  private abstract class SetOperator {
+    protected def getColName(): String
+    def colIndex(colNames: Seq[String]): Int = colNames.indexOf(getColName)
+    def perform(e: LynxElement, record: Seq[LynxValue], colNames: Seq[String], ec: ExpressionContext): LynxElement
+  }
+
+  private class SetLabelOperator(sl: SetLabelItem) extends SetOperator {
+    override def getColName(): String = sl.variable.name
+    override def perform(e: LynxElement, record: Seq[LynxValue], colNames: Seq[String], ec: ExpressionContext): LynxElement = {
+      graphModel.write.setNodesLabels(Some(e.id).iterator, sl.labels.map(_.name).map(LynxNodeLabel).toArray).next().get
+    }
+  }
+
+  private abstract class SetPropertyOperator(val cleanExistProperties: Boolean) extends SetOperator{
+    protected def evalPropertyData(record: Seq[LynxValue], colNames: Seq[String], ec: ExpressionContext): Array[(LynxPropertyKey, LynxValue)]
+    override def perform(e: LynxElement, record: Seq[LynxValue], colNames: Seq[String], ec: ExpressionContext): LynxElement = {
+      val setFunc = e match {
+        case n: LynxNode => graphModel.write.setNodesProperties(_, _, cleanExistProperties)
+        case r: LynxRelationship => graphModel.write.setRelationshipsProperties(_, _, cleanExistProperties)
+      }
+      val it = Some(e.id).iterator
+      val propData = evalPropertyData(record, colNames, ec)
+      setFunc(it, propData).next().get
+    }
+  }
+
+  private class AddSinglePropertyOperator(override val cleanExistProperties: Boolean, colExpr: Expression, propKeyName: PropertyKeyName, propValueExpr: Expression) extends SetPropertyOperator(cleanExistProperties) {
+    override def getColName(): String = {
+      colExpr match {
+        case Variable(name) => name
+        case ce: CaseExpression => ce.alternatives.head._2.asInstanceOf[Variable].name
+        case _ => throw ExecuteException("Unsupported type of logical property")
+      }
+    }
+    override protected def evalPropertyData(record: Seq[LynxValue], colNames: Seq[String], ec: ExpressionContext): Array[(LynxPropertyKey, LynxValue)] = {
+      val newPropValue: Option[LynxValue] = (colExpr, propValueExpr) match {
+          case (Variable(_), _: Literal | _: Parameter) => Some(eval(propValueExpr)(ec))
+          case (Variable(_) | _: CaseExpression, _) =>
+            val newEC = ec.withVars(colNames.zip(record).toMap)
+            colExpr match {
+              case Variable(_) => Some(eval(propValueExpr)(newEC))
+              case ce: CaseExpression =>
+                eval(ce)(newEC) match {
+                  case LynxNull => None
+                  case _ => Some(eval(propValueExpr)(newEC))
+                }
+            }
+          case _ => throw ExecuteException("Unsupported type of logical property")
+      }
+      newPropValue.map(v => Array((LynxPropertyKey(propKeyName.name), v))).getOrElse(Array.empty)
+    }
+  }
+
+  private class SetMultiplePropertiesOperator(val propValueExpr: Expression, override val cleanExistProperties: Boolean, colName: String) extends SetPropertyOperator(cleanExistProperties) {
+    override protected def getColName(): String = colName
+    override protected def evalPropertyData(record: Seq[LynxValue], colNames: Seq[String], ec: ExpressionContext): Array[(LynxPropertyKey, LynxValue)] = {
+      val nec = propValueExpr match {
+        case _: Literal | _: Parameter => ec
+        case _ => ec.withVars(colNames.zip(record).toMap)
+      }
+      val mapData = eval(propValueExpr)(nec) match {
+        case m: LynxMap => m.v.map { case (str, value) => LynxPropertyKey(str) -> value }
+        case h: HasProperty => h.keys.map(k => k -> h.property(k).getOrElse(LynxNull)).toMap
+        case o => throw ExecuteException(s"can't find props map from type ${o.lynxType}")
+      }
+      mapData.toArray
+    }
   }
 }

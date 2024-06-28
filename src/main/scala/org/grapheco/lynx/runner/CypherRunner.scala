@@ -96,6 +96,10 @@ class CypherRunner(var graphModel: GraphModel) extends LazyLogging {
 
       override def getOptimizerPlan(): PhysicalPlan = optimizedPhysicalPlan
 
+      override def asString(): String = {
+        FormatUtils.resultAsString(columnNames, df.records.toSeq.map(_.map(types.format)))
+      }
+
       override def cache(): LynxResult = {
         val source = this
         val cached = df.records.toSeq
@@ -110,6 +114,8 @@ class CypherRunner(var graphModel: GraphModel) extends LazyLogging {
 
           override def records(): Iterator[LynxRecord] = cached.map(values=> LynxRecord(columnMap, values)).toIterator
 
+          override def asString(): String =
+            FormatUtils.resultAsString(columnNames, cached.map(_.map(types.format)))
         }
       }
     }

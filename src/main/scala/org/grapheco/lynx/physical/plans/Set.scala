@@ -39,35 +39,35 @@ case class Set(setItems: Seq[SetItem])(l: PhysicalPlan, val plannerContext: Phys
     DataFrame.cached(schema,  records.map { record =>
       record.zipWithIndex.map {
         case (e: LynxElement, index) if needIndexes.contains(index) =>
-          ops(index).map(_.perform(e, record, columnNames, ctx.expressionContext)).last
+          ops(index).map(_.perform(e, record, columnNames, ctx.expressionContext)).last.getOrElse(LynxNull)
         case other => other._1 // the column do not need change
       }
     })
   }
 
-  private abstract class SetOperator {
+  private trait SetOperator {
     protected def getColName(): String
     def colIndex(colNames: Seq[String]): Int = colNames.indexOf(getColName)
-    def perform(e: LynxElement, record: Seq[LynxValue], colNames: Seq[String], ec: ExpressionContext): LynxElement
+    def perform(e: LynxElement, record: Seq[LynxValue], colNames: Seq[String], ec: ExpressionContext): Option[LynxElement]
   }
 
   private class SetLabelOperator(sl: SetLabelItem) extends SetOperator {
     override def getColName(): String = sl.variable.name
-    override def perform(e: LynxElement, record: Seq[LynxValue], colNames: Seq[String], ec: ExpressionContext): LynxElement = {
-      graphModel.write.setNodesLabels(Some(e.id).iterator, sl.labels.map(_.name).map(LynxNodeLabel).toArray).next().get
+    override def perform(e: LynxElement, record: Seq[LynxValue], colNames: Seq[String], ec: ExpressionContext): Option[LynxElement] = {
+      graphModel.write.setNodesLabels(Some(e.id).iterator, sl.labels.map(_.name).map(LynxNodeLabel).toArray).next()
     }
   }
 
   private abstract class SetPropertyOperator(val cleanExistProperties: Boolean) extends SetOperator{
     protected def evalPropertyData(record: Seq[LynxValue], colNames: Seq[String], ec: ExpressionContext): Array[(LynxPropertyKey, LynxValue)]
-    override def perform(e: LynxElement, record: Seq[LynxValue], colNames: Seq[String], ec: ExpressionContext): LynxElement = {
+    override def perform(e: LynxElement, record: Seq[LynxValue], colNames: Seq[String], ec: ExpressionContext): Option[LynxElement] = {
       val setFunc = e match {
-        case n: LynxNode => graphModel.write.setNodesProperties(_, _, cleanExistProperties)
-        case r: LynxRelationship => graphModel.write.setRelationshipsProperties(_, _, cleanExistProperties)
+        case _: LynxNode => graphModel.write.setNodesProperties(_, _, cleanExistProperties)
+        case _: LynxRelationship => graphModel.write.setRelationshipsProperties(_, _, cleanExistProperties)
       }
       val it = Some(e.id).iterator
       val propData = evalPropertyData(record, colNames, ec)
-      setFunc(it, propData).next().get
+      setFunc(it, propData).next()
     }
   }
 

@@ -2,6 +2,7 @@ package org.grapheco.lynx.runner
 
 import org.grapheco.lynx.physical.{NodeInput, RelationshipInput}
 import org.grapheco.lynx.types.LynxValue
+import org.grapheco.lynx.types.property.LynxInteger
 import org.grapheco.lynx.types.structural._
 import org.opencypher.v9_0.expressions.SemanticDirection
 import org.opencypher.v9_0.expressions.SemanticDirection.{BOTH, INCOMING, OUTGOING}
@@ -69,13 +70,27 @@ trait GraphModel {
    */
   def nodes(): Iterator[LynxNode]
 
+
+  def getIdPropKey = LynxPropertyKey("_lynx_sys_id")
+
+  case class NodeId(value: Long) extends LynxId {
+    override def toLynxInteger: LynxInteger = LynxInteger(value)
+
+    override def toString: String = value.toString
+  }
+
   /**
    * All nodes with a filter.
    *
    * @param nodeFilter The filter
    * @return An Iterator of all nodes after filter.
    */
-  def nodes(nodeFilter: NodeFilter): Iterator[LynxNode] = nodes().filter(nodeFilter.matches)
+  def nodes(nodeFilter: NodeFilter): Iterator[LynxNode] = {
+    nodeFilter.properties.get(getIdPropKey) match {
+      case None => nodes().filter(nodeFilter.matches(_))
+      case Some(LynxInteger(nodeId: Long)) => nodeAt(NodeId(nodeId)).iterator.filter(nodeFilter.matches(_, getIdPropKey))
+    }
+  }
 
   /**
    * Return all relationships as PathTriple.
@@ -194,7 +209,7 @@ trait GraphModel {
       val firstStop = expandNonStop(originStation, relationshipFilter, direction, lowerLimit)
       val leftSteps = Math.min(upperLimit, 100) - lowerLimit // TODO set a super upperLimit
       firstStop.flatMap(p => extendPath(p, relationshipFilter, direction, leftSteps))
-    }.filter(_.endNode.forall(endNodeFilter.matches))
+    }.filter(_.endNode.forall(endNodeFilter.matches(_)))
   }// path 新增节点的不能是已有的节点!!!
 
   def varExpand(start: LynxNode,

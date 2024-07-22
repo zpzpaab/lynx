@@ -137,6 +137,15 @@ class C_Return extends TestBase{
   }
 
   @Test
+  def directlyReturn(): Unit ={
+    val res = runOnDemoGraph(
+      """
+        |RETURN 1
+        |""".stripMargin).records().toArray
+    Assertions.assertEquals(1, res.length)
+  }
+
+  @Test
   def otherExpressions(): Unit ={
     val res = runOnDemoGraph(
       """

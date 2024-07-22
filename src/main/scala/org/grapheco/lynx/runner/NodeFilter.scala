@@ -6,6 +6,7 @@ import org.grapheco.lynx.types.property.LynxBoolean.TRUE
 import org.grapheco.lynx.types.{LynxValue, TypeMismatchException}
 import org.grapheco.lynx.types.structural.{LynxNode, LynxNodeLabel, LynxPropertyKey}
 
+
 sealed trait PropOp
 
 object EQUAL extends PropOp
@@ -42,16 +43,18 @@ object IN extends PropOp
 case class NodeFilter(labels: Seq[LynxNodeLabel],
                       properties: Map[LynxPropertyKey, LynxValue],
                       propOps: Map[LynxPropertyKey, PropOp] = Map.empty) {
-  def matches(node: LynxNode): Boolean = {
+
+  def matches(node: LynxNode, ignoreProps: LynxPropertyKey*): Boolean = {
+    val newProperties: Map[LynxPropertyKey, LynxValue] = properties -- ignoreProps
     if (propOps.isEmpty) { // Compatible with empty propOps. e.g.PPTRelationshipScan
       labels.forall(node.labels.contains) &&
-        properties.forall {
-          case (propertyName, value) => node.property(propertyName).exists(value.equals)
+        newProperties.forall {
+          case (propertyName, value: LynxValue) => node.property(propertyName).exists(value.equals)
         }
     }
     else {
       labels.forall(node.labels.contains) &&
-        properties.forall {
+        newProperties.forall {
           case (propertyName, value) =>
             if (!propOps.contains(propertyName)) {
               false

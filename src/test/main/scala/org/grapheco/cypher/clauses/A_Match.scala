@@ -3,12 +3,10 @@ package org.grapheco.cypher.clauses
 import org.grapheco.lynx.TestBase
 import org.grapheco.lynx.physical.{NodeInput, RelationshipInput, StoredNodeInputRef}
 import org.grapheco.lynx.types.LynxValue
-import org.grapheco.lynx.types.composite.LynxList
 import org.grapheco.lynx.types.structural._
 import org.junit.jupiter.api.{Assertions, BeforeEach, Test}
 
 import scala.collection.mutable.ArrayBuffer
-
 /**
  * @program: lynx
  * @description:
@@ -84,6 +82,18 @@ class A_Match extends TestBase{
     val records = runOnDemoGraph("match (movie:Movie) return movie.title").records().map(f => f("movie.title").asInstanceOf[LynxValue].value).toArray
     Assertions.assertEquals("Wall Street", records(0))
     Assertions.assertEquals("The American President", records(1))
+  }
+
+  @Test
+  def matchMultiNodesById(): Unit ={
+    val records = runOnDemoGraph("match (one), (two), (three) where id(one)=1 AND id(two)=2 AND id(three)=3 return one, two, three").records()
+    Assertions.assertEquals(1, records.length)
+  }
+
+  @Test
+  def matchMultiNodes(): Unit ={
+    val records = runOnDemoGraph("match (one), (two), (three) where one.name='Oliver Stone' AND two.name='Michael Douglas' AND three.name='Charlie Sheen' return one, two, three").records()
+    Assertions.assertEquals(1, records.length)
   }
 
   @Test

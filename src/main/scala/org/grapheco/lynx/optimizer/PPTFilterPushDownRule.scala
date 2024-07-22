@@ -4,6 +4,7 @@ import org.grapheco.lynx.physical.plans.{Cross, Expand, Filter, Join, NodeScan, 
 import org.grapheco.lynx.physical._
 import org.opencypher.v9_0.expressions._
 import org.opencypher.v9_0.util.InputPosition
+import org.grapheco.lynx.procedure.ProcedureExpression
 
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
@@ -125,30 +126,19 @@ object PPTFilterPushDownRule extends PhysicalPlanOptimizerRule {
                                         regexPattern: mutable.Map[String, ArrayBuffer[RegexMatch]],
                                         notPushDown: ArrayBuffer[Expression]): Unit = {
     filters match {
-      case e@Equals(Property(expr, pkn), rhs) => {
-        rhs match {
-          // Do not push down the Equals is rhs is a Variable.
-          case Variable(v) => notPushDown += e
-          case _ => expr match {
-            case Variable(name) => {
-              if (propMap.contains(name)) {
-                //propMap(name).append((pkn, rhs))
-                notPushDown += filters
-              }
-              else {
-                propMap += name -> ArrayBuffer((pkn, rhs))
-              }
-              if (propOpsMap.contains(name)) {
-                //propOpsMap(name).append((pkn, StringLiteral("EQUAL")(InputPosition(0, 0, 0))))
-                notPushDown += filters
-              }
-              else {
-                propOpsMap += name -> ArrayBuffer((pkn, StringLiteral("EQUAL")(InputPosition(0, 0, 0))))
+      case e@Equals(lhs, rhs) => lhs match {
+          case Property(expr, pkn) => rhs match {
+              // Do not push down the Equals is rhs is a Variable.
+              case Variable(v) => notPushDown += e
+              case _ => expr match {
+                case Variable(name) => updatePropPushDownMap(filters, name, pkn, "EQUAL", rhs, propMap, propOpsMap, notPushDown)
+                case _ => notPushDown += e
               }
             }
-          }
+          case ProcedureExpression(FunctionInvocation(Namespace(List()), FunctionName("id"), false, Vector(Variable(nodeName)))) =>
+            updatePropPushDownMap(filters, nodeName, PropertyKeyName("_lynx_sys_id")(InputPosition(0, 0, 0)), "EQUAL", rhs, propMap, propOpsMap, notPushDown)
+          case _ => notPushDown += e
         }
-      }
       case ne@Not(expr) => {
         expr match {
           case e@Equals(Property(expr, pkn), rhs) => {
@@ -156,22 +146,9 @@ object PPTFilterPushDownRule extends PhysicalPlanOptimizerRule {
               // Do not push down the Equals is rhs is a Variable.
               case Variable(v) => notPushDown += e
               case _ => expr match {
-                case Variable(name) => {
-                  if (propMap.contains(name)) {
-                    //propMap(name).append((pkn, rhs))
-                    notPushDown += filters
-                  }
-                  else {
-                    propMap += name -> ArrayBuffer((pkn, rhs))
-                  }
-                  if (propOpsMap.contains(name)) {
-                    //propOpsMap(name).append((pkn, StringLiteral("NOTEQUALS")(InputPosition(0, 0, 0))))
-                    notPushDown += filters
-                  }
-                  else {
-                    propOpsMap += name -> ArrayBuffer((pkn, StringLiteral("NOTEQUALS")(InputPosition(0, 0, 0))))
-                  }
-                }
+                case Variable(name) =>
+                  updatePropPushDownMap(filters, name, pkn, "NOTEQUALS", rhs, propMap, propOpsMap, notPushDown)
+                case _ => notPushDown += e
               }
             }
           }
@@ -189,26 +166,12 @@ object PPTFilterPushDownRule extends PhysicalPlanOptimizerRule {
       }
       case greaterThan@GreaterThan(Property(expr, pkn), rhs) => {
         expr match {
-          case Variable(name) => {
+          case Variable(name) =>
             if (!labelMap.contains(name)) {
               notPushDown += filters
-            } else {
-              if (propMap.contains(name)) {
-                //propMap(name).append((pkn, rhs)) // TODO: push down all expressions of same label.
-                notPushDown += filters
-              }
-              else {
-                propMap += name -> ArrayBuffer((pkn, rhs))
-              }
-              if (propOpsMap.contains(name)) {
-                //propOpsMap(name).append((pkn, StringLiteral("GreaterThan")(InputPosition(0, 0, 0))))
-                notPushDown += filters
-              }
-              else {
-                propOpsMap += name -> ArrayBuffer((pkn, StringLiteral("GreaterThan")(InputPosition(0, 0, 0))))
-              }
+            } else {// TODO: push down all expressions of same label.
+              updatePropPushDownMap(filters, name, pkn, "GreaterThan", rhs, propMap, propOpsMap, notPushDown)
             }
-          }
           case _ => notPushDown += filters // TODO: expand others expression
         }
       }
@@ -218,20 +181,7 @@ object PPTFilterPushDownRule extends PhysicalPlanOptimizerRule {
             if (!labelMap.contains(name)) {
               notPushDown += filters
             } else {
-              if (propMap.contains(name)) {
-                //propMap(name).append((pkn, rhs))
-                notPushDown += filters
-              }
-              else {
-                propMap += name -> ArrayBuffer((pkn, rhs))
-              }
-              if (propOpsMap.contains(name)) {
-                //propOpsMap(name).append((pkn, StringLiteral("GreaterThanOrEqual")(InputPosition(0, 0, 0))))
-                notPushDown += filters
-              }
-              else {
-                propOpsMap += name -> ArrayBuffer((pkn, StringLiteral("GreaterThanOrEqual")(InputPosition(0, 0, 0))))
-              }
+              updatePropPushDownMap(filters, name, pkn, "GreaterThanOrEqual", rhs, propMap, propOpsMap, notPushDown)
             }
           }
           case _ => notPushDown += filters // TODO: expand others expression
@@ -243,20 +193,7 @@ object PPTFilterPushDownRule extends PhysicalPlanOptimizerRule {
             if (!labelMap.contains(name)) { // fixme: push down all labels
               notPushDown += filters
             } else {
-              if (propMap.contains(name)) {
-                //propMap(name).append((pkn, rhs))
-                notPushDown += filters
-              }
-              else {
-                propMap += name -> ArrayBuffer((pkn, rhs))
-              }
-              if (propOpsMap.contains(name)) {
-                //propOpsMap(name).append((pkn, StringLiteral("LessThan")(InputPosition(0, 0, 0))))
-                notPushDown += filters
-              }
-              else {
-                propOpsMap += name -> ArrayBuffer((pkn, StringLiteral("LessThan")(InputPosition(0, 0, 0))))
-              }
+              updatePropPushDownMap(filters, name, pkn, "LessThan", rhs, propMap, propOpsMap, notPushDown)
             }
           }
           case _ => notPushDown += filters // TODO: expand others expression
@@ -268,20 +205,7 @@ object PPTFilterPushDownRule extends PhysicalPlanOptimizerRule {
             if (!labelMap.contains(name)) {
               notPushDown += filters
             } else {
-              if (propMap.contains(name)) {
-                //propMap(name).append((pkn, rhs))
-                notPushDown += filters
-              }
-              else {
-                propMap += name -> ArrayBuffer((pkn, rhs))
-              }
-              if (propOpsMap.contains(name)) {
-                //propOpsMap(name).append((pkn, StringLiteral("LessThanOrEqual")(InputPosition(0, 0, 0))))
-                notPushDown += filters
-              }
-              else {
-                propOpsMap += name -> ArrayBuffer((pkn, StringLiteral("LessThanOrEqual")(InputPosition(0, 0, 0))))
-              }
+              updatePropPushDownMap(filters, name, pkn, "LessThanOrEqual", rhs, propMap, propOpsMap, notPushDown)
             }
           }
           case _ => notPushDown += filters // TODO: expand others expression
@@ -293,20 +217,7 @@ object PPTFilterPushDownRule extends PhysicalPlanOptimizerRule {
             if (!labelMap.contains(name)) {
               notPushDown += filters
             } else {
-              if (propMap.contains(name)) {
-                //propMap(name).append((pkn, rhs))
-                notPushDown += filters
-              }
-              else {
-                propMap += name -> ArrayBuffer((pkn, rhs))
-              }
-              if (propOpsMap.contains(name)) {
-                //propOpsMap(name).append((pkn, StringLiteral("IN")(InputPosition(0, 0, 0))))
-                notPushDown += filters
-              }
-              else {
-                propOpsMap += name -> ArrayBuffer((pkn, StringLiteral("IN")(InputPosition(0, 0, 0))))
-              }
+              updatePropPushDownMap(filters, name, pkn, "IN", rhs, propMap, propOpsMap, notPushDown)
             }
           }
           case _ => notPushDown += filters // TODO: expand others expression
@@ -318,20 +229,7 @@ object PPTFilterPushDownRule extends PhysicalPlanOptimizerRule {
             if (!labelMap.contains(name)) {
               notPushDown += filters
             } else {
-              if (propMap.contains(name)) {
-                //propMap(name).append((pkn, rhs))
-                notPushDown += filters
-              }
-              else {
-                propMap += name -> ArrayBuffer((pkn, rhs))
-              }
-              if (propOpsMap.contains(name)) {
-                //propOpsMap(name).append((pkn, StringLiteral("Contains")(InputPosition(0, 0, 0))))
-                notPushDown += filters
-              }
-              else {
-                propOpsMap += name -> ArrayBuffer((pkn, StringLiteral("Contains")(InputPosition(0, 0, 0))))
-              }
+              updatePropPushDownMap(filters, name, pkn, "Contains", rhs, propMap, propOpsMap, notPushDown)
             }
           }
           case _ => notPushDown += filters // TODO: expand others expression
@@ -386,7 +284,9 @@ object PPTFilterPushDownRule extends PhysicalPlanOptimizerRule {
         else (Seq(plans.Filter(expandAndSet._2.head)(expandAndSet._1, ppc)), true)
       }
       case Seq(pj@Join(filterExpr, isSingleMatch, bigTableIndex)) => pptFilterThenJoin(pf, pj, ppc)
-      case Seq(pc@Cross()) => pptFilterThenJoin(pf, pc, ppc)
+      case Seq(pc@Cross()) => {
+        pptFilterThenJoin(pf, pc, ppc)
+      }
       case _ => (null, false)
     }
   }
@@ -534,5 +434,26 @@ object PPTFilterPushDownRule extends PhysicalPlanOptimizerRule {
 
     if (notPushDown.size > 1) (newNodePattern, Set(Ands(notPushDown.toSet)(InputPosition(0, 0, 0))), true)
     else (newNodePattern, notPushDown.toSet, true)
+  }
+
+  private def updatePropPushDownMap(filters: Expression, elementName: String, propKeyName: PropertyKeyName, operatorLiteral: String, rhs: Expression,
+                                        propMap: mutable.Map[String, ArrayBuffer[(PropertyKeyName, Expression)]],
+                                        propOpsMap: mutable.Map[String, ArrayBuffer[(PropertyKeyName, Expression)]],
+                                        notPushDown: ArrayBuffer[Expression]
+                                       ): Unit = {
+    if (propMap.contains(elementName)) {
+      //propMap(name).append((pkn, rhs))
+      notPushDown += filters
+    }
+    else {
+      propMap += elementName -> ArrayBuffer((propKeyName, rhs))
+    }
+    if (propOpsMap.contains(elementName)) {
+      //propOpsMap(name).append((pkn, StringLiteral("EQUAL")(InputPosition(0, 0, 0))))
+      notPushDown += filters
+    }
+    else {
+      propOpsMap += elementName -> ArrayBuffer((propKeyName, StringLiteral(operatorLiteral)(InputPosition(0, 0, 0))))
+    }
   }
 }

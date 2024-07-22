@@ -84,7 +84,7 @@ case class MultiStepExpand(rel: RelationshipPattern,
               RelationshipFilter(types.map(_.name).map(LynxRelationshipType), properties.map(eval(_).asInstanceOf[LynxMap].value.map(kv => (LynxPropertyKey(kv._1), kv._2))).getOrElse(Map.empty)),
               direction, Math.min(upperLimit, 10), lowerLimit
             )
-            .filter(_.endNode.forall(endNodeFilter.matches))
+            .filter(_.endNode.forall(endNodeFilter.matches(_)))
 
           exd.map { path =>
             record.:+(LynxList(path.relationships)).:+(path.endNode.get)

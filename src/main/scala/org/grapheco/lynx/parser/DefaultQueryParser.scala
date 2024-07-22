@@ -1,5 +1,6 @@
 package org.grapheco.lynx.parser
 
+import org.grapheco.lynx.physical.SyntaxErrorException
 import org.grapheco.lynx.procedure.ProcedureExpression
 import org.grapheco.lynx.runner.CypherRunnerContext
 import org.opencypher.v9_0.ast.Statement
@@ -76,14 +77,18 @@ class DefaultQueryParser(runnerContext: CypherRunnerContext) extends QueryParser
 
       override def toTextOutput: String = s"$name $version"
 
-      override def version: String = "0.66"
+      override def version: String = "0.6.7"
 
     })
 
-    val endState = transformers.transform(startState, context)
-    val params = endState.extractedParams
-    val rewritten = endState.statement
-    (rewritten, params, endState.maybeSemantics.get)
+    try {
+      val endState = transformers.transform(startState, context)
+      val params = endState.extractedParams
+      val rewritten = endState.statement
+      (rewritten, params, endState.maybeSemantics.get)
+    } catch {
+      case e: org.opencypher.v9_0.util.SyntaxException => throw SyntaxErrorException(e.getMessage)
+    }
   }
 }
 
